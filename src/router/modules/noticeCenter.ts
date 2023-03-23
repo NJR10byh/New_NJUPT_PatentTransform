@@ -4,6 +4,7 @@
  * @description
  * @version 0.1.0
  */
+
 import Layout from "@/layouts/index.vue";
 
 export default [

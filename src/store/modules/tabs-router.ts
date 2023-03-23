@@ -4,10 +4,10 @@ import { store } from "@/store";
 
 const homeRoute: Array<TRouterInfo> = [
   {
-    path: "/dashboard/achievement",
+    path: "/userCenter/userInfo/index.vue",
     routeIdx: 0,
-    title: "仪表盘",
-    name: "DashboardBase",
+    title: "用户中心",
+    name: "userInfo",
     isHome: true
   }
 ];

@@ -152,9 +152,8 @@ const toggleSettingPanel = () => {
   });
 };
 
-const toUser = async () => {
-  await router.push("/userCenter/info");
-  window.location.reload();
+const toUser = () => {
+  router.push("/userCenter/info");
 };
 
 const active = computed(() => getActive());
