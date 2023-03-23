@@ -21,14 +21,12 @@ import { useRouter } from "vue-router";
 
 const activeRouteFullPath = computed(() => {
   const router = useRouter();
-  console.log(router.currentRoute.value.fullPath);
   return router.currentRoute.value.fullPath;
 });
 
 const aliveViews = computed(() => {
   const tabsRouterStore = useTabsRouterStore();
   const { tabRouters } = tabsRouterStore;
-  console.log(tabRouters.filter((route) => route.isAlive).map((route) => route.name));
 
   return tabRouters.filter((route) => route.isAlive).map((route) => route.name);
 }) as ComputedRef<string[]>;
