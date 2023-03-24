@@ -20,7 +20,7 @@
       :header-affixed-top="{ offsetTop, container: getContainer }"
       :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
       :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="patentTablePageChange"
+      @page-change="transferPriceTablePageChange"
       style="margin-top: 10px"
     />
   </t-card>
@@ -62,7 +62,7 @@ const transferPriceTable = ref({
   pagination: {
     total: 0,
     current: 1,
-    pageSize: 10
+    pageSize: 20
   }
 });
 
@@ -74,15 +74,15 @@ const transferPriceTable = ref({
 onMounted(() => {
   console.log("onMounted");
   // 获取表格数据
-  const transferPriceUrl = "/intention/getTransferPriceIntentionPage";
-  getTransferPriceData(transferPriceUrl);
+  const requestUrl = "/intention/getTransferPriceIntentionPage";
+  getTransferPriceData(requestUrl);
 });
 
 /**
  * 操作钩子
  */
 // 分页钩子
-const patentTablePageChange = (curr) => {
+const transferPriceTablePageChange = (curr) => {
   console.log("分页变化", curr);
   const requestUrl = "/intention/getTransferPriceIntentionPage";
   transferPriceTable.value.pagination.current = curr.current;
@@ -94,16 +94,16 @@ const patentTablePageChange = (curr) => {
  * 业务相关
  */
 // 获取通知列表
-const getTransferPriceData = (noticeUrl) => {
+const getTransferPriceData = (requestUrl) => {
   transferPriceTable.value.tableData = [];
   let obj = {
     currPage: transferPriceTable.value.pagination.current,
     size: transferPriceTable.value.pagination.pageSize
   };
-  noticeUrl = setObjToUrlParams(noticeUrl, obj);
+  requestUrl = setObjToUrlParams(requestUrl, obj);
   transferPriceTable.value.tableLoading = true;
   request.get({
-    url: noticeUrl
+    url: requestUrl
   }).then(res => {
     console.log(res);
     transferPriceTable.value.tableData = res.records;

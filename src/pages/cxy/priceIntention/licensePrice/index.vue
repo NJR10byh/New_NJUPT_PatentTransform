@@ -7,20 +7,20 @@
 <template>
   <t-card class="transfer-price-card">
     <t-row justify="start" class="cardTop">
-      <div class="cardTitle">转让价格意向</div>
+      <div class="cardTitle">许可价格意向</div>
     </t-row>
     <t-table
-      :data="transferPriceTable.tableData"
+      :data="licensePriceTable.tableData"
       :columns="LICENCES_PRICE_TABLE_COLUMNS"
       row-key="id"
       vertical-align="center"
       hover
-      :pagination="transferPriceTable.pagination"
-      :loading="transferPriceTable.tableLoading"
+      :pagination="licensePriceTable.pagination"
+      :loading="licensePriceTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
       :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
       :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="patentTablePageChange"
+      @page-change="licensePriceTablePageChange"
       style="margin-top: 10px"
     />
   </t-card>
@@ -53,14 +53,14 @@ const getContainer = () => {
  */
 
 /* 转让价格 */
-const transferPriceTable = ref({
+const licensePriceTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
   // 表格分页
   pagination: {
     total: 0,
     current: 1,
-    pageSize: 10
+    pageSize: 20
   }
 });
 
@@ -72,47 +72,47 @@ const transferPriceTable = ref({
 onMounted(() => {
   console.log("onMounted");
   // 获取表格数据
-  const transferPriceUrl = "/intention/getTransferPriceIntentionPage";
-  getTransferPriceData(transferPriceUrl);
+  const requestUrl = "/intention/getLicencePriceIntentionPage";
+  getLicensePriceData(requestUrl);
 });
 
 /**
  * 操作钩子
  */
 // 分页钩子
-const patentTablePageChange = (curr) => {
+const licensePriceTablePageChange = (curr) => {
   console.log("分页变化", curr);
-  const requestUrl = "/intention/getTransferPriceIntentionPage";
-  transferPriceTable.value.pagination.current = curr.current;
-  transferPriceTable.value.pagination.pageSize = curr.pageSize;
-  getTransferPriceData(requestUrl);
+  const requestUrl = "/intention/getLicencePriceIntentionPage";
+  licensePriceTable.value.pagination.current = curr.current;
+  licensePriceTable.value.pagination.pageSize = curr.pageSize;
+  getLicensePriceData(requestUrl);
 };
 
 /**
  * 业务相关
  */
 // 获取通知列表
-const getTransferPriceData = (noticeUrl) => {
-  transferPriceTable.value.tableData = [];
+const getLicensePriceData = (requestUrl) => {
+  licensePriceTable.value.tableData = [];
   let obj = {
-    currPage: transferPriceTable.value.pagination.current,
-    size: transferPriceTable.value.pagination.pageSize
+    currPage: licensePriceTable.value.pagination.current,
+    size: licensePriceTable.value.pagination.pageSize
   };
-  noticeUrl = setObjToUrlParams(noticeUrl, obj);
-  transferPriceTable.value.tableLoading = true;
+  requestUrl = setObjToUrlParams(requestUrl, obj);
+  licensePriceTable.value.tableLoading = true;
   request.get({
-    url: noticeUrl
+    url: requestUrl
   }).then(res => {
     console.log(res);
-    transferPriceTable.value.tableData = res.records;
-    transferPriceTable.value.pagination.total = res.total;
-    for (let i = 0; i < transferPriceTable.value.tableData.length; i++) {
-      transferPriceTable.value.tableData[i].index = (transferPriceTable.value.pagination.current - 1) * transferPriceTable.value.pagination.pageSize + i + 1;
+    licensePriceTable.value.tableData = res.records;
+    licensePriceTable.value.pagination.total = res.total;
+    for (let i = 0; i < licensePriceTable.value.tableData.length; i++) {
+      licensePriceTable.value.tableData[i].index = (licensePriceTable.value.pagination.current - 1) * licensePriceTable.value.pagination.pageSize + i + 1;
     }
   }).catch(err => {
     console.log(err);
   }).finally(() => {
-    transferPriceTable.value.tableLoading = false;
+    licensePriceTable.value.tableLoading = false;
   });
 };
 </script>

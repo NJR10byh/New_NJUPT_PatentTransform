@@ -22,7 +22,7 @@ export const OPEN_LICENCES_PRICE_TABLE_COLUMNS = [
   {
     title: "价格意向（万元）",
     align: "center",
-    colKey: "priceIntention",
+    colKey: "openLicencePriceIntention",
     width: 100,
     ellipsis: true
   },

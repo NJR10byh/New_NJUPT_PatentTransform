@@ -22,7 +22,7 @@ export const LICENCES_PRICE_TABLE_COLUMNS = [
   {
     title: "价格意向（万元）",
     align: "center",
-    colKey: "priceIntention",
+    colKey: "licencePriceIntention",
     width: 100,
     ellipsis: true
   },
