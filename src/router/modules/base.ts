@@ -2,7 +2,7 @@ export default [
   // {
   //   path: "/dashboard",
   //   component: Layout,
-  //   redirect: "/dashboard/achievement",
+  //   redirect: "/userCenter/info",
   //   name: "dashboard",
   //   meta: { title: "仪表盘", icon: DashboardIcon },
   //   children: [

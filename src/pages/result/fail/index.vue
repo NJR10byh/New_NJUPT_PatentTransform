@@ -5,7 +5,7 @@
     <div class="result-success-describe">企业微信联系检查创建者权限，或返回修改</div>
     <div>
       <t-button @click="() => $router.push('/form/achievement')">返回修改</t-button>
-      <t-button theme="default" @click="() => $router.push('/dashboard/achievement')">返回首页</t-button>
+      <t-button theme="default" @click="() => $router.push('/userCenter/info')">返回首页</t-button>
     </div>
   </div>
 </template>

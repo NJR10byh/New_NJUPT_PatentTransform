@@ -124,7 +124,7 @@ onMounted(() => {
 });
 
 const goHome = () => {
-  router.push("/dashboard/achievement");
+  router.push("/userCenter/info");
 };
 
 const getLogo = () => {
