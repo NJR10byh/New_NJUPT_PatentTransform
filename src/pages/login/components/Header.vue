@@ -1,7 +1,7 @@
 <template>
   <header class="login-header">
     <span class="header-logo-container">
-        <img src="@/assets/assets-njupt-logo.png" class="logo" />
+        <img src="@/assets/assets-njupt-full-logo.png" class="logo" />
     </span>
     <!--    <div class="operations-container">-->
     <!--      <t-button theme="default" shape="square" variant="text" @click="navToGitHub">-->
@@ -48,8 +48,8 @@ const navToHelper = () => {
   color: var(--td-text-color-primary);
 
   .header-logo-container {
-    width: 200px;
-    height: 50px;
+    width: 180px;
+    height: 45px;
     display: flex;
     color: var(--td-text-color-primary);
     //border: 1px solid red;

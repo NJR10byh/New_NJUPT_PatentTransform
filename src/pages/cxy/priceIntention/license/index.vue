@@ -1,7 +1,7 @@
 <!--
   * @author baoyuhao
   * @date 2023/3/20 0:03:01
-  * @description 通知中心-产学研
+  * @description 价格意向-许可
   * @version 0.1.0
 -->
 <template>
@@ -14,6 +14,7 @@
       :columns="LICENCES_PRICE_TABLE_COLUMNS"
       row-key="id"
       vertical-align="center"
+      stripe
       hover
       :pagination="licensePriceTable.pagination"
       :loading="licensePriceTable.tableLoading"
@@ -33,6 +34,7 @@ import { useSettingStore } from "@/store";
 import { LICENCES_PRICE_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
+import { MessagePlugin } from "tdesign-vue-next";
 
 
 const store = useSettingStore();
@@ -70,7 +72,7 @@ const licensePriceTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-  console.log("onMounted");
+
   // 获取表格数据
   const requestUrl = "/intention/getLicencePriceIntentionPage";
   getLicensePriceData(requestUrl);
@@ -110,7 +112,7 @@ const getLicensePriceData = (requestUrl) => {
       licensePriceTable.value.tableData[i].index = (licensePriceTable.value.pagination.current - 1) * licensePriceTable.value.pagination.pageSize + i + 1;
     }
   }).catch(err => {
-    console.log(err);
+    MessagePlugin.error(err);
   }).finally(() => {
     licensePriceTable.value.tableLoading = false;
   });

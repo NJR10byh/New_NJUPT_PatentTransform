@@ -1,26 +1,27 @@
 <!--
   * @author baoyuhao
   * @date 2023/3/20 0:03:01
-  * @description 通知中心-产学研
+  * @description 价格意向-转让
   * @version 0.1.0
 -->
 <template>
   <t-card class="transfer-price-card">
     <t-row justify="start" class="cardTop">
-      <div class="cardTitle">开放许可价格意向</div>
+      <div class="cardTitle">转让价格意向</div>
     </t-row>
     <t-table
-      :data="openLicensePriceTable.tableData"
-      :columns="OPEN_LICENCES_PRICE_TABLE_COLUMNS"
+      :data="transferPriceTable.tableData"
+      :columns="TRANSFER_PRICE_TABLE_COLUMNS"
       row-key="id"
       vertical-align="center"
       hover
-      :pagination="openLicensePriceTable.pagination"
-      :loading="openLicensePriceTable.tableLoading"
+      stripe
+      :pagination="transferPriceTable.pagination"
+      :loading="transferPriceTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
       :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
       :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="openLicensePriceTablePageChange"
+      @page-change="transferPriceTablePageChange"
       style="margin-top: 10px"
     />
   </t-card>
@@ -30,12 +31,15 @@
 import { computed, onMounted, ref } from "vue";
 import { prefix } from "@/config/global";
 import { useSettingStore } from "@/store";
-import { OPEN_LICENCES_PRICE_TABLE_COLUMNS } from "./constants";
+import { useRouter } from "vue-router";
+import { TRANSFER_PRICE_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
+import { MessagePlugin } from "tdesign-vue-next";
 
 
 const store = useSettingStore();
+const router = useRouter();
 
 /**
  * data
@@ -53,7 +57,7 @@ const getContainer = () => {
  */
 
 /* 转让价格 */
-const openLicensePriceTable = ref({
+const transferPriceTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
   // 表格分页
@@ -70,49 +74,49 @@ const openLicensePriceTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-  console.log("onMounted");
+
   // 获取表格数据
-  const requestUrl = "/intention/getOpenLicencePriceIntentionPage";
-  getOpenLicensePriceData(requestUrl);
+  const requestUrl = "/intention/getTransferPriceIntentionPage";
+  getTransferPriceData(requestUrl);
 });
 
 /**
  * 操作钩子
  */
 // 分页钩子
-const openLicensePriceTablePageChange = (curr) => {
+const transferPriceTablePageChange = (curr) => {
   console.log("分页变化", curr);
-  const requestUrl = "/intention/getOpenLicencePriceIntentionPage";
-  openLicensePriceTable.value.pagination.current = curr.current;
-  openLicensePriceTable.value.pagination.pageSize = curr.pageSize;
-  getOpenLicensePriceData(requestUrl);
+  const requestUrl = "/intention/getTransferPriceIntentionPage";
+  transferPriceTable.value.pagination.current = curr.current;
+  transferPriceTable.value.pagination.pageSize = curr.pageSize;
+  getTransferPriceData(requestUrl);
 };
 
 /**
  * 业务相关
  */
 // 获取通知列表
-const getOpenLicensePriceData = (requestUrl) => {
-  openLicensePriceTable.value.tableData = [];
+const getTransferPriceData = (requestUrl) => {
+  transferPriceTable.value.tableData = [];
   let obj = {
-    currPage: openLicensePriceTable.value.pagination.current,
-    size: openLicensePriceTable.value.pagination.pageSize
+    currPage: transferPriceTable.value.pagination.current,
+    size: transferPriceTable.value.pagination.pageSize
   };
   requestUrl = setObjToUrlParams(requestUrl, obj);
-  openLicensePriceTable.value.tableLoading = true;
+  transferPriceTable.value.tableLoading = true;
   request.get({
     url: requestUrl
   }).then(res => {
     console.log(res);
-    openLicensePriceTable.value.tableData = res.records;
-    openLicensePriceTable.value.pagination.total = res.total;
-    for (let i = 0; i < openLicensePriceTable.value.tableData.length; i++) {
-      openLicensePriceTable.value.tableData[i].index = (openLicensePriceTable.value.pagination.current - 1) * openLicensePriceTable.value.pagination.pageSize + i + 1;
+    transferPriceTable.value.tableData = res.records;
+    transferPriceTable.value.pagination.total = res.total;
+    for (let i = 0; i < transferPriceTable.value.tableData.length; i++) {
+      transferPriceTable.value.tableData[i].index = (transferPriceTable.value.pagination.current - 1) * transferPriceTable.value.pagination.pageSize + i + 1;
     }
   }).catch(err => {
-    console.log(err);
+    MessagePlugin.error(err);
   }).finally(() => {
-    openLicensePriceTable.value.tableLoading = false;
+    transferPriceTable.value.tableLoading = false;
   });
 };
 </script>

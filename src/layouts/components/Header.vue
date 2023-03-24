@@ -9,7 +9,7 @@
     >
       <template #logo>
         <span v-if="showLogo" class="header-logo-container">
-          <img src="@/assets/assets-njupt-logo.png" class="logo" />
+          <img src="@/assets/assets-njupt-full-logo.png" class="logo" />
         </span>
         <div v-else class="header-operate-left">
           <t-button

@@ -27,7 +27,9 @@
       :columns="VIDEO_MANAGE_TABLE_COLUMNS"
       row-key="id"
       vertical-align="center"
+      bordered
       hover
+      stripe
       :loading="videoManageTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
       :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
@@ -45,7 +47,6 @@
           <template #icon>
             <t-icon name="delete"></t-icon>
           </template>
-          删除
         </t-button>
       </template>
     </t-table>
@@ -59,7 +60,9 @@
       :columns="NOTICE_MANAGE_TABLE_COLUMNS"
       row-key="id"
       vertical-align="center"
+      bordered
       hover
+      stripe
       :pagination="noticeManageTable.pagination"
       :loading="noticeManageTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -70,7 +73,7 @@
       size="small"
     >
       <template #settings="slotProps">
-        <t-button theme="warning">
+        <t-button theme="warning" variant="base">
           <template #icon>
             <t-icon name="edit"></t-icon>
           </template>
@@ -80,7 +83,6 @@
           <template #icon>
             <t-icon name="delete"></t-icon>
           </template>
-          删除
         </t-button>
       </template>
     </t-table>
@@ -95,6 +97,7 @@ import { useRouter } from "vue-router";
 import { NOTICE_MANAGE_TABLE_COLUMNS, VIDEO_MANAGE_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
+import { MessagePlugin } from "tdesign-vue-next";
 
 
 const store = useSettingStore();
@@ -172,7 +175,7 @@ const getVideoData = (videoUrl) => {
       videoManageTable.value.tableData[i].index = i + 1;
     }
   }).catch(err => {
-    console.log(err);
+    MessagePlugin.error(err);
   }).finally(() => {
     videoManageTable.value.tableLoading = false;
   });
@@ -189,14 +192,13 @@ const getNoticeData = (noticeUrl) => {
   request.get({
     url: noticeUrl
   }).then(res => {
-    console.log(res);
     noticeManageTable.value.tableData = res.records;
     noticeManageTable.value.pagination.total = res.total;
     for (let i = 0; i < noticeManageTable.value.tableData.length; i++) {
       noticeManageTable.value.tableData[i].index = (noticeManageTable.value.pagination.current - 1) * noticeManageTable.value.pagination.pageSize + i + 1;
     }
   }).catch(err => {
-    console.log(err);
+    MessagePlugin.error(err);
   }).finally(() => {
     noticeManageTable.value.tableLoading = false;
   });

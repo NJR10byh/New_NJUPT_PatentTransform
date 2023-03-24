@@ -6,7 +6,7 @@
           Hi，{{ userStore.userInfo.userName }}
           <span class="regular"> 下午好～</span>
         </div>
-        <img src="@/assets/assets-njupt-logo.png" class="logo" />
+        <img src="@/assets/assets-njupt-full-logo.png" class="logo" />
       </div>
 
       <t-card class="user-info-list" title="个人信息">
