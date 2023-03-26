@@ -19,13 +19,13 @@ export default [
         name: "transferPatentApproval",
         component: () => import("@/pages/cxy/patentApproval/transfer/index.vue"),
         meta: { title: "转让", rolePermission: ["root", "superadmin"] }
+      },
+      {
+        path: "license",
+        name: "licensePatentApproval",
+        component: () => import("@/pages/cxy/patentApproval/license/index.vue"),
+        meta: { title: "许可", rolePermission: ["root", "superadmin"] }
       }
-      // {
-      //   path: "license",
-      //   name: "license",
-      //   component: () => import("@/pages/cxy/patentApproval/license/index.vue"),
-      //   meta: { title: "许可", rolePermission: ["root", "superadmin"] }
-      // }
     ]
   }
 ];

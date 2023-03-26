@@ -1,7 +1,7 @@
 <!--
   * @author baoyuhao
-  * @date 2023/3/24 21:54:22
-  * @description 专利审批-转让
+  * @date 2023/3/26 15:57:43
+  * @description 专利审批-许可
   * @version 0.1.0
 -->
 <template>
@@ -312,7 +312,7 @@ const patentApprovalTable = ref({
 });
 
 let requestData = {
-  contractType: 0,
+  contractType: 1,
   currPage: patentApprovalTable.value.pagination.current,
   size: patentApprovalTable.value.pagination.pageSize,
   search: 0,
