@@ -10,12 +10,12 @@
       <!-- 待审批 -->
       <t-tab-panel class="tabPanel" :value="tabsData[0].value" :label="tabsData[0].label">
         <t-row justify="end" class="cardTop">
-          <t-select class="selectStyle" v-model="tabsData[0].searchField.value"
-                    :options="tabsData[0].searchField.options"
-                    placeholder="查询字段" clearable>
+          <t-select class="selectStyle" v-model="searchField.value"
+                    :options="searchField.options"
+                    placeholder="查询字段" clearable @change="searchFieldSelectChange">
           </t-select>
-          <t-input class="inputStyle"></t-input>
-          <t-button>
+          <t-input class="inputStyle" placeholder="请输入查询内容" v-model="requestData.condition" clearable></t-input>
+          <t-button @click="searchPatentApproval">
             <template #icon>
               <t-icon name="search"></t-icon>
             </template>
@@ -97,12 +97,12 @@
       <!-- 正在转化 -->
       <t-tab-panel class="tabPanel" :value="tabsData[2].value" :label="tabsData[2].label">
         <t-row justify="end" class="cardTop">
-          <t-select class="selectStyle" v-model="tabsData[0].searchField.value"
-                    :options="tabsData[0].searchField.options"
-                    placeholder="查询字段" clearable>
+          <t-select class="selectStyle" v-model="searchField.value"
+                    :options="searchField.options"
+                    placeholder="查询字段" clearable @change="searchFieldSelectChange">
           </t-select>
-          <t-input class="inputStyle"></t-input>
-          <t-button>
+          <t-input class="inputStyle" placeholder="请输入查询内容" v-model="requestData.condition" clearable></t-input>
+          <t-button @click="searchPatentApproval">
             <template #icon>
               <t-icon name="search"></t-icon>
             </template>
@@ -147,12 +147,12 @@
       <!-- 已转化 -->
       <t-tab-panel class="tabPanel" :value="tabsData[3].value" :label="tabsData[3].label">
         <t-row justify="end" class="cardTop">
-          <t-select class="selectStyle" v-model="tabsData[0].searchField.value"
-                    :options="tabsData[0].searchField.options"
-                    placeholder="查询字段" clearable>
+          <t-select class="selectStyle" v-model="searchField.value"
+                    :options="searchField.options"
+                    placeholder="查询字段" clearable @change="searchFieldSelectChange">
           </t-select>
-          <t-input class="inputStyle"></t-input>
-          <t-button>
+          <t-input class="inputStyle" placeholder="请输入查询内容" v-model="requestData.condition" clearable></t-input>
+          <t-button @click="searchPatentApproval">
             <template #icon>
               <t-icon name="search"></t-icon>
             </template>
@@ -267,16 +267,7 @@ const baseUrl = "/cxy/getTransferApplicationFromByCondition";
 const tabsData = ref([
   {
     value: 1,
-    label: "待审批",
-    searchField: {
-      value: "",
-      options: [
-        { label: "专利名称", value: "1" },
-        { label: "专利第一作者", value: "2" },
-        { label: "成员名单", value: "3" },
-        { label: "所属学院", value: "4" }
-      ]
-    }
+    label: "待审批"
   },
   {
     value: 2,
@@ -295,10 +286,23 @@ const tabsData = ref([
     label: "未通过"
   }
 ]);
+
+/**
+ * 搜索相关
+ */
+const searchField = ref({
+  value: "",
+  options: [
+    { label: "专利名称", value: 1 },
+    { label: "专利第一作者", value: 2 },
+    { label: "成员名单", value: 3 },
+    { label: "所属学院", value: 4 }
+  ]
+});
+
 /**
  * 表格相关
  */
-
 // 转让价格
 const patentApprovalTable = ref({
   tableLoading: false,// 表格加载
@@ -311,13 +315,15 @@ const patentApprovalTable = ref({
   }
 });
 
-let requestData = {
+// 请求体
+const requestData = ref({
   contractType: 1,
   currPage: patentApprovalTable.value.pagination.current,
   size: patentApprovalTable.value.pagination.pageSize,
   search: 0,
-  patentState: 5
-};
+  patentState: 5,
+  condition: ""
+});
 /**
  * methods区
  */
@@ -333,58 +339,49 @@ onMounted(async () => {
  */
 // Tab页切换钩子
 const tabChange = async (value) => {
-  console.log(value);
   patentApprovalTable.value.pagination.current = 1;
+  requestData.value.currPage = 1;
   let requestUrl = "";
   switch (value) {
     case 1:
-      requestData = {
-        ...requestData,
-        patentState: PATENT_STATE.WAIT_APPROVAL
-      };
-      requestUrl = setObjToUrlParams(baseUrl, requestData);
+      requestData.value.patentState = PATENT_STATE.WAIT_APPROVAL;
+      requestUrl = setObjToUrlParams(baseUrl, requestData.value);
       await getPatentApprovalTableData(requestUrl);
       break;
     case 2:
-      requestData = {
-        ...requestData,
-        patentState: PATENT_STATE.PASSED_APPROVAL
-      };
-      requestUrl = setObjToUrlParams(baseUrl, requestData);
+      requestData.value.patentState = PATENT_STATE.PASSED_APPROVAL;
+      requestUrl = setObjToUrlParams(baseUrl, requestData.value);
       await getPatentApprovalTableData(requestUrl);
       break;
     case 3:
-      requestData = {
-        ...requestData,
-        patentState: PATENT_STATE.TRANSFERRING
-      };
-      requestUrl = setObjToUrlParams(baseUrl, requestData);
+      requestData.value.patentState = PATENT_STATE.TRANSFERRING;
+      requestUrl = setObjToUrlParams(baseUrl, requestData.value);
       await getPatentApprovalTableData(requestUrl);
       break;
     case 4:
-      requestData = {
-        ...requestData,
-        patentState: PATENT_STATE.TRANSFERRED
-      };
-      requestUrl = setObjToUrlParams(baseUrl, requestData);
+      requestData.value.patentState = PATENT_STATE.TRANSFERRED;
+      requestUrl = setObjToUrlParams(baseUrl, requestData.value);
       await getPatentApprovalTableData(requestUrl);
       break;
     case 5:
-      requestData = {
-        ...requestData,
-        patentState: PATENT_STATE.FAILED
-      };
-      requestUrl = setObjToUrlParams(baseUrl, requestData);
+      requestData.value.patentState = PATENT_STATE.FAILED;
+      requestUrl = setObjToUrlParams(baseUrl, requestData.value);
       await getPatentApprovalTableData(requestUrl);
       break;
     default:
-      requestData = {
-        ...requestData,
-        patentState: PATENT_STATE.WAIT_APPROVAL
-      };
-      requestUrl = setObjToUrlParams(baseUrl, requestData);
+      requestData.value.patentState = PATENT_STATE.WAIT_APPROVAL;
+      requestUrl = setObjToUrlParams(baseUrl, requestData.value);
       await getPatentApprovalTableData(requestUrl);
       break;
+  }
+};
+// 查询字段选择器钩子
+const searchFieldSelectChange = async (value) => {
+  // clearble会触发change钩子，此时value为 undefined
+  if (value != undefined) {
+    requestData.value.search = value;
+  } else {
+    requestData.value.search = 0;
   }
 };
 // 分页钩子
@@ -392,12 +389,12 @@ const patentApprovalTablePageChange = (curr) => {
   console.log("分页变化", curr);
   patentApprovalTable.value.pagination.current = curr.current;
   patentApprovalTable.value.pagination.pageSize = curr.pageSize;
-  requestData = {
-    ...requestData,
+  requestData.value = {
+    ...requestData.value,
     currPage: curr.current,
     size: curr.pageSize
   };
-  let requestUrl = setObjToUrlParams(baseUrl, requestData);
+  let requestUrl = setObjToUrlParams(baseUrl, requestData.value);
   getPatentApprovalTableData(requestUrl);
 };
 
@@ -406,32 +403,35 @@ const patentApprovalTablePageChange = (curr) => {
  */
 // 获取Tab信息
 const getLabelNum = async () => {
-  const waitApprovalRequestUrl = setObjToUrlParams(baseUrl, requestData);
+  const waitApprovalRequestUrl = setObjToUrlParams(baseUrl, requestData.value);
   await request.get({
     url: waitApprovalRequestUrl
   }).then(res => {
     console.log(res);
     tabsData.value[0].label = tabsData.value[0].label + " (" + res.total + ")";
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.error(err.message);
   }).finally(() => {
   });
-  requestData = {
-    ...requestData,
-    patentState: PATENT_STATE.PASSED_APPROVAL
-  };
-  const passedRequestUrl = setObjToUrlParams(baseUrl, requestData);
+  requestData.value.patentState = PATENT_STATE.PASSED_APPROVAL;
+  const passedRequestUrl = setObjToUrlParams(baseUrl, requestData.value);
   await request.get({
     url: passedRequestUrl
   }).then(res => {
     console.log(res);
     tabsData.value[1].label = tabsData.value[1].label + " (" + res.total + ")";
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.error(err.message);
   }).finally(() => {
   });
+  requestData.value.patentState = PATENT_STATE.WAIT_APPROVAL;
   await getPatentApprovalTableData(waitApprovalRequestUrl);
 
+};
+// 条件查询专利审批信息
+const searchPatentApproval = () => {
+  let requestUrl = setObjToUrlParams(baseUrl, requestData.value);
+  getPatentApprovalTableData(requestUrl);
 };
 // 获取表格数据
 const getPatentApprovalTableData = (requestUrl) => {
@@ -448,7 +448,7 @@ const getPatentApprovalTableData = (requestUrl) => {
       patentApprovalTable.value.tableData[i].state = chargeAllState(patentApprovalTable.value.tableData[i]);
     }
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.error(err.message);
   }).finally(() => {
     patentApprovalTable.value.tableLoading = false;
   });
