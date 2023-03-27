@@ -112,7 +112,7 @@ const getLicensePriceData = (requestUrl) => {
       licensePriceTable.value.tableData[i].index = (licensePriceTable.value.pagination.current - 1) * licensePriceTable.value.pagination.pageSize + i + 1;
     }
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.error(err.message);
   }).finally(() => {
     licensePriceTable.value.tableLoading = false;
   });

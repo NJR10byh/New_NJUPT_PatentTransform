@@ -175,7 +175,7 @@ const getVideoData = (videoUrl) => {
       videoManageTable.value.tableData[i].index = i + 1;
     }
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.error(err.message);
   }).finally(() => {
     videoManageTable.value.tableLoading = false;
   });
@@ -198,7 +198,7 @@ const getNoticeData = (noticeUrl) => {
       noticeManageTable.value.tableData[i].index = (noticeManageTable.value.pagination.current - 1) * noticeManageTable.value.pagination.pageSize + i + 1;
     }
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.error(err.message);
   }).finally(() => {
     noticeManageTable.value.tableLoading = false;
   });

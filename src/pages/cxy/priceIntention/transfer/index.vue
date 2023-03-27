@@ -114,7 +114,7 @@ const getTransferPriceData = (requestUrl) => {
       transferPriceTable.value.tableData[i].index = (transferPriceTable.value.pagination.current - 1) * transferPriceTable.value.pagination.pageSize + i + 1;
     }
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.error(err.message);
   }).finally(() => {
     transferPriceTable.value.tableLoading = false;
   });

@@ -92,7 +92,6 @@ const onSubmit = async ({ validateResult }) => {
         await permissionStore.initRoutes(res.role);
         MessagePlugin.success("欢迎您，" + res.userName);
       }).catch(err => {
-        MessagePlugin.error(err);
         MessagePlugin.error(err.message);
       }).finally(() => {
         loginBtnLoading.value = false;
