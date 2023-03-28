@@ -23,6 +23,7 @@
           </t-button>
         </t-row>
         <t-table
+          class="tableStyle"
           :data="patentApprovalTable.tableData"
           :columns="PATENT_APPROVAL_TABLE_COLUMNS"
           row-key="id"
@@ -30,12 +31,13 @@
           bordered
           hover
           stripe
+          table-layout="auto"
+          table-content-width="1800px"
           :pagination="patentApprovalTable.pagination"
           :loading="patentApprovalTable.tableLoading"
           :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
           :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
           @page-change="patentApprovalTablePageChange"
-          style="margin-top: 10px;"
           size="small"
         >
           <template #zlh="slotProps">
@@ -49,11 +51,48 @@
             </t-tag>
           </template>
           <template #settings="slotProps">
-            <t-button theme="danger">
-              <template #icon>
-                <t-icon name="delete"></t-icon>
-              </template>
-            </t-button>
+            <div class="settingBtns">
+              <t-button theme="primary">
+                <template #icon>
+                  <t-icon name="file"></t-icon>
+                </template>
+                查看
+              </t-button>
+              <t-button theme="warning" v-if="!['已转化'].includes(slotProps.row.state)">
+                <template #icon>
+                  <t-icon name="edit"></t-icon>
+                </template>
+                修改
+              </t-button>
+
+              <t-button theme="success" v-if="['等待产学研审批', '产学研未通过'].includes(slotProps.row.state)">
+                <template #icon>
+                  <t-icon name="check-circle"></t-icon>
+                </template>
+                通过
+              </t-button>
+
+              <t-button theme="danger" v-if="['等待产学研审批'].includes(slotProps.row.state)">
+                <template #icon>
+                  <t-icon name="close-circle"></t-icon>
+                </template>
+                不通过
+              </t-button>
+
+              <t-button theme="danger" v-if="['等待产学研创建合同'].includes(slotProps.row.state)">
+                <template #icon>
+                  <t-icon name="rollback"></t-icon>
+                </template>
+                撤销通过
+              </t-button>
+
+              <t-button theme="danger" variant="outline">
+                <template #icon>
+                  <t-icon name="close"></t-icon>
+                </template>
+                取消转化
+              </t-button>
+            </div>
           </template>
         </t-table>
       </t-tab-panel>
@@ -445,6 +484,7 @@ const getPatentApprovalTableData = (requestUrl) => {
     patentApprovalTable.value.tableData = res.records;
     for (let i = 0; i < patentApprovalTable.value.tableData.length; i++) {
       patentApprovalTable.value.tableData[i].index = (patentApprovalTable.value.pagination.current - 1) * patentApprovalTable.value.pagination.pageSize + i + 1;
+      patentApprovalTable.value.tableData[i].patentPrice += " 万元";
       patentApprovalTable.value.tableData[i].state = chargeAllState(patentApprovalTable.value.tableData[i]);
     }
   }).catch(err => {
@@ -458,6 +498,18 @@ const getPatentApprovalTableData = (requestUrl) => {
 <style lang="less" scoped>
 .tabPanel {
   padding: 0 10px;
+
+  .tableStyle {
+    width: 100%;
+    margin-top: 10px;
+
+    .settingBtns {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      overflow: auto;
+    }
+  }
 
   .cardTop {
     //border: 1px solid red;
