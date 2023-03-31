@@ -95,7 +95,7 @@ const transferPriceTablePageChange = (curr) => {
 /**
  * 业务相关
  */
-// 获取通知列表
+// 获取表格数据
 const getTransferPriceData = (requestUrl) => {
   transferPriceTable.value.tableData = [];
   let obj = {

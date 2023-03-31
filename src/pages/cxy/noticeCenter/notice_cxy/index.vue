@@ -27,7 +27,6 @@
       :columns="VIDEO_MANAGE_TABLE_COLUMNS"
       row-key="id"
       vertical-align="center"
-      bordered
       hover
       stripe
       :loading="videoManageTable.tableLoading"
@@ -60,7 +59,6 @@
       :columns="NOTICE_MANAGE_TABLE_COLUMNS"
       row-key="id"
       vertical-align="center"
-      bordered
       hover
       stripe
       :pagination="noticeManageTable.pagination"

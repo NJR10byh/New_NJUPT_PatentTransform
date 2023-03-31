@@ -5,7 +5,7 @@
   * @version 0.1.0
 -->
 <template>
-  <t-card class="transfer-price-card">
+  <t-card class="license-price-card">
     <t-row justify="start" class="cardTop">
       <div class="cardTitle">许可价格意向</div>
     </t-row>
@@ -54,7 +54,7 @@ const getContainer = () => {
  * 表格相关
  */
 
-/* 转让价格 */
+/* 许可价格 */
 const licensePriceTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
@@ -93,7 +93,7 @@ const licensePriceTablePageChange = (curr) => {
 /**
  * 业务相关
  */
-// 获取通知列表
+// 获取表格数据
 const getLicensePriceData = (requestUrl) => {
   licensePriceTable.value.tableData = [];
   let obj = {
@@ -120,7 +120,7 @@ const getLicensePriceData = (requestUrl) => {
 </script>
 
 <style lang="less" scoped>
-.transfer-price-card {
+.license-price-card {
   &:first-child {
     margin-top: 0;
   }

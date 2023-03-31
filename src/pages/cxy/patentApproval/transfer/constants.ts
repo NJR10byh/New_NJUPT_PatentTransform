@@ -17,15 +17,13 @@ export const PATENT_APPROVAL_TABLE_COLUMNS = [
     title: "序号",
     align: "center",
     colKey: "index",
-    width: 30,
-    resizable: false
+    width: 50
   },
   {
     title: "专利号",
     align: "center",
     colKey: "zlh",
-    width: 60,
-    resizable: false
+    width: 70
   },
   {
     title: "专利名称",
@@ -39,7 +37,7 @@ export const PATENT_APPROVAL_TABLE_COLUMNS = [
     align: "center",
     colKey: "patentPrice",
     width: 50,
-    resizable: false
+    ellipsis: true
 
   },
   {
@@ -53,14 +51,14 @@ export const PATENT_APPROVAL_TABLE_COLUMNS = [
     title: "转化状态",
     align: "center",
     colKey: "state",
-    width: 80,
+    width: 30,
     ellipsis: true
   },
   {
     title: "操作",
     colKey: "settings",
     fixed: "right",
-    width: 100,
+    width: 30,
     stopPropagation: true
   }
 ];
@@ -78,8 +76,7 @@ export const PATENT_APPROVAL_TABLE_COLUMNS_WITH_SELECT = [
     title: "专利号",
     align: "center",
     colKey: "zlh",
-    width: 60,
-    resizable: false
+    width: 70
   },
   {
     title: "专利名称",
@@ -107,14 +104,14 @@ export const PATENT_APPROVAL_TABLE_COLUMNS_WITH_SELECT = [
     title: "转化状态",
     align: "center",
     colKey: "state",
-    width: 80,
+    width: 70,
     ellipsis: true
   },
   {
     title: "操作",
     colKey: "settings",
     fixed: "right",
-    width: 100,
+    width: 30,
     stopPropagation: true
   }
 ];

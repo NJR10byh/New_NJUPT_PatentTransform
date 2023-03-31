@@ -18,7 +18,10 @@
             variant="text"
             @click="changeCollapsed"
           >
-            <t-icon class="collapsed-icon" name="view-list" />
+            <template #icon>
+              <t-icon v-if="settingStore.isSidebarCompact" class="collapsed-icon" name="menu-fold" />
+              <t-icon v-else class="collapsed-icon" name="menu-unfold" />
+            </template>
           </t-button>
           <!--          <search :layout="layout" />-->
         </div>
@@ -174,6 +177,7 @@ const menuCls = computed(() => {
 });
 
 const changeCollapsed = () => {
+  console.log(settingStore.isSidebarCompact);
   settingStore.updateConfig({
     isSidebarCompact: !settingStore.isSidebarCompact
   });

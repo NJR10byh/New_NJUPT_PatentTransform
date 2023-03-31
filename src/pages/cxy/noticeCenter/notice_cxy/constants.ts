@@ -28,7 +28,6 @@ export const VIDEO_MANAGE_TABLE_COLUMNS = [
   },
   {
     fixed: "right",
-    align: "center",
     colKey: "settings",
     width: 50,
     title: "操作"
@@ -73,9 +72,9 @@ export const NOTICE_MANAGE_TABLE_COLUMNS = [
   },
   {
     fixed: "right",
-    align: "center",
     colKey: "settings",
     width: 100,
-    title: "操作"
+    title: "操作",
+    stopPropagation: true
   }
 ];
