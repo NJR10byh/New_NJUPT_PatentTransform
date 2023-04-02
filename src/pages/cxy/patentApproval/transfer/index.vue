@@ -385,7 +385,7 @@ import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { PATENT_APPROVAL_TABLE_COLUMNS, PATENT_STATE } from "./constants";
 import { MessagePlugin } from "tdesign-vue-next";
-import { chargeAllState } from "@/utils/transferState";
+import { chargeTransferState } from "@/utils/transferState";
 
 const store = useSettingStore();
 
@@ -447,7 +447,6 @@ const searchField = ref({
 /**
  * 表格相关
  */
-// 转让价格
 const patentApprovalTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
@@ -599,7 +598,7 @@ const getPatentApprovalTableData = (requestUrl) => {
     for (let i = 0; i < patentApprovalTable.value.tableData.length; i++) {
       patentApprovalTable.value.tableData[i].index = (patentApprovalTable.value.pagination.current - 1) * patentApprovalTable.value.pagination.pageSize + i + 1;
       patentApprovalTable.value.tableData[i].patentPrice += " 万元";
-      patentApprovalTable.value.tableData[i].state = chargeAllState(patentApprovalTable.value.tableData[i]);
+      patentApprovalTable.value.tableData[i].state = chargeTransferState(patentApprovalTable.value.tableData[i]);
     }
   }).catch(err => {
     MessagePlugin.error(err.message);

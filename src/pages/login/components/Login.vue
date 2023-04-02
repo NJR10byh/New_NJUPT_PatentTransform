@@ -105,6 +105,10 @@ const onSubmit = async ({ validateResult }) => {
         // await router.push("/userCenter/info");
         await router.push("/noticeCenter/notice_cxy");
         break;
+      case  "admin":
+        // await router.push("/userCenter/info");
+        await router.push("/noticeCenter/notice_cxy");
+        break;
       // case "cxy":
       //   router.push("/dataCenter/achievement");
       //   break;

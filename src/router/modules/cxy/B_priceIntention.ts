@@ -18,19 +18,19 @@ export default [
         path: "transfer",
         name: "transfer",
         component: () => import("@/pages/cxy/priceIntention/transfer/index.vue"),
-        meta: { title: "转让", rolePermission: ["root", "superadmin"] }
+        meta: { title: "转让", rolePermission: ["root", "superadmin", "admin"] }
       },
       {
         path: "license",
         name: "license",
         component: () => import("@/pages/cxy/priceIntention/license/index.vue"),
-        meta: { title: "许可", rolePermission: ["root", "superadmin"] }
+        meta: { title: "许可", rolePermission: ["root", "superadmin", "admin"] }
       },
       {
         path: "openLicense",
         name: "openLicense",
         component: () => import("@/pages/cxy/priceIntention/openLicense/index.vue"),
-        meta: { title: "开放许可", rolePermission: ["root", "superadmin"] }
+        meta: { title: "开放许可", rolePermission: ["root", "superadmin", "admin"] }
       }
     ]
   }

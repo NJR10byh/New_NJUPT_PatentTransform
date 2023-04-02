@@ -37,7 +37,6 @@
     >
       <template #title="slotProps">
         <t-link :href="'https://cgzh.njupt.edu.cn/video/' + slotProps.row.filename" theme="primary" target="_blank">
-          <jump-icon slot="suffixIcon" />
           {{ slotProps.row.title }}
         </t-link>
       </template>

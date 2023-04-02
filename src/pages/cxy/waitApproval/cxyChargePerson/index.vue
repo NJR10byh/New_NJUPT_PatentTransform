@@ -5,61 +5,126 @@
   * @version 0.1.0
 -->
 <template>
-  <t-card class="waitCxyChargePersonApproval-card">
-    <t-table
-      :data="waitCxyChargePersonApprovalTable.tableData"
-      :columns="WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS"
-      row-key="id"
-      vertical-align="center"
-      hover
-      stripe
-      :pagination="waitCxyChargePersonApprovalTable.pagination"
-      :loading="waitCxyChargePersonApprovalTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="waitCxyChargePersonApprovalTablePageChange"
-      size="small"
-    >
-      <template #zlh="slotProps">
-        <t-tag theme="primary" variant="light-outline">
-          {{ slotProps.row.zlh }}
-        </t-tag>
-      </template>
-      <template #state="slotProps">
-        <t-tag v-if="slotProps.row.state.indexOf('未通过')==-1" theme="success" variant="light-outline" shape="round">
-          {{ slotProps.row.state }}
-        </t-tag>
-        <t-tag v-else theme="warning" variant="light-outline" shape="round">
-          <template #icon>
-            <t-icon name="info-circle"></t-icon>
+  <t-card>
+    <t-tabs :default-value="tabsData[0].value" placement="left" @change="tabChange">
+      <!-- 待审批 -->
+      <t-tab-panel class="tabPanel" :value="tabsData[0].value" :label="tabsData[0].label">
+        <t-table
+          class="tableStyle"
+          :data="waitApprovalTable.tableData"
+          :columns="WAIT_APPROVAL_TABLE_COLUMNS"
+          row-key="id"
+          vertical-align="center"
+          hover
+          stripe
+          table-layout="auto"
+          :table-content-width="tableContentWidth"
+          :pagination="waitApprovalTable.pagination"
+          :loading="waitApprovalTable.tableLoading"
+          :header-affixed-top="{ offsetTop, container: getContainer }"
+          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
+          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
+          @page-change="waitApprovalTablePageChange"
+          size="small"
+          v-resize="resize"
+        >
+          <template #zlh="slotProps">
+            <t-tag theme="primary" variant="light-outline">
+              {{ slotProps.row.zlh }}
+            </t-tag>
           </template>
-          {{ slotProps.row.state }}
-        </t-tag>
-      </template>
-      <template #settings="slotProps">
-        <t-button theme="primary">
-          <template #icon>
-            <t-icon name="file"></t-icon>
+          <template #state="slotProps">
+            <t-tag v-if="slotProps.row.state.indexOf('未通过')!=-1" theme="success" variant="light-outline"
+                   shape="round">
+              <template #icon>
+                <t-icon name="info-circle"></t-icon>
+              </template>
+              {{ slotProps.row.state }}
+            </t-tag>
+            <t-tag v-else-if="slotProps.row.state=='已转化'" theme="success" variant="light-outline" shape="round">
+              <template #icon>
+                <t-icon name="check-circle"></t-icon>
+              </template>
+              {{ slotProps.row.state }}
+            </t-tag>
+            <t-tag v-else theme="success" variant="light-outline" shape="round">
+              {{ slotProps.row.state }}
+            </t-tag>
           </template>
-          查看
-        </t-button>
+          <template #settings="slotProps">
+            <div class="settingBtns">
+              <t-button theme="primary">
+                <template #icon>
+                  <t-icon name="file"></t-icon>
+                </template>
+                查看
+              </t-button>
 
-        <t-button theme="success">
-          <template #icon>
-            <t-icon name="check-circle"></t-icon>
+              <t-button theme="success">
+                <template #icon>
+                  <t-icon name="check-circle"></t-icon>
+                </template>
+                通过
+              </t-button>
+            </div>
           </template>
-          通过
-        </t-button>
-
-        <t-button theme="danger">
-          <template #icon>
-            <t-icon name="close-circle"></t-icon>
+        </t-table>
+      </t-tab-panel>
+      <!-- 已通过审批 -->
+      <t-tab-panel class="tabPanel" :value="tabsData[1].value" :label="tabsData[1].label">
+        <t-table
+          class="tableStyle"
+          :data="waitApprovalTable.tableData"
+          :columns="WAIT_APPROVAL_TABLE_COLUMNS"
+          row-key="id"
+          vertical-align="center"
+          hover
+          stripe
+          table-layout="auto"
+          :pagination="waitApprovalTable.pagination"
+          :loading="waitApprovalTable.tableLoading"
+          :header-affixed-top="{ offsetTop, container: getContainer }"
+          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
+          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
+          @page-change="passedTablePageChange"
+          size="small"
+        >
+          <template #zlh="slotProps">
+            <t-tag theme="primary" variant="light-outline">
+              {{ slotProps.row.zlh }}
+            </t-tag>
           </template>
-          不通过
-        </t-button>
-      </template>
-    </t-table>
+          <template #state="slotProps">
+            <t-tag v-if="slotProps.row.state.indexOf('未通过')!=-1" theme="success" variant="light-outline"
+                   shape="round">
+              <template #icon>
+                <t-icon name="info-circle"></t-icon>
+              </template>
+              {{ slotProps.row.state }}
+            </t-tag>
+            <t-tag v-else-if="slotProps.row.state=='已转化'" theme="success" variant="light-outline" shape="round">
+              <template #icon>
+                <t-icon name="check-circle"></t-icon>
+              </template>
+              {{ slotProps.row.state }}
+            </t-tag>
+            <t-tag v-else theme="success" variant="light-outline" shape="round">
+              {{ slotProps.row.state }}
+            </t-tag>
+          </template>
+          <template #settings="slotProps">
+            <div class="settingBtns">
+              <t-button theme="primary">
+                <template #icon>
+                  <t-icon name="file"></t-icon>
+                </template>
+                查看
+              </t-button>
+            </div>
+          </template>
+        </t-table>
+      </t-tab-panel>
+    </t-tabs>
   </t-card>
 </template>
 
@@ -67,15 +132,17 @@
 import { computed, onMounted, ref } from "vue";
 import { prefix } from "@/config/global";
 import { useSettingStore } from "@/store";
-import { WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS } from "./constants";
+import { WAIT_APPROVAL_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
-import { chargeAllState } from "@/utils/transferState";
+import { chargeTransferState } from "@/utils/transferState";
 
 const store = useSettingStore();
 
-const basrUrl = ref("/cxy/getTransferApplicationFromByCXYFZR");
+// baseUrl
+const baseUrl_waitApproval = ref("/cxy/getTransferApplicationFromByCXYFZR");
+const baseUrl_passed = ref("/cxy/getApprovalTransferApplicationFromByCXYFZR");
 /**
  * data
  */
@@ -87,12 +154,26 @@ const offsetTop = computed(() => {
 const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
+// tableContentWidth
+const tableContentWidth = ref("1300px");
+
+/**
+ * Tab相关
+ */
+const tabsData = ref([
+  {
+    value: 1,
+    label: "待审批"
+  },
+  {
+    value: 2,
+    label: "已通过"
+  }
+]);
 /**
  * 表格相关
  */
-
-/* 等待第一作者审批表 */
-const waitCxyChargePersonApprovalTable = ref({
+const waitApprovalTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
   // 表格分页
@@ -109,54 +190,86 @@ const waitCxyChargePersonApprovalTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-  // 获取表格数据
-  getwaitCxyChargePersonApprovalData(basrUrl.value);
+  // 获取待审批数据
+  getTableData(baseUrl_waitApproval.value);
 });
 
 /**
  * 操作钩子
  */
+// 监听容器宽高变化
+const resize = (resizeValue) => {
+  console.log(resizeValue[0].contentRect);
+  if (resizeValue[0].contentRect.width > 1300) {
+    tableContentWidth.value = resizeValue[0].contentRect.width + "px";
+  } else {
+    tableContentWidth.value = "1300px";
+  }
+};
 // 分页钩子
-const waitCxyChargePersonApprovalTablePageChange = (curr) => {
+const waitApprovalTablePageChange = (curr) => {
   console.log("分页变化", curr);
-  waitCxyChargePersonApprovalTable.value.pagination.current = curr.current;
-  waitCxyChargePersonApprovalTable.value.pagination.pageSize = curr.pageSize;
-  getwaitCxyChargePersonApprovalData(basrUrl.value);
+  waitApprovalTable.value.pagination.current = curr.current;
+  waitApprovalTable.value.pagination.pageSize = curr.pageSize;
+  getTableData(baseUrl_waitApproval.value);
+};
+const passedTablePageChange = (curr) => {
+  console.log("分页变化", curr);
+  waitApprovalTable.value.pagination.current = curr.current;
+  waitApprovalTable.value.pagination.pageSize = curr.pageSize;
+  getTableData(baseUrl_passed.value);
+};
+// Tab页切换钩子
+const tabChange = async (value) => {
+  waitApprovalTable.value.pagination.current = 1;
+  switch (value) {
+    case 1:
+      await getTableData(baseUrl_waitApproval.value);
+      break;
+    case 2:
+      await getTableData(baseUrl_passed.value);
+      break;
+    default:
+      await getTableData(baseUrl_waitApproval.value);
+      break;
+  }
 };
 
 /**
  * 业务相关
  */
 // 获取表格数据
-const getwaitCxyChargePersonApprovalData = (requestUrl) => {
-  waitCxyChargePersonApprovalTable.value.tableData = [];
+const getTableData = (requestUrl) => {
+  waitApprovalTable.value.tableData = [];
+  waitApprovalTable.value.tableLoading = true;
   let obj = {
-    currPage: waitCxyChargePersonApprovalTable.value.pagination.current,
-    size: waitCxyChargePersonApprovalTable.value.pagination.pageSize
+    currPage: waitApprovalTable.value.pagination.current,
+    size: waitApprovalTable.value.pagination.pageSize
   };
   requestUrl = setObjToUrlParams(requestUrl, obj);
-  waitCxyChargePersonApprovalTable.value.tableLoading = true;
   request.get({
     url: requestUrl
   }).then(res => {
     console.log(res);
-    waitCxyChargePersonApprovalTable.value.tableData = res.records;
-    waitCxyChargePersonApprovalTable.value.pagination.total = res.total;
-    for (let i = 0; i < waitCxyChargePersonApprovalTable.value.tableData.length; i++) {
-      waitCxyChargePersonApprovalTable.value.tableData[i].index = (waitCxyChargePersonApprovalTable.value.pagination.current - 1) * waitCxyChargePersonApprovalTable.value.pagination.pageSize + i + 1;
-      waitCxyChargePersonApprovalTable.value.tableData[i].patentPrice += " 万元";
-      waitCxyChargePersonApprovalTable.value.tableData[i].state = chargeAllState(waitCxyChargePersonApprovalTable.value.tableData[i]);
+    waitApprovalTable.value.tableData = res.records;
+    waitApprovalTable.value.pagination.total = res.total;
+    for (let i = 0; i < waitApprovalTable.value.tableData.length; i++) {
+      waitApprovalTable.value.tableData[i].index = (waitApprovalTable.value.pagination.current - 1) * waitApprovalTable.value.pagination.pageSize + i + 1;
+      waitApprovalTable.value.tableData[i].patentPrice += " 万元";
+      waitApprovalTable.value.tableData[i].state = chargeTransferState(waitApprovalTable.value.tableData[i]);
     }
   }).catch(err => {
     MessagePlugin.error(err.message);
   }).finally(() => {
-    waitCxyChargePersonApprovalTable.value.tableLoading = false;
+    waitApprovalTable.value.tableLoading = false;
   });
 };
 </script>
 
 <style lang="less" scoped>
-.waitCxyChargePersonApproval-card {
+.tabPanel {
+  padding: 0 10px;
+
   .tableStyle {
     width: 100%;
     margin-top: 10px;
@@ -168,5 +281,21 @@ const getwaitCxyChargePersonApprovalData = (requestUrl) => {
       overflow: auto;
     }
   }
+
+  .cardTop {
+    //border: 1px solid red;
+    align-items: center;
+
+    .selectStyle {
+      width: 130px;
+      margin-right: 10px;
+    }
+
+    .inputStyle {
+      width: 300px;
+      margin-right: 10px;
+    }
+  }
+
 }
 </style>

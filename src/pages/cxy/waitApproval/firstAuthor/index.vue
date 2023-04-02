@@ -71,7 +71,7 @@ import { WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
-import { chargeAllState } from "@/utils/transferState";
+import { chargeTransferState } from "@/utils/transferState";
 
 const store = useSettingStore();
 
@@ -145,7 +145,7 @@ const getwaitFirstAuthorApprovalData = (requestUrl) => {
     for (let i = 0; i < waitFirstAuthorApprovalTable.value.tableData.length; i++) {
       waitFirstAuthorApprovalTable.value.tableData[i].index = (waitFirstAuthorApprovalTable.value.pagination.current - 1) * waitFirstAuthorApprovalTable.value.pagination.pageSize + i + 1;
       waitFirstAuthorApprovalTable.value.tableData[i].patentPrice += " 万元";
-      waitFirstAuthorApprovalTable.value.tableData[i].state = chargeAllState(waitFirstAuthorApprovalTable.value.tableData[i]);
+      waitFirstAuthorApprovalTable.value.tableData[i].state = chargeTransferState(waitFirstAuthorApprovalTable.value.tableData[i]);
     }
   }).catch(err => {
     MessagePlugin.error(err.message);

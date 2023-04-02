@@ -19,13 +19,13 @@ export default [
         path: "firstAuthor",
         name: "waitFirstAuthorApproval",
         component: () => import("@/pages/cxy/waitApproval/firstAuthor/index.vue"),
-        meta: { title: "第一作者", rolePermission: ["root", "superadmin"] }
+        meta: { title: "第一作者", rolePermission: ["root", "superadmin", "admin"] }
       },
       {
         path: "cxyChargePerson",
         name: "waitCxyChargePersonApproval",
         component: () => import("@/pages/cxy/waitApproval/cxyChargePerson/index.vue"),
-        meta: { title: "产学研负责人", rolePermission: ["root", "superadmin"] }
+        meta: { title: "产学研负责人", rolePermission: ["root", "superadmin", "admin"] }
       }
     ]
   }

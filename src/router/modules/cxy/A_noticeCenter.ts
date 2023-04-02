@@ -18,7 +18,7 @@ export default [
         path: "notice_cxy",
         name: "notice_cxy",
         component: () => import("@/pages/cxy/noticeCenter/notice_cxy/index.vue"),
-        meta: { title: "通知中心", rolePermission: ["root", "superadmin"] }
+        meta: { title: "通知中心", rolePermission: ["root", "superadmin", "admin"] }
       },
       {
         path: "notice_teacher",

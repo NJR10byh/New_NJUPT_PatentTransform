@@ -4,7 +4,7 @@
  * @description 转化状态判断
  * @version 0.1.0
  */
-export const chargeAllState = (row) => {
+export const chargeTransferState = (row) => {
   // 状态
   if (row.transferProcessId == null) {
     return "未转化";

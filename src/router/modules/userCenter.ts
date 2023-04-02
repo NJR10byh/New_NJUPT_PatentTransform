@@ -19,7 +19,7 @@ export default [
         path: "info",
         name: "userInfo",
         component: () => import("@/pages/userCenter/userInfo/index.vue"),
-        meta: { title: "个人中心", hidden: true, rolePermission: ["root", "teacher", "superadmin"] }
+        meta: { title: "个人中心", hidden: true, rolePermission: ["root", "teacher", "superadmin", "admin"] }
       }
     ]
   }
