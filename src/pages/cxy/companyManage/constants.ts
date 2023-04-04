@@ -6,7 +6,8 @@
  */
 
 export const BASE_URL = {
-  getCompanyPage: "/company/getCompanyPage"
+  getCompanyPage: "/company/getCompanyPage",
+  searchCompanyByName: "/company/searchCompanyByName"
 };
 
 export const COMPANY_MANAGE_TABLE_COLUMNS = [

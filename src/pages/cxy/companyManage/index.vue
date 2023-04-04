@@ -8,8 +8,9 @@
   <t-card class="company-manage-card">
     <t-row justify="space-between" class="cardTop">
       <div class="cardTitle">
-        <t-input class="inputStyle" placeholder="请输入查询内容" clearable></t-input>
-        <t-button>
+        <t-input class="inputStyle" v-model="companyManageTable.searchText" placeholder="请输入公司名称"
+                 clearable></t-input>
+        <t-button @click="searchData">
           <template #icon>
             <t-icon name="search"></t-icon>
           </template>
@@ -100,6 +101,7 @@ const tableContentWidth = ref("1300px");
 const companyManageTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
+  searchText: "",
   // 表格分页
   pagination: {
     total: 0,
@@ -114,8 +116,12 @@ const companyManageTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-  // 获取表格数据
-  getCompanyData(BASE_URL.getCompanyPage);
+  let obj = {
+    currPage: companyManageTable.value.pagination.current,
+    size: companyManageTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getCompanyPage, obj);
+  getCompanyData(requestUrl);
 });
 
 /**
@@ -135,7 +141,12 @@ const companyManageTablePageChange = (curr) => {
   console.log("分页变化", curr);
   companyManageTable.value.pagination.current = curr.current;
   companyManageTable.value.pagination.pageSize = curr.pageSize;
-  getCompanyData(BASE_URL.getCompanyPage);
+  let obj = {
+    currPage: companyManageTable.value.pagination.current,
+    size: companyManageTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getCompanyPage, obj);
+  getCompanyData(requestUrl);
 };
 
 /**
@@ -144,11 +155,6 @@ const companyManageTablePageChange = (curr) => {
 // 获取表格数据
 const getCompanyData = (requestUrl) => {
   companyManageTable.value.tableData = [];
-  let obj = {
-    currPage: companyManageTable.value.pagination.current,
-    size: companyManageTable.value.pagination.pageSize
-  };
-  requestUrl = setObjToUrlParams(requestUrl, obj);
   companyManageTable.value.tableLoading = true;
   request.get({
     url: requestUrl
@@ -156,6 +162,32 @@ const getCompanyData = (requestUrl) => {
     console.log(res);
     companyManageTable.value.tableData = res.records;
     companyManageTable.value.pagination.total = res.total;
+    for (let i = 0; i < companyManageTable.value.tableData.length; i++) {
+      companyManageTable.value.tableData[i].index = (companyManageTable.value.pagination.current - 1) * companyManageTable.value.pagination.pageSize + i + 1;
+    }
+  }).catch(err => {
+    MessagePlugin.error(err.message);
+  }).finally(() => {
+    companyManageTable.value.tableLoading = false;
+  });
+};
+
+// 搜索数据
+const searchData = () => {
+  let obj = {
+    companyName: companyManageTable.value.searchText
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.searchCompanyByName, obj);
+  // getCompanyData(requestUrl);
+
+  companyManageTable.value.tableData = [];
+  companyManageTable.value.tableLoading = true;
+  request.get({
+    url: requestUrl
+  }).then(res => {
+    console.log(res);
+    companyManageTable.value.tableData = res;
+    companyManageTable.value.pagination.total = res.length;
     for (let i = 0; i < companyManageTable.value.tableData.length; i++) {
       companyManageTable.value.tableData[i].index = (companyManageTable.value.pagination.current - 1) * companyManageTable.value.pagination.pageSize + i + 1;
     }

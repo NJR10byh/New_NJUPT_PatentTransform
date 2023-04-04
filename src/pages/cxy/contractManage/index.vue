@@ -10,7 +10,7 @@
       <!-- 进行中 -->
       <t-tab-panel class="tabPanel" :value="tabsData[0].value" :label="tabsData[0].label">
         <t-row justify="end" class="cardTop">
-          <t-button theme="primary">
+          <t-button theme="primary" :href="PUBLICITY_PAGE" target="_blank">
             <template #icon>
               <t-icon name="link"></t-icon>
             </template>
@@ -258,7 +258,7 @@
 import { computed, onMounted, ref } from "vue";
 import { prefix } from "@/config/global";
 import { useSettingStore } from "@/store";
-import { CONTRACT_MANAGE_TABLE_COLUMNS } from "./constants";
+import { CONTRACT_MANAGE_TABLE_COLUMNS, PUBLICITY_PAGE } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";

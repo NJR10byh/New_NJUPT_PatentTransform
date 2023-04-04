@@ -8,8 +8,9 @@
   <t-card class="annual-fee-expiration-card">
     <t-row justify="start" class="cardTop">
       <div class="cardTitle">
-        <t-input class="inputStyle" placeholder="请输入查询内容" clearable></t-input>
-        <t-button>
+        <t-input class="inputStyle" v-model="annualFeeExpirationTable.searchText" placeholder="请输入专利名称"
+                 clearable></t-input>
+        <t-button @click="searchData">
           <template #icon>
             <t-icon name="search"></t-icon>
           </template>
@@ -85,6 +86,7 @@ const tableContentWidth = ref("1300px");
 const annualFeeExpirationTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
+  searchText: "",// 专利名称
   // 表格分页
   pagination: {
     total: 0,
@@ -100,7 +102,12 @@ const annualFeeExpirationTable = ref({
 // 组件挂载完成后执行
 onMounted(() => {
   // 获取表格数据
-  getTableData(BASE_URL.getRequireAnnualFeePatentPage);
+  let obj = {
+    currPage: annualFeeExpirationTable.value.pagination.current,
+    size: annualFeeExpirationTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getRequireAnnualFeePatentPage, obj);
+  getTableData(requestUrl);
 });
 
 /**
@@ -120,7 +127,12 @@ const annualFeeExpirationTablePageChange = (curr) => {
   console.log("分页变化", curr);
   annualFeeExpirationTable.value.pagination.current = curr.current;
   annualFeeExpirationTable.value.pagination.pageSize = curr.pageSize;
-  getTableData(BASE_URL.getRequireAnnualFeePatentPage);
+  let obj = {
+    currPage: annualFeeExpirationTable.value.pagination.current,
+    size: annualFeeExpirationTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getRequireAnnualFeePatentPage, obj);
+  getTableData(requestUrl);
 };
 
 /**
@@ -129,11 +141,6 @@ const annualFeeExpirationTablePageChange = (curr) => {
 // 获取表格数据
 const getTableData = (requestUrl) => {
   annualFeeExpirationTable.value.tableData = [];
-  let obj = {
-    currPage: annualFeeExpirationTable.value.pagination.current,
-    size: annualFeeExpirationTable.value.pagination.pageSize
-  };
-  requestUrl = setObjToUrlParams(requestUrl, obj);
   annualFeeExpirationTable.value.tableLoading = true;
   request.get({
     url: requestUrl
@@ -149,6 +156,17 @@ const getTableData = (requestUrl) => {
   }).finally(() => {
     annualFeeExpirationTable.value.tableLoading = false;
   });
+};
+
+// 搜索数据
+const searchData = () => {
+  let obj = {
+    currPage: annualFeeExpirationTable.value.pagination.current,
+    size: annualFeeExpirationTable.value.pagination.pageSize,
+    zlmc: annualFeeExpirationTable.value.searchText
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getRequireAnnualFeePatentPageByZLMC, obj);
+  getTableData(requestUrl);
 };
 </script>
 

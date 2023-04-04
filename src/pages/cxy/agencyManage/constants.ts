@@ -6,7 +6,8 @@
  */
 
 export const BASE_URL = {
-  getAgencyPage: "/agency/getAgencyPage"
+  getAgencyPage: "/agency/getAgencyPage",
+  searchAgencyByName: "/agency/searchAgencyByName"
 };
 
 export const AGENCY_MANAGE_TABLE_COLUMNS = [

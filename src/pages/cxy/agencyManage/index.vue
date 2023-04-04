@@ -8,8 +8,9 @@
   <t-card class="agency-manage-card">
     <t-row justify="space-between" class="cardTop">
       <div class="cardTitle">
-        <t-input class="inputStyle" placeholder="请输入查询内容" clearable></t-input>
-        <t-button>
+        <t-input class="inputStyle" v-model="agencyManageTable.searchText" placeholder="请输入中介名称"
+                 clearable></t-input>
+        <t-button @click="searchData">
           <template #icon>
             <t-icon name="search"></t-icon>
           </template>
@@ -100,6 +101,7 @@ const tableContentWidth = ref("1300px");
 const agencyManageTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
+  searchText: "",
   // 表格分页
   pagination: {
     total: 0,
@@ -115,7 +117,12 @@ const agencyManageTable = ref({
 // 组件挂载完成后执行
 onMounted(() => {
   // 获取表格数据
-  getCompanyData(BASE_URL.getAgencyPage);
+  let obj = {
+    currPage: agencyManageTable.value.pagination.current,
+    size: agencyManageTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getAgencyPage, obj);
+  getAgencyData(requestUrl);
 });
 
 /**
@@ -135,20 +142,20 @@ const agencyManageTablePageChange = (curr) => {
   console.log("分页变化", curr);
   agencyManageTable.value.pagination.current = curr.current;
   agencyManageTable.value.pagination.pageSize = curr.pageSize;
-  getCompanyData(BASE_URL.getAgencyPage);
+  let obj = {
+    currPage: agencyManageTable.value.pagination.current,
+    size: agencyManageTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getAgencyPage, obj);
+  getAgencyData(requestUrl);
 };
 
 /**
  * 业务相关
  */
 // 获取表格数据
-const getCompanyData = (requestUrl) => {
+const getAgencyData = (requestUrl) => {
   agencyManageTable.value.tableData = [];
-  let obj = {
-    currPage: agencyManageTable.value.pagination.current,
-    size: agencyManageTable.value.pagination.pageSize
-  };
-  requestUrl = setObjToUrlParams(requestUrl, obj);
   agencyManageTable.value.tableLoading = true;
   request.get({
     url: requestUrl
@@ -156,6 +163,32 @@ const getCompanyData = (requestUrl) => {
     console.log(res);
     agencyManageTable.value.tableData = res.records;
     agencyManageTable.value.pagination.total = res.total;
+    for (let i = 0; i < agencyManageTable.value.tableData.length; i++) {
+      agencyManageTable.value.tableData[i].index = (agencyManageTable.value.pagination.current - 1) * agencyManageTable.value.pagination.pageSize + i + 1;
+    }
+  }).catch(err => {
+    MessagePlugin.error(err.message);
+  }).finally(() => {
+    agencyManageTable.value.tableLoading = false;
+  });
+};
+
+// 搜索数据
+const searchData = () => {
+  let obj = {
+    agencyName: agencyManageTable.value.searchText
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.searchAgencyByName, obj);
+  // getAgencyData(requestUrl);
+
+  agencyManageTable.value.tableData = [];
+  agencyManageTable.value.tableLoading = true;
+  request.get({
+    url: requestUrl
+  }).then(res => {
+    console.log(res);
+    agencyManageTable.value.tableData = res;
+    agencyManageTable.value.pagination.total = res.length;
     for (let i = 0; i < agencyManageTable.value.tableData.length; i++) {
       agencyManageTable.value.tableData[i].index = (agencyManageTable.value.pagination.current - 1) * agencyManageTable.value.pagination.pageSize + i + 1;
     }

@@ -6,7 +6,8 @@
  */
 
 export const BASE_URL = {
-  getRequireAnnualFeePatentPage: "/cxy/getRequireAnnualFeePatentPage"
+  getRequireAnnualFeePatentPage: "/cxy/getRequireAnnualFeePatentPage",
+  getRequireAnnualFeePatentPageByZLMC: "/cxy/getRequireAnnualFeePatentPageByZLMC"
 };
 
 export const ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS = [

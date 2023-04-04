@@ -4,6 +4,8 @@
  * @description
  * @version 0.1.0
  */
+export const PUBLICITY_PAGE = "http://cxy.njupt.edu.cn/_s366/gs/list.psp";
+
 export const CONTRACT_MANAGE_TABLE_COLUMNS = [
   {
     title: "序号",
