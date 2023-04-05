@@ -83,7 +83,8 @@
                 <t-icon class="header-user-avatar" name="user-circle" />
               </template>
               <div class="header-user-account">
-                {{ userStore.userInfo.userName }}
+                你好，
+                <span style="color: var(--td-brand-color);font-weight: bold">{{ userStore.userInfo.userName }}</span>
                 <t-icon name="chevron-down" />
               </div>
             </t-button>

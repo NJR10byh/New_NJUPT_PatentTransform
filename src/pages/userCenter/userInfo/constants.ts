@@ -1,3 +1,7 @@
+export const BASE_URL = {
+  getUserContactInfo: "/user/getUserContactInfo"
+};
+
 export const USER_INFO_LIST = [
   {
     title: "手机",

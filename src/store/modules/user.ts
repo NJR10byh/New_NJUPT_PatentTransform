@@ -5,6 +5,9 @@ const userInfo = {
   userName: "",
   userDepartment: "",
   userGh: "",
+  userPhone: "",
+  userEmail: "",
+  userIdCard: "",
   role: "",
   roles: [],
   authorities: []
@@ -28,6 +31,9 @@ export const useUserStore = defineStore("user", {
         userName: "",
         userDepartment: "",
         userGh: "",
+        userPhone: "",
+        userEmail: "",
+        userIdCard: "",
         role: "",
         roles: [],
         authorities: []

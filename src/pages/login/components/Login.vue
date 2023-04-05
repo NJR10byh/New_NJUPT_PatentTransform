@@ -55,6 +55,7 @@ import { usePermissionStore, useUserStore } from "@/store";
 import { request } from "@/utils/request";
 import { checkAuth } from "@/utils/auth";
 import md5 from "js-md5";
+import { ID_card, phone_number } from "@/utils/antianaphylaxis";
 
 
 const userStore = useUserStore();
@@ -80,6 +81,17 @@ const router = useRouter();
 const onSubmit = async ({ validateResult }) => {
   if (validateResult === true) {
     loginBtnLoading.value = true;
+    let userInfo = {
+      userName: "",
+      userDepartment: "",
+      userGh: "",
+      userPhone: "",
+      userEmail: "",
+      userIdCard: "",
+      role: "",
+      roles: [],
+      authorities: []
+    };
     if (!await checkAuth()) {
       loginData.value.password = md5(loginData.value.password);
       let requestUrl = "/authorize/loginByPassword";
@@ -88,7 +100,12 @@ const onSubmit = async ({ validateResult }) => {
         data: loginData.value
       }).then(async res => {
         console.log(res);
-        userStore.getUserInfo(res);
+        userInfo.userName = res.userName;
+        userInfo.userDepartment = res.userDepartment;
+        userInfo.userGh = res.userGh;
+        userInfo.role = res.role;
+        userInfo.roles = res.roles;
+        userInfo.authorities = res.authorities;
         await permissionStore.initRoutes(res.role);
         MessagePlugin.success("欢迎您，" + res.userName);
       }).catch(err => {
@@ -99,6 +116,18 @@ const onSubmit = async ({ validateResult }) => {
     } else {
       loginBtnLoading.value = false;
     }
+    await request.get({
+      url: "/user/getUserContactInfo"
+    }).then(res => {
+      console.log(res);
+      userInfo.userPhone = phone_number(res.userPhone);
+      userInfo.userEmail = res.userEmail;
+      userInfo.userIdCard = ID_card(res.userIdCard);
+      userStore.getUserInfo(userInfo);
+    }).catch(err => {
+      MessagePlugin.error(err.message);
+    }).finally(() => {
+    });
     console.log(userStore.role);
     switch (userStore.role) {
       case "superadmin":

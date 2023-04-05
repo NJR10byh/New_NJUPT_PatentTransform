@@ -3,8 +3,8 @@
     <t-col :flex="3">
       <div class="user-left-greeting">
         <div>
-          Hi，{{ userStore.userInfo.userName }}
-          <span class="regular"> 下午好～</span>
+          Hi，<span style="color: var(--td-brand-color);font-weight: bold">{{ userStore.userInfo.userName }}</span>
+          <span class="regular"> {{ getTimeState() }}～</span>
         </div>
         <img src="@/assets/assets-njupt-full-logo.png" class="logo" />
       </div>
@@ -26,7 +26,7 @@
           </t-col>
           <t-col class="contract" :span="3">
             <div class="contract-title">
-              工号
+              工号/学号
             </div>
             <div class="contract-detail">
               {{ userStore.userInfo.userGh }}
@@ -42,20 +42,42 @@
           </t-col>
           <t-col class="contract" :span="3">
             <div class="contract-title">
+              身份证号
+            </div>
+            <div class="contract-detail">
+              {{ userStore.userInfo.userIdCard }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              联系方式
+            </div>
+            <div class="contract-detail">
+              {{ userStore.userInfo.userPhone }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              电子邮箱
+            </div>
+            <div class="contract-detail">
+              {{ userStore.userInfo.userEmail }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
               权限
             </div>
             <div class="contract-detail">
-              <t-tag theme="success" variant="light" v-if="userStore.userInfo.role=='superadmin'">产学院超级管理员
+              <t-tag theme="success" variant="light" v-if="userStore.userInfo.role=='superadmin'">产学研超级管理员
+              </t-tag>
+              <t-tag theme="success" variant="light" v-if="userStore.userInfo.role=='admin'">产学研
               </t-tag>
               <t-tag theme="primary" variant="light" v-if="userStore.userInfo.role=='teacher'">教师</t-tag>
             </div>
           </t-col>
         </t-row>
       </t-card>
-
-      <!--      <t-card class="content-container">-->
-
-      <!--      </t-card>-->
     </t-col>
 
     <t-col :flex="1">
@@ -91,8 +113,40 @@ import { TEAM_MEMBERS } from "./constants";
 
 const userStore = useUserStore();
 
+/**
+ * methods区
+ */
+/* 生命周期 */
+// 组件挂载完成后执行
 onMounted(() => {
 });
+
+/**
+ * 业务相关
+ */
+// 判断时间
+const getTimeState = () => {
+  // 获取当前时间
+  let timeNow = new Date();
+  // 获取当前小时
+  let hours = timeNow.getHours();
+  // 设置默认文字
+  let text = ``;
+  // 判断当前时间段
+  if (hours >= 0 && hours <= 5) {
+    text = `夜已经深了，注意休息哦`;
+  } else if (hours > 5 && hours <= 10) {
+    text = `早上好`;
+  } else if (hours > 10 && hours <= 14) {
+    text = `中午好`;
+  } else if (hours > 14 && hours <= 18) {
+    text = `下午好`;
+  } else if (hours > 18 && hours <= 24) {
+    text = `晚上好`;
+  }
+  // 返回当前时间段对应的状态
+  return text;
+};
 
 </script>
 

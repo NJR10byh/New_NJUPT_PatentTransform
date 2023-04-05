@@ -74,7 +74,6 @@ const transferPriceTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-
   // 获取表格数据
   const requestUrl = "/intention/getTransferPriceIntentionPage";
   getTransferPriceData(requestUrl);
