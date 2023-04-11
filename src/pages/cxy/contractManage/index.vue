@@ -34,7 +34,7 @@
           :data="contractManageTable.tableData"
           :columns="CONTRACT_MANAGE_TABLE_COLUMNS"
           row-key="id"
-          vertical-align="center"
+
           hover
           stripe
           table-layout="auto"
@@ -175,7 +175,7 @@
           :data="contractManageTable.tableData"
           :columns="CONTRACT_MANAGE_TABLE_COLUMNS"
           row-key="id"
-          vertical-align="center"
+
           hover
           stripe
           table-layout="auto"

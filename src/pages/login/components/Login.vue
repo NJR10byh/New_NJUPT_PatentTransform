@@ -50,7 +50,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { FormInstanceFunctions, MessagePlugin } from "tdesign-vue-next";
+import { MessagePlugin } from "tdesign-vue-next";
 import { usePermissionStore, useUserStore } from "@/store";
 import { request } from "@/utils/request";
 import { checkAuth } from "@/utils/auth";
@@ -68,7 +68,6 @@ const FORM_RULES = {
 
 const type = ref("password");
 
-const form = ref<FormInstanceFunctions>();
 const loginData = ref({
   username: "cxy",
   password: "abc123123"
@@ -132,11 +131,11 @@ const onSubmit = async ({ validateResult }) => {
     switch (userStore.role) {
       case "superadmin":
         // await router.push("/userCenter/info");
-        await router.push("/noticeCenter/notice_cxy");
+        await router.push("/waitApproval/cxyChargePerson");
         break;
       case  "admin":
         // await router.push("/userCenter/info");
-        await router.push("/noticeCenter/notice_cxy");
+        await router.push("/contractManage/contract");
         break;
       // case "cxy":
       //   router.push("/dataCenter/achievement");

@@ -13,7 +13,7 @@
       :data="licensePriceTable.tableData"
       :columns="LICENCES_PRICE_TABLE_COLUMNS"
       row-key="id"
-      vertical-align="center"
+
       stripe
       hover
       :pagination="licensePriceTable.pagination"

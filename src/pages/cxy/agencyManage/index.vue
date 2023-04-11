@@ -31,7 +31,7 @@
       :data="agencyManageTable.tableData"
       :columns="AGENCY_MANAGE_TABLE_COLUMNS"
       row-key="id"
-      vertical-align="center"
+
       hover
       stripe
       table-layout="auto"
@@ -119,9 +119,10 @@ onMounted(() => {
   // 获取表格数据
   let obj = {
     currPage: agencyManageTable.value.pagination.current,
-    size: agencyManageTable.value.pagination.pageSize
+    size: agencyManageTable.value.pagination.pageSize,
+    agencyName: agencyManageTable.value.searchText
   };
-  let requestUrl = setObjToUrlParams(BASE_URL.getAgencyPage, obj);
+  let requestUrl = setObjToUrlParams(BASE_URL.searchAgencyByName, obj);
   getAgencyData(requestUrl);
 });
 
@@ -144,9 +145,10 @@ const agencyManageTablePageChange = (curr) => {
   agencyManageTable.value.pagination.pageSize = curr.pageSize;
   let obj = {
     currPage: agencyManageTable.value.pagination.current,
-    size: agencyManageTable.value.pagination.pageSize
+    size: agencyManageTable.value.pagination.pageSize,
+    agencyName: agencyManageTable.value.searchText
   };
-  let requestUrl = setObjToUrlParams(BASE_URL.getAgencyPage, obj);
+  let requestUrl = setObjToUrlParams(BASE_URL.searchAgencyByName, obj);
   getAgencyData(requestUrl);
 };
 
@@ -175,28 +177,14 @@ const getAgencyData = (requestUrl) => {
 
 // 搜索数据
 const searchData = () => {
+  agencyManageTable.value.pagination.current = 1;
   let obj = {
+    currPage: agencyManageTable.value.pagination.current,
+    size: agencyManageTable.value.pagination.pageSize,
     agencyName: agencyManageTable.value.searchText
   };
   let requestUrl = setObjToUrlParams(BASE_URL.searchAgencyByName, obj);
-  // getAgencyData(requestUrl);
-
-  agencyManageTable.value.tableData = [];
-  agencyManageTable.value.tableLoading = true;
-  request.get({
-    url: requestUrl
-  }).then(res => {
-    console.log(res);
-    agencyManageTable.value.tableData = res;
-    agencyManageTable.value.pagination.total = res.length;
-    for (let i = 0; i < agencyManageTable.value.tableData.length; i++) {
-      agencyManageTable.value.tableData[i].index = (agencyManageTable.value.pagination.current - 1) * agencyManageTable.value.pagination.pageSize + i + 1;
-    }
-  }).catch(err => {
-    MessagePlugin.error(err.message);
-  }).finally(() => {
-    agencyManageTable.value.tableLoading = false;
-  });
+  getAgencyData(requestUrl);
 };
 </script>
 

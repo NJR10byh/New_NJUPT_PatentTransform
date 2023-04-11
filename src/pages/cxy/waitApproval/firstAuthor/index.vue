@@ -10,7 +10,7 @@
       :data="waitFirstAuthorApprovalTable.tableData"
       :columns="WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS"
       row-key="id"
-      vertical-align="center"
+
       hover
       stripe
       :pagination="waitFirstAuthorApprovalTable.pagination"

@@ -31,7 +31,7 @@
       :data="companyManageTable.tableData"
       :columns="COMPANY_MANAGE_TABLE_COLUMNS"
       row-key="id"
-      vertical-align="center"
+
       hover
       stripe
       table-layout="auto"
@@ -118,9 +118,10 @@ const companyManageTable = ref({
 onMounted(() => {
   let obj = {
     currPage: companyManageTable.value.pagination.current,
-    size: companyManageTable.value.pagination.pageSize
+    size: companyManageTable.value.pagination.pageSize,
+    companyName: companyManageTable.value.searchText
   };
-  let requestUrl = setObjToUrlParams(BASE_URL.getCompanyPage, obj);
+  let requestUrl = setObjToUrlParams(BASE_URL.searchCompanyByName, obj);
   getCompanyData(requestUrl);
 });
 
@@ -143,9 +144,10 @@ const companyManageTablePageChange = (curr) => {
   companyManageTable.value.pagination.pageSize = curr.pageSize;
   let obj = {
     currPage: companyManageTable.value.pagination.current,
-    size: companyManageTable.value.pagination.pageSize
+    size: companyManageTable.value.pagination.pageSize,
+    companyName: companyManageTable.value.searchText
   };
-  let requestUrl = setObjToUrlParams(BASE_URL.getCompanyPage, obj);
+  let requestUrl = setObjToUrlParams(BASE_URL.searchCompanyByName, obj);
   getCompanyData(requestUrl);
 };
 
@@ -174,28 +176,14 @@ const getCompanyData = (requestUrl) => {
 
 // 搜索数据
 const searchData = () => {
+  companyManageTable.value.pagination.current = 1;
   let obj = {
+    currPage: companyManageTable.value.pagination.current,
+    size: companyManageTable.value.pagination.pageSize,
     companyName: companyManageTable.value.searchText
   };
   let requestUrl = setObjToUrlParams(BASE_URL.searchCompanyByName, obj);
-  // getCompanyData(requestUrl);
-
-  companyManageTable.value.tableData = [];
-  companyManageTable.value.tableLoading = true;
-  request.get({
-    url: requestUrl
-  }).then(res => {
-    console.log(res);
-    companyManageTable.value.tableData = res;
-    companyManageTable.value.pagination.total = res.length;
-    for (let i = 0; i < companyManageTable.value.tableData.length; i++) {
-      companyManageTable.value.tableData[i].index = (companyManageTable.value.pagination.current - 1) * companyManageTable.value.pagination.pageSize + i + 1;
-    }
-  }).catch(err => {
-    MessagePlugin.error(err.message);
-  }).finally(() => {
-    companyManageTable.value.tableLoading = false;
-  });
+  getCompanyData(requestUrl);
 };
 </script>
 

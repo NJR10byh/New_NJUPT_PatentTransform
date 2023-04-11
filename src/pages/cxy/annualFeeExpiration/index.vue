@@ -23,7 +23,7 @@
       :data="annualFeeExpirationTable.tableData"
       :columns="ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS"
       row-key="id"
-      vertical-align="center"
+
       hover
       stripe
       table-layout="auto"
