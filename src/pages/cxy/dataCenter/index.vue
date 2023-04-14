@@ -82,7 +82,8 @@
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="patentContractTimeRange"
                            :placeholder="['合同签订时间 起', '合同签订时间 止']"
                            clearable />
-      <t-cascader class="inputStyle cascaderStyle" :options="chinaAreaOptions" placeholder="行政区划" clearable />
+      <t-cascader class="inputStyle cascaderStyle" v-model="regionCode" value-mode="all" value-type="full"
+                  :options="chinaAreaOptions" placeholder="行政区划" @change="regionChange" clearable />
     </t-row>
     <!-- 合同列表搜索相关 -->
     <t-row justify="start" class="cardTop" v-if="tableType=='2'">
@@ -97,7 +98,8 @@
                            :placeholder="['转化完成时间 起', '转化完成时间 止']" clearable />
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="contractTimeRange"
                            :placeholder="['合同签订时间 起', '合同签订时间 止']" clearable />
-      <t-cascader class="inputStyle cascaderStyle" :options="chinaAreaOptions" placeholder="行政区划" clearable />
+      <t-cascader class="inputStyle cascaderStyle" v-model="regionCode" value-mode="all" value-type="full"
+                  :options="chinaAreaOptions" placeholder="请选择行政区划" @change="regionChange" clearable />
     </t-row>
   </t-card>
   <t-card class="data-center-card">
@@ -169,7 +171,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { prefix } from "@/config/global";
-import { regionData } from "element-china-area-data";
+import { CodeToText, regionData } from "element-china-area-data";
 import {
   BASE_URL,
   CONTRACT_SEARCH_CONDITION,
@@ -202,6 +204,8 @@ const tableType = ref("1");
  */
 // 行政区采集
 const chinaAreaOptions = ref(regionData);
+const regionText = ref([]);
+const regionCode = ref([]);
 
 /* 专利列表搜索 */
 const patentPriceRange = ref([]); // 价格区间
@@ -210,7 +214,7 @@ const patentSQRQRange = ref([]); // 专利授权时间
 const patentCompleteTimeRange = ref([]); // 转化完成时间
 const patentContractTimeRange = ref([]); // 合同签订时间
 
-let patentSearch = {
+const patentSearch = ref({
   currPage: 1, // 当前页
   size: 20, // 每页数据大小
   searchCondition: {
@@ -245,7 +249,7 @@ let patentSearch = {
     contractTimeBegin: "", // 合同签订时间 起
     contractTimeEnd: "" // 合同签订时间 止
   }
-};
+});
 
 /* 合同列表搜索 */
 const contractCodeRange = ref([]); // 合同编号
@@ -253,7 +257,7 @@ const contractAmountRange = ref([]); // 价格区间
 const contractCompleteTimeRange = ref([]); // 转化完成时间
 const contractTimeRange = ref([]); // 合同签订日期
 
-let contractSearch = {
+const contractSearch = ref({
   currPage: 1, // 当前页
   size: 20, // 每页数据大小
   searchCondition: {
@@ -280,7 +284,7 @@ let contractSearch = {
     timeBegin: "", // 合同签订日期 起
     timeEnd: "" // 合同签订日期 止
   }
-};
+});
 
 /**
  * 表格相关
@@ -319,83 +323,79 @@ onMounted(() => {
 const initPagination = () => {
   switch (tableType.value) {
     case "1":
-      patentSearch.currPage = 1;
+      patentSearch.value.currPage = 1;
       dataCenterPatentTable.value.tableData = [];
       dataCenterPatentTable.value.pagination.current = 1;
       break;
     case "2":
-      contractSearch.currPage = 1;
+      contractSearch.value.currPage = 1;
       dataCenterContractTable.value.tableData = [];
       dataCenterContractTable.value.pagination.current = 1;
       break;
   }
 };
 const initPatentSearch = () => {
-  patentSearch = {
-    currPage: 1, // 当前页
-    size: 20, // 每页数据大小
-    searchCondition: {
-      authorized: "", // 是否授权
-      patentState: 0, // 专利状态：0全部 1已通过 2正在转化 3已转化
-      contractType: 0, // 合同类型：0全部 1普通实施许可 2排他许可 3独占许可 4转让 5开放许可
+  patentSearch.value.currPage = 1;
+  patentSearch.value.size = 20;
+  patentSearch.value.searchCondition = {
+    authorized: "", // 是否授权
+    patentState: 0, // 专利状态：0全部 1已通过 2正在转化 3已转化
+    contractType: 0, // 合同类型：0全部 1普通实施许可 2排他许可 3独占许可 4转让 5开放许可
 
-      zlh: "", // 专利号
-      zlmc: "", // 专利名称
-      cymd: "", // 专利发明人
-      cygh: "", // 专利发明人工号
-      zldyzzxm: "", // 专利第一作者
-      zldyzzgh: "", // 专利第一作者工号
-      gsdw: "", // 归属单位
+    zlh: "", // 专利号
+    zlmc: "", // 专利名称
+    cymd: "", // 专利发明人
+    cygh: "", // 专利发明人工号
+    zldyzzxm: "", // 专利第一作者
+    zldyzzgh: "", // 专利第一作者工号
+    gsdw: "", // 归属单位
 
-      fzyName: "", // 负责人姓名
-      fzyGh: "", // 负责人工号
-      fzyPhone: "", // 负责人电话
-      fzyDepartment: "", // 负责人单位
-      paProvince: "", // 省
-      paCity: "", // 市
-      paDistrict: "", // 区
+    fzyName: "", // 负责人姓名
+    fzyGh: "", // 负责人工号
+    fzyPhone: "", // 负责人电话
+    fzyDepartment: "", // 负责人单位
+    paProvince: "", // 省
+    paCity: "", // 市
+    paDistrict: "", // 区
 
-      patentPriceBegin: "", // 价格区间 起
-      patentPriceEnd: "", // 价格区间 止
-      completeTimeBegin: "", // 转化完成时间 起
-      completeTimeEnd: "", // 转化完成时间 止
-      timeBegin: "", // 专利申请时间 起
-      timeEnd: "", // 专利申请时间 止
-      zlsqrqBegin: "", // 专利授权时间 起
-      zlsqrqEnd: "", // 专利授权时间 止
-      contractTimeBegin: "", // 合同签订时间 起
-      contractTimeEnd: "" // 合同签订时间 止
-    }
+    patentPriceBegin: "", // 价格区间 起
+    patentPriceEnd: "", // 价格区间 止
+    completeTimeBegin: "", // 转化完成时间 起
+    completeTimeEnd: "", // 转化完成时间 止
+    timeBegin: "", // 专利申请时间 起
+    timeEnd: "", // 专利申请时间 止
+    zlsqrqBegin: "", // 专利授权时间 起
+    zlsqrqEnd: "", // 专利授权时间 止
+    contractTimeBegin: "", // 合同签订时间 起
+    contractTimeEnd: "" // 合同签订时间 止
   };
 };
 const initContractSearch = () => {
-  contractSearch = {
-    currPage: 1, // 当前页
-    size: 20, // 每页数据大小
-    searchCondition: {
-      contractState: 0, // 合同状态：0全部 1正在转化 2已转化
-      contractType: 0, // 合同类型：0全部 1普通实施许可 2排他许可 3独占许可 4转让 5开放许可
-      hasAgency: "", // 是否有中介(null=全部,true=有,false=无)
-      hasAssociation: "", // 是否有关联关系(null=全部,true=有,false=无)
+  contractSearch.value.currPage = 1;
+  contractSearch.value.size = 20;
+  contractSearch.value.searchCondition = {
+    contractState: 0, // 合同状态：0全部 1正在转化 2已转化
+    contractType: 0, // 合同类型：0全部 1普通实施许可 2排他许可 3独占许可 4转让 5开放许可
+    hasAgency: "", // 是否有中介(null=全部,true=有,false=无)
+    hasAssociation: "", // 是否有关联关系(null=全部,true=有,false=无)
 
-      paName: "", // 受让方名称
-      pbContactPerson: "", // 乙方联系人
-      pcName: "", // 中介名称
-      projectName: "", // 合同名称
-      gsdw: "", // 学院
-      paProvince: "", // 省
-      paCity: "", // 市
-      paDistrict: "", // 区
+    paName: "", // 受让方名称
+    pbContactPerson: "", // 乙方联系人
+    pcName: "", // 中介名称
+    projectName: "", // 合同名称
+    gsdw: "", // 学院
+    paProvince: "", // 省
+    paCity: "", // 市
+    paDistrict: "", // 区
 
-      codeBegin: "", // 合同编号 起
-      codeEnd: "", // 合同编号 止
-      amountBegin: "", // 价格区间 起
-      amountEnd: "", // 价格区间 止
-      completeTimeBegin: "", // 转化完成时间 起
-      completeTimeEnd: "", // 转化完成时间 止
-      timeBegin: "", // 合同签订日期 起
-      timeEnd: "" // 合同签订日期 止
-    }
+    codeBegin: "", // 合同编号 起
+    codeEnd: "", // 合同编号 止
+    amountBegin: "", // 价格区间 起
+    amountEnd: "", // 价格区间 止
+    completeTimeBegin: "", // 转化完成时间 起
+    completeTimeEnd: "", // 转化完成时间 止
+    timeBegin: "", // 合同签订日期 起
+    timeEnd: "" // 合同签订日期 止
   };
 };
 /**
@@ -403,13 +403,20 @@ const initContractSearch = () => {
  */
 // 表格类型切换
 const tableTypeChange = (val) => {
-  console.log(val);
   initPagination();
+  regionCode.value = [];
+  regionText.value = [];
   switch (val) {
     case "1":
+      patentSearch.value.searchCondition.paProvince = "";
+      patentSearch.value.searchCondition.paCity = "";
+      patentSearch.value.searchCondition.paDistrict = "";
       getPatentTableData(BASE_URL.getPatentByCondition);
       break;
     case "2":
+      contractSearch.value.searchCondition.paProvince = "";
+      contractSearch.value.searchCondition.paCity = "";
+      contractSearch.value.searchCondition.paDistrict = "";
       getContractTableData(BASE_URL.getContractByCondition);
       break;
   }
@@ -423,21 +430,34 @@ const contractTableRadioChange = () => {
   getContractTableData(BASE_URL.getContractByCondition);
 };
 
+// 行政区划钩子
+const regionChange = (val, context) => {
+  console.log(val.length);
+  if (val.length > 0) {
+    for (let i = 0; i < val.length; i++) {
+      regionText.value.push(CodeToText[val[i]]);
+    }
+  } else {
+    regionText.value = [];
+  }
+
+};
+
 // 分页钩子
 const dataCenterPatentTablePageChange = (curr) => {
   console.log("分页变化", curr);
   dataCenterPatentTable.value.pagination.current = curr.current;
   dataCenterPatentTable.value.pagination.pageSize = curr.pageSize;
-  patentSearch.currPage = curr.current;
-  patentSearch.size = curr.pageSize;
+  patentSearch.value.currPage = curr.current;
+  patentSearch.value.size = curr.pageSize;
   getPatentTableData(BASE_URL.getPatentByCondition);
 };
 const dataCenterContractTablePageChange = (curr) => {
   console.log("分页变化", curr);
   dataCenterContractTable.value.pagination.current = curr.current;
   dataCenterContractTable.value.pagination.pageSize = curr.pageSize;
-  contractSearch.currPage = curr.current;
-  contractSearch.size = curr.pageSize;
+  contractSearch.value.currPage = curr.current;
+  contractSearch.value.size = curr.pageSize;
   getContractTableData(BASE_URL.getContractByCondition);
 };
 
@@ -448,7 +468,7 @@ const getPatentTableData = (requestUrl) => {
   dataCenterPatentTable.value.tableLoading = true;
   request.post({
     url: requestUrl,
-    data: patentSearch
+    data: patentSearch.value
   }).then(res => {
     console.log(res);
     dataCenterPatentTable.value.pagination.total = res.total;
@@ -469,7 +489,7 @@ const getContractTableData = (requestUrl) => {
   dataCenterContractTable.value.tableLoading = true;
   request.post({
     url: requestUrl,
-    data: contractSearch
+    data: contractSearch.value
   }).then(res => {
     console.log(res);
     dataCenterContractTable.value.pagination.total = res.total;
@@ -487,7 +507,6 @@ const getContractTableData = (requestUrl) => {
     dataCenterContractTable.value.tableLoading = false;
   });
 };
-
 const searchData = () => {
   initPagination();
   console.log(patentPriceRange.value);
@@ -495,45 +514,67 @@ const searchData = () => {
   switch (tableType.value) {
     case "1":
       initPatentSearch();
+      /* 各种范围 */
       if (patentPriceRange.value.length != 0 && !isEmpty(patentPriceRange.value[0]) && !isEmpty(patentPriceRange.value[1])) {
-        patentSearch.searchCondition.patentPriceBegin = patentPriceRange.value[0];
-        patentSearch.searchCondition.patentPriceEnd = patentPriceRange.value[1];
+        patentSearch.value.searchCondition.patentPriceBegin = patentPriceRange.value[0];
+        patentSearch.value.searchCondition.patentPriceEnd = patentPriceRange.value[1];
       }
       if (patentTimeRange.value.length != 0) {
-        patentSearch.searchCondition.timeBegin = patentTimeRange.value[0];
-        patentSearch.searchCondition.timeEnd = patentTimeRange.value[1];
+        patentSearch.value.searchCondition.timeBegin = patentTimeRange.value[0];
+        patentSearch.value.searchCondition.timeEnd = patentTimeRange.value[1];
       }
       if (patentSQRQRange.value.length != 0) {
-        patentSearch.searchCondition.zlsqrqBegin = patentSQRQRange.value[0];
-        patentSearch.searchCondition.zlsqrqEnd = patentSQRQRange.value[1];
+        patentSearch.value.searchCondition.zlsqrqBegin = patentSQRQRange.value[0];
+        patentSearch.value.searchCondition.zlsqrqEnd = patentSQRQRange.value[1];
       }
       if (patentCompleteTimeRange.value.length != 0) {
-        patentSearch.searchCondition.completeTimeBegin = patentCompleteTimeRange.value[0];
-        patentSearch.searchCondition.completeTimeEnd = patentCompleteTimeRange.value[1];
+        patentSearch.value.searchCondition.completeTimeBegin = patentCompleteTimeRange.value[0];
+        patentSearch.value.searchCondition.completeTimeEnd = patentCompleteTimeRange.value[1];
       }
       if (patentContractTimeRange.value.length != 0) {
-        patentSearch.searchCondition.contractTimeBegin = patentContractTimeRange.value[0];
-        patentSearch.searchCondition.contractTimeEnd = patentContractTimeRange.value[1];
+        patentSearch.value.searchCondition.contractTimeBegin = patentContractTimeRange.value[0];
+        patentSearch.value.searchCondition.contractTimeEnd = patentContractTimeRange.value[1];
+      }
+      /* 行政区划 */
+      if (regionText.value.length > 0) {
+        patentSearch.value.searchCondition.paProvince = regionText.value[0];
+        patentSearch.value.searchCondition.paCity = regionText.value[1];
+        patentSearch.value.searchCondition.paDistrict = regionText.value[2];
+      } else {
+        patentSearch.value.searchCondition.paProvince = "";
+        patentSearch.value.searchCondition.paCity = "";
+        patentSearch.value.searchCondition.paDistrict = "";
       }
       getPatentTableData(BASE_URL.getPatentByCondition);
       break;
     case "2":
       initContractSearch();
+      /* 各种范围 */
       if (contractCodeRange.value.length != 0 && !isEmpty(contractCodeRange.value[0]) && !isEmpty(contractCodeRange.value[1])) {
-        contractSearch.searchCondition.codeBegin = contractCodeRange.value[0];
-        contractSearch.searchCondition.codeEnd = contractCodeRange.value[1];
+        contractSearch.value.searchCondition.codeBegin = contractCodeRange.value[0];
+        contractSearch.value.searchCondition.codeEnd = contractCodeRange.value[1];
       }
       if (contractAmountRange.value.length != 0 && !isEmpty(contractAmountRange.value[0]) && !isEmpty(contractAmountRange.value[1])) {
-        contractSearch.searchCondition.amountBegin = contractAmountRange.value[0];
-        contractSearch.searchCondition.amountEnd = contractAmountRange.value[1];
+        contractSearch.value.searchCondition.amountBegin = contractAmountRange.value[0];
+        contractSearch.value.searchCondition.amountEnd = contractAmountRange.value[1];
       }
       if (contractCompleteTimeRange.value.length != 0) {
-        contractSearch.searchCondition.completeTimeBegin = contractCompleteTimeRange.value[0];
-        contractSearch.searchCondition.completeTimeEnd = contractCompleteTimeRange.value[1];
+        contractSearch.value.searchCondition.completeTimeBegin = contractCompleteTimeRange.value[0];
+        contractSearch.value.searchCondition.completeTimeEnd = contractCompleteTimeRange.value[1];
       }
       if (contractTimeRange.value.length != 0) {
-        contractSearch.searchCondition.timeBegin = contractTimeRange.value[0];
-        contractSearch.searchCondition.timeEnd = contractTimeRange.value[1];
+        contractSearch.value.searchCondition.timeBegin = contractTimeRange.value[0];
+        contractSearch.value.searchCondition.timeEnd = contractTimeRange.value[1];
+      }
+      /* 行政区划 */
+      if (regionText.value.length > 0) {
+        contractSearch.value.searchCondition.paProvince = regionText.value[0];
+        contractSearch.value.searchCondition.paCity = regionText.value[1];
+        contractSearch.value.searchCondition.paDistrict = regionText.value[2];
+      } else {
+        contractSearch.value.searchCondition.paProvince = "";
+        contractSearch.value.searchCondition.paCity = "";
+        contractSearch.value.searchCondition.paDistrict = "";
       }
       getContractTableData(BASE_URL.getContractByCondition);
       break;
