@@ -6,8 +6,17 @@
  */
 
 export const BASE_URL = {
+  // 专利
   getPatentByCondition: "/export/getPatentByCondition",
-  getContractByCondition: "/export/getContractByCondition"
+  getPatentColumnMap: "/export/getPatentColumnMap",
+  exportPatentByCondition: "/export/exportPatentByCondition",
+  exportPatentByWid: "/export/exportPatentByWid",
+
+  // 合同
+  getContractByCondition: "/export/getContractByCondition",
+  getContractColumnMap: "/export/getContractColumnMap",
+  exportContractByCondition: "/export/exportContractByCondition",
+  exportContractByContractInfoId: "/export/exportContractByContractInfoId"
 };
 
 export const PATENT_SEARCH_CONDITION = [

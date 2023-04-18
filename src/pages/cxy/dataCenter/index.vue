@@ -110,7 +110,7 @@
         </template>
         查询
       </t-button>
-      <t-button theme="success">
+      <t-button theme="success" @click="getColumnMap">
         <template #icon>
           <t-icon name="file-excel"></t-icon>
         </template>
@@ -166,6 +166,19 @@
       </template>
     </t-table>
   </t-card>
+
+  <!-- 导出Excel Dialog -->
+  <t-dialog v-model:visible="columnMapDialogVisible" header="选择导出列" width="800px" @confirm="exportExcel">
+    <template #body>
+      <div>
+        <t-checkbox-group v-model="columnMapValues">
+          <t-checkbox :check-all="true" label="全选" />
+          <t-checkbox v-for="item in columnMapOptions" :key="item.index" :label="item.columnNameCN"
+                      :value="item.columnName" />
+        </t-checkbox-group>
+      </div>
+    </template>
+  </t-dialog>
 </template>
 
 <script setup lang="ts">
@@ -286,9 +299,7 @@ const contractSearch = ref({
   }
 });
 
-/**
- * 表格相关
- */
+/* 表格相关 */
 const dataCenterPatentTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
@@ -309,6 +320,12 @@ const dataCenterContractTable = ref({
     pageSize: 20
   }
 });
+
+/* dialog相关 */
+const columnMapDialogVisible = ref(false);
+const columnMapOptions = ref([]);
+const columnMapValues = ref([]);
+
 /**
  * methods区
  */
@@ -440,7 +457,6 @@ const regionChange = (val, context) => {
   } else {
     regionText.value = [];
   }
-
 };
 
 // 分页钩子
@@ -495,7 +511,6 @@ const getContractTableData = (requestUrl) => {
     dataCenterContractTable.value.pagination.total = res.total;
     dataCenterContractTable.value.tableData = res.records;
     for (let i = 0; i < dataCenterContractTable.value.tableData.length; i++) {
-      console.log(dataCenterContractTable.value.tableData[i].contractSigningDate);
       dataCenterContractTable.value.tableData[i].index = (dataCenterContractTable.value.pagination.current - 1) * dataCenterContractTable.value.pagination.pageSize + i + 1;
       if (!isEmpty(dataCenterContractTable.value.tableData[i].totalTransferAmount)) {
         dataCenterContractTable.value.tableData[i].totalTransferAmount += " 万元";
@@ -507,6 +522,8 @@ const getContractTableData = (requestUrl) => {
     dataCenterContractTable.value.tableLoading = false;
   });
 };
+
+// 查询
 const searchData = () => {
   initPagination();
   console.log(patentPriceRange.value);
@@ -578,6 +595,50 @@ const searchData = () => {
       }
       getContractTableData(BASE_URL.getContractByCondition);
       break;
+  }
+};
+
+// 获取可导出的列信息
+const getColumnMap = () => {
+  let requestUrl = "";
+  columnMapOptions.value = [];
+  columnMapValues.value = [];
+  switch (tableType.value) {
+    case "1":
+      requestUrl = BASE_URL.getPatentColumnMap;
+      break;
+    case "2":
+      requestUrl = BASE_URL.getContractColumnMap;
+      break;
+  }
+  request.get({
+    url: requestUrl
+  }).then(res => {
+    console.log(res);
+    columnMapOptions.value = res;
+    columnMapDialogVisible.value = true;
+    // 默认全选
+    for (let i = 0; i < res.length; i++) {
+      columnMapValues.value.push(res[i].columnName);
+    }
+  }).catch(err => {
+    MessagePlugin.error(err.message);
+  }).finally(() => {
+  });
+};
+
+// 导出
+const exportExcel = () => {
+  console.log(columnMapValues.value);
+  if (columnMapValues.value.length == 0) {
+    MessagePlugin.warning("请选择需要导出的列");
+  } else {
+    switch (tableType.value) {
+      case "1":
+        break;
+      case "2":
+        break;
+    }
   }
 };
 </script>
