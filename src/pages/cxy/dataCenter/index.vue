@@ -196,6 +196,7 @@ import { useSettingStore } from "@/store";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
 import { isEmpty } from "@/utils/validate";
+import { downloadFile } from "@/utils/download";
 
 const store = useSettingStore();
 
@@ -530,7 +531,6 @@ const searchData = () => {
   console.log(patentTimeRange.value);
   switch (tableType.value) {
     case "1":
-      initPatentSearch();
       /* 各种范围 */
       if (patentPriceRange.value.length != 0 && !isEmpty(patentPriceRange.value[0]) && !isEmpty(patentPriceRange.value[1])) {
         patentSearch.value.searchCondition.patentPriceBegin = patentPriceRange.value[0];
@@ -565,7 +565,6 @@ const searchData = () => {
       getPatentTableData(BASE_URL.getPatentByCondition);
       break;
     case "2":
-      initContractSearch();
       /* 各种范围 */
       if (contractCodeRange.value.length != 0 && !isEmpty(contractCodeRange.value[0]) && !isEmpty(contractCodeRange.value[1])) {
         contractSearch.value.searchCondition.codeBegin = contractCodeRange.value[0];
@@ -630,15 +629,29 @@ const getColumnMap = () => {
 // 导出
 const exportExcel = () => {
   console.log(columnMapValues.value);
+  let requestUrl = "";
+  let requestBody = {};
   if (columnMapValues.value.length == 0) {
     MessagePlugin.warning("请选择需要导出的列");
   } else {
     switch (tableType.value) {
       case "1":
+        requestUrl = BASE_URL.exportPatentByCondition;
+        requestBody = {
+          column: columnMapValues.value,
+          searchCondition: patentSearch.value.searchCondition
+        };
         break;
       case "2":
+        requestUrl = BASE_URL.exportContractByCondition;
+        requestBody = {
+          column: columnMapValues.value,
+          searchCondition: contractSearch.value.searchCondition
+        };
         break;
     }
+    downloadFile(requestUrl, requestBody);
+    columnMapDialogVisible.value = false;
   }
 };
 </script>
