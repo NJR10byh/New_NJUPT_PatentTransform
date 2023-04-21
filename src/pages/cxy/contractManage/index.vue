@@ -325,7 +325,6 @@ onMounted(() => {
  */
 // 监听容器宽高变化
 const resize = (resizeValue) => {
-  console.log(resizeValue[0].contentRect);
   if (resizeValue[0].contentRect.width > 1300) {
     tableContentWidth.value = resizeValue[0].contentRect.width + "px";
   } else {

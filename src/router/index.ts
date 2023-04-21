@@ -32,11 +32,6 @@ const defaultRouterList: Array<RouteRecordRaw> = [
   {
     path: "/",
     redirect: "/login"
-  },
-  {
-    path: "/:w+",
-    name: "404Page",
-    redirect: "/result/404"
   }
 ];
 

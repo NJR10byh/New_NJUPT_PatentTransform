@@ -10,15 +10,15 @@ import Layout from "@/layouts/index.vue";
 export default [
   {
     path: "/noticeCenter",
-    name: "noticeCenter_cxy",
+    name: "noticeCenter_teacher",
     component: Layout,
     meta: { title: "通知中心", icon: "notification" },
     children: [
       {
-        path: "cxy",
-        name: "notice_cxy",
-        component: () => import("@/pages/cxy/noticeCenter/index.vue"),
-        meta: { title: "通知中心", rolePermission: ["root", "superadmin", "admin"] }
+        path: "teacher",
+        name: "notice_teacher",
+        component: () => import("@/pages/teacher/noticeCenter/index.vue"),
+        meta: { title: "通知中心", hidden: true, rolePermission: ["root", "teacher"] }
       }
     ]
   }

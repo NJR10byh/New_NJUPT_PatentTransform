@@ -3,48 +3,51 @@ import "nprogress/nprogress.css"; // progress bar style
 import { getPermissionStore, getUserStore } from "@/store";
 import router from "@/router";
 import { MessagePlugin } from "tdesign-vue-next";
-import { checkAuth } from "@/utils/auth";
+import { isEmpty } from "@/utils/validate";
 
 NProgress.configure({ showSpinner: false });
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
-
+  console.log(to);
   const userStore = getUserStore();
   const permissionStore = getPermissionStore();
   const { routers } = permissionStore;
-
-  // 如果路由长度为零，重新鉴权
-  if (!routers.length) {
-    // 如果会话存在，放行
-    console.log(checkAuth());
-    if (checkAuth()) {
-      next();
-      return;
-    }
-  }
+  const { role } = userStore;
+  console.log(isEmpty(role));
 
   if (to.path === "/login") {
     next();
     return;
   }
 
-  const { role } = userStore;
-  console.log(role);
+  console.log(routers);
+  // 如果路由长度为零，重新鉴权
+  if (routers.length == 0) {
+    // 如果会话存在，放行
+    if (isEmpty(role)) {
+      next("/");
+      return;
+    }
+    await permissionStore.initRoutes(role);
+  }
 
-  if (role) {
+  console.log(role);
+  console.log(to.meta.rolePermission);
+  // @ts-ignore
+  if ("rolePermission" in to.meta && to.meta.rolePermission.includes(role)) {
     /**
-     * 已登录
+     * 已登录，鉴权通过
      * 放行
      */
     next();
   } else {
     /**
-     * role不存在，会话过期或未登录
-     * 跳转至登录页面
+     * 无权限
+     * 跳转至403
      */
     try {
-      next(`/`);
+      next("/result/403");
     } catch (error) {
       MessagePlugin.error(error);
       NProgress.done();
