@@ -88,7 +88,6 @@ const onSubmit = async ({ validateResult }) => {
       }).then(async res => {
         console.log(res);
         await userInfoToCache(res);
-        await MessagePlugin.success("欢迎您，" + res.userName);
       }).catch(err => {
         MessagePlugin.error(err.message);
       }).finally(() => {

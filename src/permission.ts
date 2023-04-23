@@ -34,7 +34,7 @@ router.beforeEach(async (to, from, next) => {
       next("/");
       return;
     }
-    await permissionStore.initRoutes(role);
+    // await permissionStore.initRoutes(role);
   }
 
   console.log(role);
@@ -45,14 +45,18 @@ router.beforeEach(async (to, from, next) => {
      * 已登录，鉴权通过
      * 放行
      */
+    console.log("已登录，鉴权通过");
     next();
+    return;
   } else {
     /**
      * 无权限
      * 跳转至403
      */
+    console.log("无权限");
     try {
       next("/result/403");
+      return;
     } catch (error) {
       MessagePlugin.error(error);
       NProgress.done();

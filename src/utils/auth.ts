@@ -60,13 +60,13 @@ export const userInfoToCache = async (info) => {
     userInfo.value.userPhone = phone_number(res.userPhone);
     userInfo.value.userEmail = res.userEmail;
     userInfo.value.userIdCard = ID_card(res.userIdCard);
-    userStore.getUserInfo(userInfo);
+    userStore.getUserInfo(userInfo.value);
   }).catch(err => {
     MessagePlugin.error(err.message);
   }).finally(() => {
   });
   await MessagePlugin.success("欢迎您，" + info.userName);
-  switch (userStore.role) {
+  switch (userInfo.value.role) {
     case "superadmin":
       await router.push("/contractManage/contract");
       break;
