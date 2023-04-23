@@ -9,7 +9,12 @@ NProgress.configure({ showSpinner: false });
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
+  console.log(from);
   console.log(to);
+  if (from.path == "/") {
+    next();
+    return;
+  }
   const userStore = getUserStore();
   const permissionStore = getPermissionStore();
   const { routers } = permissionStore;

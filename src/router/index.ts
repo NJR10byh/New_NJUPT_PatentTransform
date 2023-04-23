@@ -30,8 +30,14 @@ const defaultRouterList: Array<RouteRecordRaw> = [
     component: () => import("@/pages/login/index.vue")
   },
   {
+    path: "/redirect",
+    name: "redirect",
+    component: () => import("@/pages/login/redirect.vue")
+  },
+  {
     path: "/",
-    redirect: "/login"
+    name: "defaultPage",
+    redirect: "/redirect"
   }
 ];
 

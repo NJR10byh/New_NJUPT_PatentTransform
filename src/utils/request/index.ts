@@ -19,15 +19,21 @@ const transform: AxiosTransform = {
 
     console.log(res);
     // 如果204无内容直接返回
-    const method = res.config.method?.toLowerCase();
-    if (res.status === 204 || method === "put" || method === "patch") {
-      return res;
+    // const method = res.config.method?.toLowerCase();
+    // if (res.status === 204 || method === "put" || method === "patch") {
+    //   return res;
+    // }
+
+    // 会话过期，重新登录
+    if (res.request.responseURL.indexOf("i.njupt.edu.cn") != -1) {
+      window.location.href = res.request.responseURL;
     }
 
-    // 是否返回原生响应头 比如：需要获取响应头时使用该属性
+    // 需要获取原生响应头 或者 相应格式为blob流时，返回原生响应头
     if (isReturnNativeResponse || res.request.responseType == "blob") {
       return res;
     }
+
     // 不进行任何处理，直接返回
     // 用于页面代码可能需要直接获取code，data，message这些信息时开启
     if (!isTransformResponse) {
