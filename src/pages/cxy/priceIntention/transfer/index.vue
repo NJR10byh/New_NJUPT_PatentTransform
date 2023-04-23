@@ -137,6 +137,5 @@ const getTransferPriceData = (requestUrl) => {
       font-weight: bold;
     }
   }
-
 }
 </style>

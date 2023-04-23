@@ -1,5 +1,6 @@
 export const BASE_URL = {
-  getUserContactInfo: "/user/getUserContactInfo"
+  getUserContactInfo: "/user/getUserContactInfo",
+  getBasicInfo: "/basicInfo/getBasicInfo"
 };
 
 export const USER_INFO_LIST = [

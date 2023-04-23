@@ -9,12 +9,10 @@
         <img src="@/assets/assets-njupt-full-logo.png" class="logo" />
       </div>
 
-      <t-card class="user-info-list" title="个人信息">
-        <template #actions>
-          <t-button theme="default" shape="square" variant="text">
-            <t-icon name="edit" size="18" />
-          </t-button>
-        </template>
+      <t-card class="user-info-list">
+        <t-row justify="start" class="cardTop">
+          <div class="cardTitle">个人信息</div>
+        </t-row>
         <t-row class="content">
           <t-col class="contract" :span="3">
             <div class="contract-title">
@@ -78,6 +76,107 @@
           </t-col>
         </t-row>
       </t-card>
+
+      <t-card class="user-info-list">
+        <t-row justify="start" class="cardTop">
+          <div class="cardTitle">信息维护（合同乙方）</div>
+        </t-row>
+        <t-row class="content">
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              法定代表人
+            </div>
+            <div class="contract-detail">
+              {{ basicInfo.contractPbRepresentative }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              电话
+            </div>
+            <div class="contract-detail">
+              {{ phone_number(basicInfo.contractPbTel) }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              邮箱
+            </div>
+            <div class="contract-detail">
+              {{ basicInfo.contractPbEmail }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              通讯地址
+            </div>
+            <div class="contract-detail">
+              {{ basicInfo.contractPbMailingAddress }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              地址
+            </div>
+            <div class="contract-detail">
+              {{ basicInfo.contractPbAddress }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              开户银行
+            </div>
+            <div class="contract-detail">
+              {{ basicInfo.contractPbBankName }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              银行账户名称
+            </div>
+            <div class="contract-detail">
+              {{ basicInfo.contractPbBankAccountName }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              银行账户
+            </div>
+            <div class="contract-detail">
+              {{ basicInfo.contractPbBankAccount }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              现金奖励公示联系地址
+            </div>
+            <div class="contract-detail">
+              {{ basicInfo.cashRewardContactAddress }}
+            </div>
+          </t-col>
+        </t-row>
+      </t-card>
+
+
+      <t-card class="manageCard">
+        <t-row justify="start" class="cardTop">
+          <div class="cardTitle">管理</div>
+        </t-row>
+        <t-row justify="start" class="module">
+          <t-button class="moduleBtn" theme="primary" size="large">
+            <template #icon>
+              <t-icon name="usergroup"></t-icon>
+            </template>
+            人员管理
+          </t-button>
+          <t-button class="moduleBtn" theme="primary" size="large">
+            <template #icon>
+              <t-icon name="root-list"></t-icon>
+            </template>
+            操作记录
+          </t-button>
+        </t-row>
+      </t-card>
     </t-col>
 
     <t-col :flex="1">
@@ -106,12 +205,31 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useUserStore } from "@/store";
 
-import { TEAM_MEMBERS } from "./constants";
+import { BASE_URL, TEAM_MEMBERS } from "./constants";
+import { request } from "@/utils/request";
+import { MessagePlugin } from "tdesign-vue-next";
+import { phone_number } from "../../../utils/antianaphylaxis";
 
 const userStore = useUserStore();
+
+/**
+ * data
+ */
+const basicInfo = ref({
+  contractPbRepresentative: "",
+  contractPbTel: "",
+  contractPbBankAccountName: "",
+  contractPbAddress: "",
+  contractPbEmail: "",
+  contractPbMailingAddress: "",
+  contractPbBankName: "",
+  contractPbBankAccount: "",
+  cashRewardContactAddress: ""
+});
+
 
 /**
  * methods区
@@ -119,6 +237,7 @@ const userStore = useUserStore();
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
+  getBasicInfo();
 });
 
 /**
@@ -148,8 +267,48 @@ const getTimeState = () => {
   return text;
 };
 
+// 信息维护（合同乙方）
+const getBasicInfo = () => {
+  request.get({
+    url: BASE_URL.getBasicInfo
+  }).then(res => {
+    console.log(res);
+    basicInfo.value = res;
+  }).catch(err => {
+    MessagePlugin.error(err.message);
+  }).finally(() => {
+  });
+};
 </script>
 
 <style lang="less" scoped>
 @import url('./index.less');
+
+.manageCard {
+  &:first-child {
+    margin-top: 0;
+  }
+
+  margin-top: 10px;
+
+  .cardTop {
+    //border: 1px solid red;
+    align-items: center;
+
+    .cardTitle {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
+
+  .module {
+    margin-top: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .moduleBtn {
+      margin: 5px;
+    }
+  }
+}
 </style>

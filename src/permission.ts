@@ -11,7 +11,7 @@ router.beforeEach(async (to, from, next) => {
   NProgress.start();
   console.log(from);
   console.log(to);
-  if (from.path == "/") {
+  if (to.path == "/redirect") {
     next();
     return;
   }
@@ -33,8 +33,9 @@ router.beforeEach(async (to, from, next) => {
     if (isEmpty(role)) {
       next("/");
       return;
+    } else {
+      await permissionStore.initRoutes(role);
     }
-    // await permissionStore.initRoutes(role);
   }
 
   console.log(role);
@@ -47,7 +48,6 @@ router.beforeEach(async (to, from, next) => {
      */
     console.log("已登录，鉴权通过");
     next();
-    return;
   } else {
     /**
      * 无权限
@@ -56,9 +56,8 @@ router.beforeEach(async (to, from, next) => {
     console.log("无权限");
     try {
       next("/result/403");
-      return;
     } catch (error) {
-      MessagePlugin.error(error);
+      await MessagePlugin.error(error);
       NProgress.done();
     }
   }
