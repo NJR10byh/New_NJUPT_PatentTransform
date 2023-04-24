@@ -73,16 +73,44 @@ export const userInfoToCache = async (info) => {
       await router.push("/contractManage/contract");
       break;
     case "teacher":
-      await router.push("/userCenter/info");
+      await router.push("/userCenter/userInfo");
       break;
     case "fzr":
       await router.push("/waitApproval/cxyChargePerson");
       break;
     case "academy":
-      await router.push("/userCenter/info");
+      await router.push("/userCenter/userInfo");
       break;
     case "finance":
-      await router.push("/userCenter/info");
+      await router.push("/userCenter/userInfo");
       break;
   }
+};
+
+export const chargeAuth = (role) => {
+  let roleName = "";
+  switch (role) {
+    case "root":
+      roleName = "root";
+      break;
+    case "superadmin":
+      roleName = "产学研超级管理员";
+      break;
+    case  "admin":
+      roleName = "产学研管理员";
+      break;
+    case "teacher":
+      roleName = "教师";
+      break;
+    case "fzr":
+      roleName = "产学研负责人";
+      break;
+    case "academy":
+      roleName = "学院";
+      break;
+    case "finance":
+      roleName = "财务处";
+      break;
+  }
+  return roleName;
 };

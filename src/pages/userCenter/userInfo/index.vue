@@ -67,11 +67,7 @@
               权限
             </div>
             <div class="contract-detail">
-              <t-tag theme="success" variant="light" v-if="userStore.userInfo.role=='superadmin'">产学研超级管理员
-              </t-tag>
-              <t-tag theme="success" variant="light" v-if="userStore.userInfo.role=='admin'">产学研
-              </t-tag>
-              <t-tag theme="primary" variant="light" v-if="userStore.userInfo.role=='teacher'">教师</t-tag>
+              <t-tag theme="success" variant="light">{{ chargeAuth(userStore.userInfo.role) }}</t-tag>
             </div>
           </t-col>
         </t-row>
@@ -171,7 +167,7 @@
             </template>
             调整收益分配比例
           </t-button>
-          <t-button class="moduleBtn" theme="primary" size="large">
+          <t-button class="moduleBtn" theme="primary" size="large" @click="To_UserList">
             <template #icon>
               <t-icon name="usergroup"></t-icon>
             </template>
@@ -221,6 +217,7 @@ import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
 import { ID_card, phone_number } from "../../../utils/antianaphylaxis";
 import router from "@/router";
+import { chargeAuth } from "@/utils/auth";
 
 const userStore = useUserStore();
 
@@ -289,9 +286,13 @@ const getBasicInfo = () => {
   });
 };
 
+// 用户列表
+const To_UserList = () => {
+  router.push("/userCenter/userList");
+};
 // 操作记录
 const To_OperateLog = () => {
-  router.push("/systemManage/operateLog");
+  router.push("/userCenter/operateLog");
 };
 </script>
 

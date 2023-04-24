@@ -12,14 +12,26 @@ export default [
     path: "/userCenter",
     name: "userCenter",
     component: Layout,
-    redirect: "/userCenter/info",
-    meta: { title: "个人中心", icon: "user-circle", hidden: true },
+    redirect: "/userCenter/userInfo",
+    meta: { title: "个人中心", hidden: true },
     children: [
       {
-        path: "info",
+        path: "userInfo",
         name: "userInfo",
         component: () => import("@/pages/userCenter/userInfo/index.vue"),
         meta: { title: "个人中心", hidden: true, rolePermission: ["root", "teacher", "superadmin", "admin"] }
+      },
+      {
+        path: "operateLog",
+        name: "operateLog",
+        component: () => import("@/pages/userCenter/operateLog/index.vue"),
+        meta: { title: "操作日志", hidden: true, rolePermission: ["root", "superadmin"] }
+      },
+      {
+        path: "userList",
+        name: "userList",
+        component: () => import("@/pages/userCenter/userList/index.vue"),
+        meta: { title: "人员管理", hidden: true, rolePermission: ["root", "superadmin"] }
       }
     ]
   }
