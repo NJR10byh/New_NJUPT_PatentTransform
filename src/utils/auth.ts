@@ -7,7 +7,6 @@
 import { getPermissionStore, getUserStore, usePermissionStore, useUserStore } from "@/store";
 import { isEmpty } from "@/utils/validate";
 import { request } from "@/utils/request";
-import { ID_card, phone_number } from "@/utils/antianaphylaxis";
 import { MessagePlugin } from "tdesign-vue-next";
 import { ref } from "vue";
 import router from "@/router";
@@ -57,9 +56,9 @@ export const userInfoToCache = async (info) => {
     url: getUserContactInfoUrl.value
   }).then(res => {
     console.log(res);
-    userInfo.value.userPhone = phone_number(res.userPhone);
+    userInfo.value.userPhone = res.userPhone;
     userInfo.value.userEmail = res.userEmail;
-    userInfo.value.userIdCard = ID_card(res.userIdCard);
+    userInfo.value.userIdCard = res.userIdCard;
     userStore.getUserInfo(userInfo.value);
   }).catch(err => {
     MessagePlugin.error(err.message);

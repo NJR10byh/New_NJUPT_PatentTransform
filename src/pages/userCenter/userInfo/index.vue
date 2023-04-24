@@ -43,7 +43,7 @@
               身份证号
             </div>
             <div class="contract-detail">
-              {{ userStore.userInfo.userIdCard }}
+              {{ ID_card(userStore.userInfo.userIdCard) }}
             </div>
           </t-col>
           <t-col class="contract" :span="3">
@@ -51,7 +51,7 @@
               联系方式
             </div>
             <div class="contract-detail">
-              {{ userStore.userInfo.userPhone }}
+              {{ phone_number(userStore.userInfo.userPhone) }}
             </div>
           </t-col>
           <t-col class="contract" :span="3">
@@ -78,8 +78,11 @@
       </t-card>
 
       <t-card class="user-info-list">
-        <t-row justify="start" class="cardTop">
+        <t-row justify="space-between" class="cardTop">
           <div class="cardTitle">信息维护（合同乙方）</div>
+          <t-button theme="default" shape="square" variant="text">
+            <t-icon name="edit" size="18" />
+          </t-button>
         </t-row>
         <t-row class="content">
           <t-col class="contract" :span="3">
@@ -157,19 +160,24 @@
         </t-row>
       </t-card>
 
-
       <t-card class="manageCard">
         <t-row justify="start" class="cardTop">
           <div class="cardTitle">管理</div>
         </t-row>
         <t-row justify="start" class="module">
+          <t-button class="moduleBtn" theme="warning" size="large">
+            <template #icon>
+              <t-icon name="chart"></t-icon>
+            </template>
+            调整收益分配比例
+          </t-button>
           <t-button class="moduleBtn" theme="primary" size="large">
             <template #icon>
               <t-icon name="usergroup"></t-icon>
             </template>
             人员管理
           </t-button>
-          <t-button class="moduleBtn" theme="primary" size="large">
+          <t-button class="moduleBtn" theme="primary" size="large" @click="To_OperateLog">
             <template #icon>
               <t-icon name="root-list"></t-icon>
             </template>
@@ -211,7 +219,8 @@ import { useUserStore } from "@/store";
 import { BASE_URL, TEAM_MEMBERS } from "./constants";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
-import { phone_number } from "../../../utils/antianaphylaxis";
+import { ID_card, phone_number } from "../../../utils/antianaphylaxis";
+import router from "@/router";
 
 const userStore = useUserStore();
 
@@ -278,6 +287,11 @@ const getBasicInfo = () => {
     MessagePlugin.error(err.message);
   }).finally(() => {
   });
+};
+
+// 操作记录
+const To_OperateLog = () => {
+  router.push("/systemManage/operateLog");
 };
 </script>
 
