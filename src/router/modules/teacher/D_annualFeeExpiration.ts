@@ -17,7 +17,7 @@ export default [
       {
         path: "info",
         name: "annualFeeExpirationInfo_teacher",
-        component: () => import("@/pages/cxy/annualFeeExpiration/index.vue"),
+        component: () => import("@/pages/teacher/annualFeeExpiration/index.vue"),
         meta: { title: "年费到期列表", rolePermission: ["root", "teacher"] }
       }
     ]
