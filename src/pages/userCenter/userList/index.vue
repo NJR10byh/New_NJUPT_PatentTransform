@@ -45,14 +45,15 @@
           {{ slotProps.row.userGh }}
         </t-tag>
       </template>
-      <template #roles="slotProps">
-        <t-tag theme="success" variant="light-outline" v-for="item in slotProps.row.roles"
-               style="margin-right: 6px">
-          {{ getRoleName(item) }}
-        </t-tag>
-      </template>
+
       <template #settings="slotProps">
         <t-button theme="danger">
+          <template #roles="slotProps">
+            <t-tag theme="success" variant="light-outline" v-for="item in slotProps.row.roles"
+                   style="margin-right: 6px">
+              {{ getRoleName(item) }}
+            </t-tag>
+          </template>
           <template #icon>
             <t-icon name="delete"></t-icon>
           </template>

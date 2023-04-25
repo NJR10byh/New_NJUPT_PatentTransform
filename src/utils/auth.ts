@@ -4,12 +4,14 @@
  * @description
  * @version 0.1.0
  */
-import { getPermissionStore, getUserStore, usePermissionStore, useUserStore } from "@/store";
+import { getPermissionStore, getUserStore, usePermissionStore, useSettingStore, useUserStore } from "@/store";
 import { isEmpty } from "@/utils/validate";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
 import { ref } from "vue";
 import router from "@/router";
+import STYLE_CONFIG from "@/config/style";
+import { chargeTheme } from "@/utils/date";
 
 const userStore = useUserStore();
 const permissionStore = usePermissionStore();
@@ -24,6 +26,22 @@ const userInfo = ref({
   roles: [],
   authorities: []
 });
+const settingStore = useSettingStore();
+
+const initStyleConfig = () => {
+  const styleConfig = STYLE_CONFIG;
+  for (const key in styleConfig) {
+    if (Object.prototype.hasOwnProperty.call(styleConfig, key)) {
+      styleConfig[key] = settingStore[key];
+    }
+  }
+
+  return styleConfig;
+};
+
+const formData = ref({ ...initStyleConfig() });
+
+
 const getUserContactInfoUrl = ref("/user/getUserContactInfo");
 
 
@@ -64,29 +82,48 @@ export const userInfoToCache = async (info) => {
     MessagePlugin.error(err.message);
   }).finally(() => {
   });
+  /* 处理主题 */
+  formData.value.mode = chargeTheme(); // 根据当前系统时间切换主题模式（light、dark）
+
   await MessagePlugin.success("欢迎您，" + info.userName);
   switch (userInfo.value.role) {
     case "superadmin":
+      formData.value.brandTheme = "default";
+      settingStore.updateConfig(formData.value);
       await router.push("/contractManage/contract");
       break;
     case  "admin":
+      formData.value.brandTheme = "pink";
+      settingStore.updateConfig(formData.value);
       await router.push("/contractManage/contract");
       break;
     case "teacher":
+      formData.value.brandTheme = "purple";
+      settingStore.updateConfig(formData.value);
       await router.push("/noticeCenter/teacher");
       break;
     case "fzr":
+      formData.value.brandTheme = "yellow";
+      settingStore.updateConfig(formData.value);
       await router.push("/waitApproval/cxyChargePerson");
       break;
     case "academy":
+      formData.value.brandTheme = "yellow";
+      settingStore.updateConfig(formData.value);
       await router.push("/userCenter/userInfo");
       break;
     case "finance":
+      formData.value.brandTheme = "yellow";
+      settingStore.updateConfig(formData.value);
       await router.push("/userCenter/userInfo");
       break;
   }
 };
 
+/**
+ * 获取权限名称
+ * @param role
+ */
 export const getRoleName = (role) => {
   let roleName = "";
   switch (role) {
@@ -114,3 +151,4 @@ export const getRoleName = (role) => {
   }
   return roleName;
 };
+
