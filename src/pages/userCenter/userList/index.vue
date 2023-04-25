@@ -48,7 +48,7 @@
       <template #roles="slotProps">
         <t-tag theme="success" variant="light-outline" v-for="item in slotProps.row.roles"
                style="margin-right: 6px">
-          {{ chargeAuth(item) }}
+          {{ getRoleName(item) }}
         </t-tag>
       </template>
       <template #settings="slotProps">
@@ -70,7 +70,7 @@ import { useRouter } from "vue-router";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
 import { BASE_URL, USER_LIST_TABLE_COLUMNS } from "./constants";
-import { chargeAuth } from "../../../utils/auth";
+import { getRoleName } from "../../../utils/auth";
 
 
 const store = useSettingStore();

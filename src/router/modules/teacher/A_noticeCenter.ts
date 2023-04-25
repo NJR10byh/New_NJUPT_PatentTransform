@@ -18,7 +18,7 @@ export default [
         path: "teacher",
         name: "notice_teacher",
         component: () => import("@/pages/teacher/noticeCenter/index.vue"),
-        meta: { title: "通知中心", hidden: true, rolePermission: ["root", "teacher"] }
+        meta: { title: "通知中心", rolePermission: ["root", "teacher"] }
       }
     ]
   }

@@ -73,7 +73,7 @@ export const userInfoToCache = async (info) => {
       await router.push("/contractManage/contract");
       break;
     case "teacher":
-      await router.push("/userCenter/userInfo");
+      await router.push("/noticeCenter/teacher");
       break;
     case "fzr":
       await router.push("/waitApproval/cxyChargePerson");
@@ -87,7 +87,7 @@ export const userInfoToCache = async (info) => {
   }
 };
 
-export const chargeAuth = (role) => {
+export const getRoleName = (role) => {
   let roleName = "";
   switch (role) {
     case "root":

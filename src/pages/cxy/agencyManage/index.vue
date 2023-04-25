@@ -31,7 +31,6 @@
       :data="agencyManageTable.tableData"
       :columns="AGENCY_MANAGE_TABLE_COLUMNS"
       row-key="id"
-
       hover
       stripe
       table-layout="auto"

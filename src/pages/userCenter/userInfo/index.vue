@@ -67,7 +67,7 @@
               权限
             </div>
             <div class="contract-detail">
-              <t-tag theme="success" variant="light">{{ chargeAuth(userStore.userInfo.role) }}</t-tag>
+              <t-tag theme="success" variant="light">{{ getRoleName(userStore.userInfo.role) }}</t-tag>
             </div>
           </t-col>
         </t-row>
@@ -217,7 +217,7 @@ import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
 import { ID_card, phone_number } from "../../../utils/antianaphylaxis";
 import router from "@/router";
-import { chargeAuth } from "@/utils/auth";
+import { getRoleName } from "@/utils/auth";
 
 const userStore = useUserStore();
 

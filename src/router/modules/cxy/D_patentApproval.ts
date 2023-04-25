@@ -10,7 +10,7 @@ import Layout from "@/layouts/index.vue";
 export default [
   {
     path: "/patentApproval",
-    name: "patentApproval",
+    name: "patentApproval_cxy",
     component: Layout,
     meta: { title: "专利审批", icon: "secured" },
     children: [
