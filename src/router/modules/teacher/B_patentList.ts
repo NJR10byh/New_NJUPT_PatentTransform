@@ -16,13 +16,13 @@ export default [
       {
         path: "all",
         name: "allPatent",
-        component: () => import("@/pages/teacher/noticeCenter/index.vue"),
+        component: () => import("@/pages/teacher/patentList/allPatents/index.vue"),
         meta: { title: "全部专利", rolePermission: ["root", "teacher"] }
       },
       {
         path: "transferred",
         name: "transferredPatent",
-        component: () => import("@/pages/teacher/noticeCenter/index.vue"),
+        component: () => import("@/pages/teacher/patentList/transferredPatents/index.vue"),
         meta: { title: "已转化的专利", rolePermission: ["root", "teacher"] }
       }
     ]

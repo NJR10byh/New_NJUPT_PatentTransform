@@ -17,7 +17,6 @@ const transform: AxiosTransform = {
   transformRequestHook: (res, options) => {
     const { isTransformResponse, isReturnNativeResponse } = options;
 
-    console.log(res);
     // 如果204无内容直接返回
     // const method = res.config.method?.toLowerCase();
     // if (res.status === 204 || method === "put" || method === "patch") {
@@ -156,7 +155,6 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
   return new VAxios(
     merge(
       <CreateAxiosOptions>{
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes
         // 例如: authenticationScheme: 'Bearer'
         authenticationScheme: "",
         // 超时

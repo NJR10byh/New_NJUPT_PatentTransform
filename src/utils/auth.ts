@@ -86,6 +86,8 @@ export const userInfoToCache = async (info) => {
   formData.value.mode = chargeTheme(); // 根据当前系统时间切换主题模式（light、dark）
 
   await MessagePlugin.success("欢迎您，" + info.userName);
+
+  /* 分权限处理 默认跳转页 */
   switch (userInfo.value.role) {
     case "superadmin":
       formData.value.brandTheme = "default";
@@ -100,7 +102,7 @@ export const userInfoToCache = async (info) => {
     case "teacher":
       formData.value.brandTheme = "purple";
       settingStore.updateConfig(formData.value);
-      await router.push("/noticeCenter/teacher");
+      await router.push("/patent/all");
       break;
     case "fzr":
       formData.value.brandTheme = "yellow";
