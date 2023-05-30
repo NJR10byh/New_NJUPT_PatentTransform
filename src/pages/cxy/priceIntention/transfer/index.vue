@@ -13,7 +13,6 @@
       :data="transferPriceTable.tableData"
       :columns="TRANSFER_PRICE_TABLE_COLUMNS"
       row-key="id"
-
       hover
       stripe
       :pagination="transferPriceTable.pagination"

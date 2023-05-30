@@ -34,7 +34,6 @@
       :data="allPatentsTable.tableData"
       :columns="ALL_PATENTS_TABLE_COLUMNS"
       row-key="id"
-
       hover
       stripe
       table-layout="auto"
