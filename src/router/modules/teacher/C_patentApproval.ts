@@ -16,13 +16,13 @@ export default [
       {
         path: "waitInitiated",
         name: "waitInitiatedApproval",
-        component: () => import("@/pages/cxy/patentApproval/license/index.vue"),
+        component: () => import("@/pages/teacher/patentApproval/waitInitiate/index.vue"),
         meta: { title: "待发起的审批", rolePermission: ["root", "teacher"] }
       },
       {
         path: "userInitiated",
         name: "userInitiatedApproval",
-        component: () => import("@/pages/cxy/patentApproval/transfer/index.vue"),
+        component: () => import("@/pages/teacher/patentApproval/initiated/index.vue"),
         meta: { title: "您发起的审批", rolePermission: ["root", "teacher"] }
       },
       {
@@ -30,6 +30,12 @@ export default [
         name: "waitConfirmApproval",
         component: () => import("@/pages/cxy/patentApproval/license/index.vue"),
         meta: { title: "待您确认的审批", rolePermission: ["root", "teacher"] }
+      },
+      {
+        path: "savedApproval",
+        name: "savedApproval",
+        component: () => import("@/pages/teacher/savedApproval/index.vue"),
+        meta: { title: "草稿箱", rolePermission: ["root", "teacher"], hidden: true }
       }
     ]
   }

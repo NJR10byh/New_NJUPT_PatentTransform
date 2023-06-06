@@ -20,17 +20,17 @@ export const ALL_PATENTS_TABLE_COLUMNS = [
     width: 40
   },
   {
-    title: "专利名称",
-    align: "left",
-    colKey: "zlmc",
-    width: 120,
-    ellipsis: true
-  },
-  {
     title: "专利号",
     align: "center",
     colKey: "zlh",
     width: 80,
+    ellipsis: true
+  },
+  {
+    title: "专利名称",
+    align: "left",
+    colKey: "zlmc",
+    width: 120,
     ellipsis: true
   },
   {

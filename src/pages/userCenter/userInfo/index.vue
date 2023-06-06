@@ -258,13 +258,13 @@ const getTimeState = () => {
   // 设置默认文字
   let text = ``;
   // 判断当前时间段
-  if (hours >= 0 && hours <= 5) {
+  if (hours >= 0 && hours <= 6) {
     text = `夜已经深了，注意休息哦`;
-  } else if (hours > 5 && hours <= 10) {
+  } else if (hours > 6 && hours <= 10) {
     text = `早上好`;
-  } else if (hours > 10 && hours <= 14) {
+  } else if (hours > 10 && hours <= 13) {
     text = `中午好`;
-  } else if (hours > 14 && hours <= 18) {
+  } else if (hours > 13 && hours <= 18) {
     text = `下午好`;
   } else if (hours > 18 && hours <= 24) {
     text = `晚上好`;

@@ -1,15 +1,15 @@
 /**
  * @author baoyuhao
- * @date 2023/4/29 15:21:19
+ * @date 2023/6/6 9:55:32
  * @description
  * @version 0.1.0
  */
+
 export const BASE_URL = {
-  getTransferredPatentPage: "/teacher/getTransferredPatentPage"
+  getApplicationPage: "/teacher/getApplicationPage"
 };
 
-export const TRANSFERRED_PATENTS_TABLE_COLUMNS = [
-  // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
+export const INITIATED_TABLE_COLUMNS = [
   {
     title: "序号",
     align: "center",
@@ -45,9 +45,9 @@ export const TRANSFERRED_PATENTS_TABLE_COLUMNS = [
     ellipsis: true
   },
   {
-    title: "合同签订日期",
+    title: "转化状态",
     align: "center",
-    colKey: "contractSigningDate",
+    colKey: "state",
     width: 120,
     ellipsis: true
   },

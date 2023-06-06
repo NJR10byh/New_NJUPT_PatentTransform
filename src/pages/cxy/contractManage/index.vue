@@ -62,7 +62,7 @@
             </div>
           </template>
           <template #state="slotProps">
-            <t-tag v-if="slotProps.row.state.indexOf('未通过')!=-1" theme="success" variant="light-outline"
+            <t-tag v-if="slotProps.row.state.indexOf('未通过')!=-1" theme="warning" variant="light-outline"
                    shape="round">
               <template #icon>
                 <t-icon name="info-circle"></t-icon>
@@ -203,7 +203,7 @@
             </div>
           </template>
           <template #state="slotProps">
-            <t-tag v-if="slotProps.row.state.indexOf('未通过')!=-1" theme="success" variant="light-outline"
+            <t-tag v-if="slotProps.row.state.indexOf('未通过')!=-1" theme="warning" variant="light-outline"
                    shape="round">
               <template #icon>
                 <t-icon name="info-circle"></t-icon>

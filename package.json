@@ -1,6 +1,6 @@
 {
   "name": "专利转让系统（新版）",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "scripts": {
     "dev:mock": "vite --open --mode mock",
     "dev": "vite --open --mode development",
@@ -22,7 +22,7 @@
     "axios": "^1.4.0",
     "dayjs": "^1.11.7",
     "echarts": "5.1.2",
-    "element-china-area-data": "^6.0.2",
+    "element-china-area-data": "^5.0.2",
     "js-md5": "^0.7.3",
     "lodash": "^4.17.21",
     "nprogress": "^0.2.0",
