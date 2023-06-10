@@ -34,7 +34,6 @@
           :data="contractManageTable.tableData"
           :columns="CONTRACT_MANAGE_TABLE_COLUMNS"
           row-key="id"
-
           hover
           stripe
           table-layout="auto"

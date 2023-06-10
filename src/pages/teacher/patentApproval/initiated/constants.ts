@@ -48,7 +48,7 @@ export const INITIATED_TABLE_COLUMNS = [
     title: "转化状态",
     align: "center",
     colKey: "state",
-    width: 120,
+    width: 80,
     ellipsis: true
   },
   {

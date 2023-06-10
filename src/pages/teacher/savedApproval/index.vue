@@ -7,11 +7,13 @@
 <template>
   <t-card class="saved-approval-card">
     <t-table
+      class="tableStyle"
       :data="savedApprovalTable.tableData"
       :columns="SAVED_APPROVAL_TABLE_COLUMNS"
       row-key="id"
       hover
       stripe
+      table-layout="auto"
       :pagination="savedApprovalTable.pagination"
       :loading="savedApprovalTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -43,6 +45,22 @@
         <t-tag v-else theme="success" variant="light-outline" shape="round">
           {{ slotProps.row.state }}
         </t-tag>
+      </template>
+      <template #settings="slotProps">
+        <div class="settingBtns">
+          <t-button theme="warning">
+            <template #icon>
+              <t-icon name="edit"></t-icon>
+            </template>
+            修改
+          </t-button>
+          <t-button theme="danger">
+            <template #icon>
+              <t-icon name="delete"></t-icon>
+            </template>
+            删除
+          </t-button>
+        </div>
       </template>
     </t-table>
   </t-card>
@@ -145,22 +163,17 @@ const getSavedApprovalTableData = (requestUrl) => {
     //border: 1px solid red;
     align-items: center;
     flex-wrap: wrap;
+  }
 
-    .radioGroup {
-      margin: 5px;
-    }
+  .tableStyle {
+    width: 100%;
+    margin-top: 10px;
 
-    .inputStyle {
-      width: 200px;
-      margin: 5px;
-    }
-
-    .rangeInputStyle {
-      width: 410px;
-    }
-
-    .cascaderStyle {
-      width: 410px;
+    .settingBtns {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      overflow: auto;
     }
   }
 }

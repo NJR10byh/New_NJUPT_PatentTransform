@@ -36,18 +36,19 @@
       </div>
     </t-row>
     <t-table
+      class="tableStyle"
       :data="initiatedTable.tableData"
       :columns="INITIATED_TABLE_COLUMNS"
       row-key="id"
       hover
       stripe
+      table-layout="auto"
       :pagination="initiatedTable.pagination"
       :loading="initiatedTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
       :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
       :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
       @page-change="initiatedTablePageChange"
-      style="margin-top: 10px"
       size="small"
     >
       <template #zlh="slotProps">
@@ -72,6 +73,80 @@
         <t-tag v-else theme="success" variant="light-outline" shape="round">
           {{ slotProps.row.state }}
         </t-tag>
+      </template>
+      <template #settings="slotProps">
+        <div class="settingBtns">
+          <t-button
+            theme="primary"
+            v-if="!['未转化','产学研未通过','审批表已撤回','第一作者未通过'].includes(slotProps.row.state)"
+          >
+            <template #icon>
+              <t-icon name="file"></t-icon>
+            </template>
+            查看审批表
+          </t-button>
+          <t-button
+            variant="outline"
+            theme="warning"
+            v-if="['等待第一作者确认'].includes(slotProps.row.state)"
+          >
+            <template #icon>
+              <t-icon name="rollback"></t-icon>
+            </template>
+            撤回
+          </t-button>
+          <t-button
+            theme="warning"
+            v-if="['产学研未通过', '审批表已撤回', '第一作者未通过'].includes(slotProps.row.state)"
+          >
+            <template #icon>
+              <t-icon name="edit"></t-icon>
+            </template>
+            修改
+          </t-button>
+          <t-button
+            variant="outline"
+            theme="primary"
+            v-if="['第一作者未通过'].includes(slotProps.row.state)"
+          >
+            <template #icon>
+              <t-icon name="tips"></t-icon>
+            </template>
+            查看原因
+          </t-button>
+          <t-button
+            theme="danger"
+            v-if="['产学研未通过', '第一作者未通过', '审批表已撤回'].includes(slotProps.row.state)"
+          >
+            <template #icon>
+              <t-icon name="delete"></t-icon>
+            </template>
+            删除
+          </t-button>
+
+          <t-button
+            variant="outline"
+            theme="primary"
+            v-if="['等待上传到款凭证'].includes(slotProps.row.state)"
+          >
+            <template #icon>
+              <t-icon name="upload"></t-icon>
+            </template>
+            上传到款凭证
+          </t-button>
+
+          <!-- 转化文件管理 -->
+          <t-button
+            variant="outline"
+            theme="primary"
+            v-if="slotProps.row.sendTeacher"
+          >
+            <template #icon>
+              <t-icon name="folder-open"></t-icon>
+            </template>
+            转化文件管理
+          </t-button>
+        </div>
       </template>
     </t-table>
   </t-card>
@@ -201,18 +276,17 @@ const toSavedApproval = () => {
     .radioGroup {
       margin: 5px;
     }
+  }
 
-    .inputStyle {
-      width: 200px;
-      margin: 5px;
-    }
+  .tableStyle {
+    width: 100%;
+    margin-top: 10px;
 
-    .rangeInputStyle {
-      width: 410px;
-    }
-
-    .cascaderStyle {
-      width: 410px;
+    .settingBtns {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      overflow: auto;
     }
   }
 }
