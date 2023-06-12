@@ -28,7 +28,7 @@ export default [
       {
         path: "waitConfirm",
         name: "waitConfirmApproval",
-        component: () => import("@/pages/cxy/patentApproval/license/index.vue"),
+        component: () => import("@/pages/teacher/patentApproval/waitConfirm/index.vue"),
         meta: { title: "待您确认的审批", rolePermission: ["root", "teacher"] }
       },
       {

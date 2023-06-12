@@ -20,14 +20,6 @@
           查询
         </t-button>
       </div>
-      <div>
-        <t-button theme="primary">
-          <template #icon>
-            <t-icon name="add"></t-icon>
-          </template>
-          添加公司
-        </t-button>
-      </div>
     </t-row>
     <t-table
       class="tableStyle"
@@ -37,7 +29,6 @@
       hover
       stripe
       table-layout="auto"
-      :table-content-width="tableContentWidth"
       :pagination="allPatentsTable.pagination"
       :loading="allPatentsTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -54,18 +45,31 @@
       </template>
       <template #settings="slotProps">
         <div class="settingBtns">
-          <t-button theme="warning">
+          <t-button theme="primary" v-if="slotProps.row.zlzsxzdz != '' || slotProps.row.certificateId != null">
             <template #icon>
               <t-icon name="edit"></t-icon>
             </template>
-            修改
+            填写审批
           </t-button>
-
-          <t-button theme="danger">
+          <t-button variant="outline" theme="primary" v-if="!slotProps.row.price_filled">
             <template #icon>
-              <t-icon name="delete"></t-icon>
+              <t-icon name="money-circle"></t-icon>
             </template>
-            删除
+            价格意向
+          </t-button>
+          <t-button variant="outline" theme="primary"
+                    v-if="isEmpty(slotProps.row.zlzsxzdz) && isEmpty(slotProps.row.certificateId)">
+            <template #icon>
+              <t-icon name="upload"></t-icon>
+            </template>
+            上传专利证书
+          </t-button>
+          <t-button variant="outline" theme="primary"
+                    v-if="isNotEmpty(slotProps.row.zlzsxzdz) || isNotEmpty(slotProps.row.certificateId)">
+            <template #icon>
+              <t-icon name="download"></t-icon>
+            </template>
+            下载专利证书
           </t-button>
         </div>
       </template>
@@ -82,6 +86,7 @@ import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
 import { ALL_PATENTS_TABLE_COLUMNS, BASE_URL } from "./constants";
+import { isEmpty, isNotEmpty } from "@/utils/validate";
 
 
 const store = useSettingStore();

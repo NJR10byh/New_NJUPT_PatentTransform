@@ -73,8 +73,8 @@ import { useSettingStore } from "@/store";
 import { prefix } from "@/config/global";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { request } from "@/utils/request";
-import { isEmpty } from "@/utils/validate";
 import { MessagePlugin } from "tdesign-vue-next";
+import { isNotEmpty } from "@/utils/validate";
 
 const store = useSettingStore();
 
@@ -108,7 +108,12 @@ const savedApprovalTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-  getSavedApprovalTableData(BASE_URL.getSavedTransferApplicationFormPage);
+  let obj = {
+    currPage: savedApprovalTable.value.pagination.current,
+    size: savedApprovalTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getSavedTransferApplicationFormPage, obj);
+  getSavedApprovalTableData(requestUrl);
 });
 /**
  * 操作钩子
@@ -125,11 +130,6 @@ const savedApprovalTablePageChange = (curr) => {
  */
 const getSavedApprovalTableData = (requestUrl) => {
   savedApprovalTable.value.tableLoading = true;
-  let obj = {
-    currPage: savedApprovalTable.value.pagination.current,
-    size: savedApprovalTable.value.pagination.pageSize
-  };
-  requestUrl = setObjToUrlParams(requestUrl, obj);
   request.get({
     url: requestUrl
   }).then(res => {
@@ -138,7 +138,7 @@ const getSavedApprovalTableData = (requestUrl) => {
     savedApprovalTable.value.tableData = res.records;
     for (let i = 0; i < savedApprovalTable.value.tableData.length; i++) {
       savedApprovalTable.value.tableData[i].index = (savedApprovalTable.value.pagination.current - 1) * savedApprovalTable.value.pagination.pageSize + i + 1;
-      if (!isEmpty(savedApprovalTable.value.tableData[i].patentPrice)) {
+      if (isNotEmpty(savedApprovalTable.value.tableData[i].patentPrice)) {
         savedApprovalTable.value.tableData[i].patentPrice += " 万元";
       }
     }

@@ -8,10 +8,10 @@ import Layout from "@/layouts/index.vue";
 
 export default [
   {
-    path: "/annualFeeExpiration",
+    path: "/annualFeeExpiration-teacher",
     name: "annualFeeExpiration_teacher",
     component: Layout,
-    redirect: "/annualFeeExpiration/info",
+    redirect: "/annualFeeExpiration-teacher/info",
     meta: { title: "年费到期", icon: "time" },
     children: [
       {

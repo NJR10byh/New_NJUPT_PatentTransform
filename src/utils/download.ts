@@ -6,7 +6,7 @@
  */
 import { request } from "@/utils/request";
 import { LoadingPlugin, MessagePlugin, NotifyPlugin } from "tdesign-vue-next";
-import { isEmpty } from "@/utils/validate";
+import { isNotEmpty } from "@/utils/validate";
 
 const link = document.createElement("a");
 link.style.display = "none";
@@ -24,7 +24,7 @@ export const downloadFile = async (requestUrl, requestBody) => {
       content: "已进入后台开始下载，您可以进行其他操作"
     });
     let fileName = "文件";
-    if (!isEmpty(res.headers["content-disposition"])) {
+    if (isNotEmpty(res.headers["content-disposition"])) {
       fileName = decodeURI(res.headers["content-disposition"].split("fileName=")[1]) + ".xls";
     }
     const blob = new Blob([res.data], {

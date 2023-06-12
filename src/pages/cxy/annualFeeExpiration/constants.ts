@@ -16,7 +16,7 @@ export const ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS = [
     title: "序号",
     align: "center",
     colKey: "index",
-    width: 40
+    width: 50
   },
   {
     title: "专利名称",

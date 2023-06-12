@@ -27,7 +27,6 @@
           :data="patentApprovalTable.tableData"
           :columns="PATENT_APPROVAL_TABLE_COLUMNS"
           row-key="id"
-
           hover
           stripe
           table-layout="auto"

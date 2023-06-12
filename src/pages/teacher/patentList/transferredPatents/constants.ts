@@ -14,7 +14,7 @@ export const TRANSFERRED_PATENTS_TABLE_COLUMNS = [
     title: "序号",
     align: "center",
     colKey: "index",
-    width: 40
+    width: 50
   },
   {
     title: "专利号",
@@ -48,14 +48,7 @@ export const TRANSFERRED_PATENTS_TABLE_COLUMNS = [
     title: "合同签订日期",
     align: "center",
     colKey: "contractSigningDate",
-    width: 120,
+    width: 100,
     ellipsis: true
-  },
-  {
-    title: "操作",
-    align: "left",
-    colKey: "settings",
-    fixed: "right",
-    width: 30
   }
 ];

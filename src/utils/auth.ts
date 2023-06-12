@@ -5,13 +5,13 @@
  * @version 0.1.0
  */
 import { getPermissionStore, getUserStore, usePermissionStore, useSettingStore, useUserStore } from "@/store";
-import { isEmpty } from "@/utils/validate";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
 import { ref } from "vue";
 import router from "@/router";
 import STYLE_CONFIG from "@/config/style";
 import { chargeTheme } from "@/utils/date";
+import { isNotEmpty } from "@/utils/validate";
 
 const userStore = useUserStore();
 const permissionStore = usePermissionStore();
@@ -50,7 +50,7 @@ export const checkAuth = () => {
   const permissionStore = getPermissionStore();
   const { role } = userStore;
   console.log("已登录权限：" + role);
-  if (!isEmpty(role)) {
+  if (isNotEmpty(role)) {
     permissionStore.initRoutes(role);
     return true;
   } else {

@@ -18,7 +18,6 @@
       hover
       stripe
       table-layout="auto"
-      :table-content-width="tableContentWidth"
       :pagination="transferredPatentsTable.pagination"
       :loading="transferredPatentsTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -79,9 +78,6 @@ const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
 
-// tableContentWidth
-const tableContentWidth = ref("1300px");
-
 /**
  * 搜索相关
  */
@@ -117,15 +113,6 @@ onMounted(() => {
 /**
  * 操作钩子
  */
-// 监听容器宽高变化
-const resize = (resizeValue) => {
-  console.log(resizeValue[0].contentRect);
-  if (resizeValue[0].contentRect.width > 1300) {
-    tableContentWidth.value = resizeValue[0].contentRect.width + "px";
-  } else {
-    tableContentWidth.value = "1300px";
-  }
-};
 // 分页钩子
 const transferredPatentsTablePageChange = (curr) => {
   console.log("分页变化", curr);
@@ -176,21 +163,6 @@ const getTableData = (requestUrl) => {
   .cardTop {
     //border: 1px solid red;
     align-items: center;
-
-    .cardTitle {
-      display: flex;
-      align-items: center;
-
-      .selectStyle {
-        width: 130px;
-        margin-right: 10px;
-      }
-
-      .inputStyle {
-        width: 240px;
-        margin-right: 10px;
-      }
-    }
   }
 
   .tableStyle {
@@ -204,6 +176,5 @@ const getTableData = (requestUrl) => {
       overflow: auto;
     }
   }
-
 }
 </style>

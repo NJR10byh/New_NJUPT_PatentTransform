@@ -8,10 +8,11 @@
   <t-card class="wait-initiate-card">
     <t-table
       :data="waitInitiateTable.tableData"
-      :columns="PATENT_TABLE_COLUMNS"
+      :columns="WAIT_INITIATED_TABLE_COLUMNS"
       row-key="id"
       hover
       stripe
+      table-layout="auto"
       :pagination="waitInitiateTable.pagination"
       :loading="waitInitiateTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -26,15 +27,27 @@
           {{ slotProps.row.zlh }}
         </t-tag>
       </template>
+      <template #settings="slotProps">
+        <t-button theme="warning">
+          <template #icon>
+            <t-icon name="edit"></t-icon>
+          </template>
+          编辑
+        </t-button>
+      </template>
     </t-table>
   </t-card>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { PATENT_TABLE_COLUMNS } from "@/pages/cxy/dataCenter/constants";
+import { BASE_URL, WAIT_INITIATED_TABLE_COLUMNS } from "./constants";
 import { useSettingStore } from "@/store";
 import { prefix } from "@/config/global";
+import { setObjToUrlParams } from "@/utils/request/utils";
+import { request } from "@/utils/request";
+import { MessagePlugin } from "tdesign-vue-next";
+import { isNotEmpty } from "@/utils/validate";
 
 const store = useSettingStore();
 
@@ -68,13 +81,50 @@ const waitInitiateTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-
+  let obj = {
+    currPage: waitInitiateTable.value.pagination.current,
+    size: waitInitiateTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getBatchSavedTransferApplicationFormPage, obj);
+  getTableData(requestUrl);
 });
 /**
  * 操作钩子
  */
-const waitInitiateTablePageChange = () => {
+const waitInitiateTablePageChange = (curr) => {
+  console.log("分页变化", curr);
+  waitInitiateTable.value.pagination.current = curr.current;
+  waitInitiateTable.value.pagination.pageSize = curr.pageSize;
+  let obj = {
+    currPage: waitInitiateTable.value.pagination.current,
+    size: waitInitiateTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getBatchSavedTransferApplicationFormPage, obj);
+  getTableData(requestUrl);
+};
 
+/**
+ * 业务相关
+ */
+const getTableData = (requestUrl) => {
+  waitInitiateTable.value.tableLoading = true;
+  request.get({
+    url: requestUrl
+  }).then(res => {
+    console.log(res);
+    waitInitiateTable.value.pagination.total = res.total;
+    waitInitiateTable.value.tableData = res.records;
+    for (let i = 0; i < waitInitiateTable.value.tableData.length; i++) {
+      waitInitiateTable.value.tableData[i].index = (waitInitiateTable.value.pagination.current - 1) * waitInitiateTable.value.pagination.pageSize + i + 1;
+      if (isNotEmpty(waitInitiateTable.value.tableData[i].patentPrice)) {
+        waitInitiateTable.value.tableData[i].patentPrice += " 万元";
+      }
+    }
+  }).catch(err => {
+    MessagePlugin.error(err.message);
+  }).finally(() => {
+    waitInitiateTable.value.tableLoading = false;
+  });
 };
 </script>
 

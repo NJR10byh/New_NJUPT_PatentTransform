@@ -16,7 +16,7 @@ export const COMPANY_MANAGE_TABLE_COLUMNS = [
     title: "序号",
     align: "center",
     colKey: "index",
-    width: 40
+    width: 50
   },
   {
     title: "公司名称",

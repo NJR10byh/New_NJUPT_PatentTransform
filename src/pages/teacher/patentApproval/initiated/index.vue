@@ -6,25 +6,20 @@
 -->
 <template>
   <t-card class="initiated-card">
-    <t-row justify="start" class="cardTop">
-      <t-radio-group class="radioGroup" variant="primary-filled" v-model="filterCondition.type"
-                     @change="typeChange">
-        <t-radio-button :value="0">全部</t-radio-button>
-        <t-radio-button :value="1">未通过</t-radio-button>
-        <t-radio-button :value="2">已通过</t-radio-button>
-        <t-radio-button :value="3">正在转化</t-radio-button>
-      </t-radio-group>
-      <t-radio-group class="radioGroup" variant="primary-filled" v-model="filterCondition.isZLDYZZ"
-                     @change="isZLDYZZChange">
-        <t-radio-button :value="true">第一发明人</t-radio-button>
-        <t-radio-button :value="false">专利成员</t-radio-button>
-      </t-radio-group>
-    </t-row>
-  </t-card>
-  <t-card class="initiated-card">
     <t-row justify="space-between" class="cardTop">
-      <div class="cardTitle">
-        已提交的审批
+      <div>
+        <t-radio-group class="radioGroup" variant="primary-filled" v-model="filterCondition.type"
+                       @change="typeChange">
+          <t-radio-button :value="0">全部</t-radio-button>
+          <t-radio-button :value="1">未通过</t-radio-button>
+          <t-radio-button :value="2">已通过</t-radio-button>
+          <t-radio-button :value="3">正在转化</t-radio-button>
+        </t-radio-group>
+        <t-radio-group class="radioGroup" variant="primary-filled" v-model="filterCondition.isZLDYZZ"
+                       @change="isZLDYZZChange">
+          <t-radio-button :value="true">第一发明人</t-radio-button>
+          <t-radio-button :value="false">专利成员</t-radio-button>
+        </t-radio-group>
       </div>
       <div>
         <t-button theme="primary" @click="toSavedApproval">
@@ -35,6 +30,8 @@
         </t-button>
       </div>
     </t-row>
+  </t-card>
+  <t-card class="initiated-card">
     <t-table
       class="tableStyle"
       :data="initiatedTable.tableData"
@@ -43,6 +40,7 @@
       hover
       stripe
       table-layout="auto"
+      table-content-width="1600px"
       :pagination="initiatedTable.pagination"
       :loading="initiatedTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -76,48 +74,34 @@
       </template>
       <template #settings="slotProps">
         <div class="settingBtns">
-          <t-button
-            theme="primary"
-            v-if="!['未转化','产学研未通过','审批表已撤回','第一作者未通过'].includes(slotProps.row.state)"
-          >
+          <t-button theme="primary"
+                    v-if="!['未转化','产学研未通过','审批表已撤回','第一作者未通过'].includes(slotProps.row.state)">
             <template #icon>
               <t-icon name="file"></t-icon>
             </template>
             查看审批表
           </t-button>
-          <t-button
-            variant="outline"
-            theme="warning"
-            v-if="['等待第一作者确认'].includes(slotProps.row.state)"
-          >
+          <t-button variant="outline" theme="warning" v-if="['等待第一作者确认'].includes(slotProps.row.state)">
             <template #icon>
               <t-icon name="rollback"></t-icon>
             </template>
             撤回
           </t-button>
-          <t-button
-            theme="warning"
-            v-if="['产学研未通过', '审批表已撤回', '第一作者未通过'].includes(slotProps.row.state)"
-          >
+          <t-button theme="warning"
+                    v-if="['产学研未通过', '审批表已撤回', '第一作者未通过'].includes(slotProps.row.state)">
             <template #icon>
               <t-icon name="edit"></t-icon>
             </template>
             修改
           </t-button>
-          <t-button
-            variant="outline"
-            theme="primary"
-            v-if="['第一作者未通过'].includes(slotProps.row.state)"
-          >
+          <t-button variant="outline" theme="primary" v-if="['第一作者未通过'].includes(slotProps.row.state)">
             <template #icon>
               <t-icon name="tips"></t-icon>
             </template>
             查看原因
           </t-button>
-          <t-button
-            theme="danger"
-            v-if="['产学研未通过', '第一作者未通过', '审批表已撤回'].includes(slotProps.row.state)"
-          >
+          <t-button theme="danger"
+                    v-if="['产学研未通过', '第一作者未通过', '审批表已撤回'].includes(slotProps.row.state)">
             <template #icon>
               <t-icon name="delete"></t-icon>
             </template>
@@ -158,11 +142,11 @@ import { BASE_URL, INITIATED_TABLE_COLUMNS } from "./constants";
 import { useSettingStore } from "@/store";
 import { prefix } from "@/config/global";
 import { request } from "@/utils/request";
-import { isEmpty } from "@/utils/validate";
 import { MessagePlugin } from "tdesign-vue-next";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { chargeTransferState } from "@/utils/transferState";
 import router from "@/router";
+import { isNotEmpty } from "@/utils/validate";
 
 const store = useSettingStore();
 
@@ -203,36 +187,39 @@ const initiatedTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-  getInitiatedTableData(BASE_URL.getApplicationPage);
+  let requestUrl = setObjToUrlParams(BASE_URL.getApplicationPage, filterCondition.value);
+  getTableData(requestUrl);
 });
 /**
  * 操作钩子
  */
 const typeChange = () => {
-  filterCondition.value.currPage = 1;
   initiatedTable.value.pagination.current = 1;
-  getInitiatedTableData(BASE_URL.getApplicationPage);
+  filterCondition.value.currPage = initiatedTable.value.pagination.current;
+  let requestUrl = setObjToUrlParams(BASE_URL.getApplicationPage, filterCondition.value);
+  getTableData(requestUrl);
 };
 const isZLDYZZChange = () => {
-  filterCondition.value.currPage = 1;
   initiatedTable.value.pagination.current = 1;
-  getInitiatedTableData(BASE_URL.getApplicationPage);
+  filterCondition.value.currPage = initiatedTable.value.pagination.current;
+  let requestUrl = setObjToUrlParams(BASE_URL.getApplicationPage, filterCondition.value);
+  getTableData(requestUrl);
 };
 const initiatedTablePageChange = (curr) => {
   console.log("分页变化", curr);
   initiatedTable.value.pagination.current = curr.current;
   initiatedTable.value.pagination.pageSize = curr.pageSize;
-  filterCondition.value.currPage = curr.current;
-  filterCondition.value.size = curr.pageSize;
-  getInitiatedTableData(BASE_URL.getApplicationPage);
+  filterCondition.value.currPage = initiatedTable.value.pagination.current;
+  filterCondition.value.size = initiatedTable.value.pagination.pageSize;
+  let requestUrl = setObjToUrlParams(BASE_URL.getApplicationPage, filterCondition.value);
+  getTableData(requestUrl);
 };
 
 /**
  * 业务相关
  */
-const getInitiatedTableData = (requestUrl) => {
+const getTableData = (requestUrl) => {
   initiatedTable.value.tableLoading = true;
-  requestUrl = setObjToUrlParams(requestUrl, filterCondition.value);
   request.get({
     url: requestUrl
   }).then(res => {
@@ -241,7 +228,7 @@ const getInitiatedTableData = (requestUrl) => {
     initiatedTable.value.tableData = res.records;
     for (let i = 0; i < initiatedTable.value.tableData.length; i++) {
       initiatedTable.value.tableData[i].index = (initiatedTable.value.pagination.current - 1) * initiatedTable.value.pagination.pageSize + i + 1;
-      if (!isEmpty(initiatedTable.value.tableData[i].patentPrice)) {
+      if (isNotEmpty(initiatedTable.value.tableData[i].patentPrice)) {
         initiatedTable.value.tableData[i].patentPrice += " 万元";
         initiatedTable.value.tableData[i].state = chargeTransferState(initiatedTable.value.tableData[i]);
       }

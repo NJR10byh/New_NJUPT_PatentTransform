@@ -195,8 +195,8 @@ import {
 import { useSettingStore } from "@/store";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
-import { isEmpty } from "@/utils/validate";
 import { downloadFile } from "@/utils/download";
+import { isNotEmpty } from "@/utils/validate";
 
 const store = useSettingStore();
 
@@ -492,7 +492,7 @@ const getPatentTableData = (requestUrl) => {
     dataCenterPatentTable.value.tableData = res.records;
     for (let i = 0; i < dataCenterPatentTable.value.tableData.length; i++) {
       dataCenterPatentTable.value.tableData[i].index = (dataCenterPatentTable.value.pagination.current - 1) * dataCenterPatentTable.value.pagination.pageSize + i + 1;
-      if (!isEmpty(dataCenterPatentTable.value.tableData[i].patentPrice)) {
+      if (isNotEmpty(dataCenterPatentTable.value.tableData[i].patentPrice)) {
         dataCenterPatentTable.value.tableData[i].patentPrice += " 万元";
       }
     }
@@ -513,7 +513,7 @@ const getContractTableData = (requestUrl) => {
     dataCenterContractTable.value.tableData = res.records;
     for (let i = 0; i < dataCenterContractTable.value.tableData.length; i++) {
       dataCenterContractTable.value.tableData[i].index = (dataCenterContractTable.value.pagination.current - 1) * dataCenterContractTable.value.pagination.pageSize + i + 1;
-      if (!isEmpty(dataCenterContractTable.value.tableData[i].totalTransferAmount)) {
+      if (isNotEmpty(dataCenterContractTable.value.tableData[i].totalTransferAmount)) {
         dataCenterContractTable.value.tableData[i].totalTransferAmount += " 万元";
       }
     }
@@ -532,7 +532,7 @@ const searchData = () => {
   switch (tableType.value) {
     case "1":
       /* 各种范围 */
-      if (patentPriceRange.value.length != 0 && !isEmpty(patentPriceRange.value[0]) && !isEmpty(patentPriceRange.value[1])) {
+      if (patentPriceRange.value.length != 0 && isNotEmpty(patentPriceRange.value[0]) && isNotEmpty(patentPriceRange.value[1])) {
         patentSearch.value.searchCondition.patentPriceBegin = patentPriceRange.value[0];
         patentSearch.value.searchCondition.patentPriceEnd = patentPriceRange.value[1];
       }
@@ -566,11 +566,11 @@ const searchData = () => {
       break;
     case "2":
       /* 各种范围 */
-      if (contractCodeRange.value.length != 0 && !isEmpty(contractCodeRange.value[0]) && !isEmpty(contractCodeRange.value[1])) {
+      if (contractCodeRange.value.length != 0 && isNotEmpty(contractCodeRange.value[0]) && isNotEmpty(contractCodeRange.value[1])) {
         contractSearch.value.searchCondition.codeBegin = contractCodeRange.value[0];
         contractSearch.value.searchCondition.codeEnd = contractCodeRange.value[1];
       }
-      if (contractAmountRange.value.length != 0 && !isEmpty(contractAmountRange.value[0]) && !isEmpty(contractAmountRange.value[1])) {
+      if (contractAmountRange.value.length != 0 && isNotEmpty(contractAmountRange.value[0]) && isNotEmpty(contractAmountRange.value[1])) {
         contractSearch.value.searchCondition.amountBegin = contractAmountRange.value[0];
         contractSearch.value.searchCondition.amountEnd = contractAmountRange.value[1];
       }

@@ -13,41 +13,41 @@ export const ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS = [
     title: "序号",
     align: "center",
     colKey: "index",
-    width: 40
+    width: 50
   },
   {
     title: "专利名称",
     align: "left",
     colKey: "zlmc",
-    width: 120,
+    width: 150,
     ellipsis: true
   },
   {
     title: "申请日期",
     align: "center",
     colKey: "zlapplyrq",
-    width: 100,
+    width: 80,
     ellipsis: true
   },
   {
     title: "授权日期",
     align: "center",
     colKey: "zlsqrq",
-    width: 100,
+    width: 80,
     ellipsis: true
   },
   {
     title: "应缴日期",
     align: "center",
     colKey: "annualFeePaymentDate",
-    width: 100,
+    width: 80,
     ellipsis: true
   },
   {
     title: "短信提醒日期",
     align: "center",
     colKey: "smsReminderDate",
-    width: 100,
+    width: 80,
     ellipsis: true
   }
 ];

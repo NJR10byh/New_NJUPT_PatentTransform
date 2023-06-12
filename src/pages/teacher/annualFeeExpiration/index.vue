@@ -18,6 +18,11 @@
       :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
       size="small"
     >
+      <template #annualFeePaymentDate="slotProps">
+        <t-tag theme="warning" variant="light-outline">
+          {{ slotProps.row.annualFeePaymentDate }}
+        </t-tag>
+      </template>
       <template #smsReminderDate="slotProps">
         <div style="display: flex;justify-content:center;align-items: center;">
           {{ slotProps.row.smsReminderDate }}
@@ -123,11 +128,6 @@ const getTableData = (requestUrl) => {
     .cardTitle {
       display: flex;
       align-items: center;
-
-      .inputStyle {
-        width: 240px;
-        margin-right: 10px;
-      }
     }
   }
 
