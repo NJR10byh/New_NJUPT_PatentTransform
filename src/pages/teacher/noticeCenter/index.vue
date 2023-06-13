@@ -48,13 +48,31 @@
     </t-row>
     <t-list split v-for="item in NOTICE_LIST" :key="item.noticeId">
       <t-list-item>
-        <t-link theme="primary">{{ item.noticeTitle }}</t-link>
+        <t-link theme="primary" @click="getNoticeDetail(item)">{{ item.noticeTitle }}</t-link>
         <template #action>
-          <span style="color: var(--td-gray-color-5);font-weight: bold;">{{ item.updateTime }}</span>
+          <span style="color: var(--td-gray-color-6);font-weight: bold;">{{ item.updateTime }}</span>
         </template>
       </t-list-item>
     </t-list>
+    <t-pagination
+      style="margin-top: 15px;"
+      :total="noticeInfo.total"
+      showPageNumber
+      :showPageSize="false"
+      showPreviousAndNextBtn
+      totalContent
+      @change="noticePageChange"
+    />
   </t-card>
+
+  <t-dialog
+    v-model:visible="noticeInfo.noticeDetailVisible"
+    :header="noticeInfo.noticeDetail.noticeTitle"
+    :body="noticeInfo.noticeDetail.content"
+    :footer="false"
+    attach="body"
+    width="800px"
+  />
 </template>
 
 <script setup lang="ts">
@@ -76,6 +94,16 @@ const IMAGE_LIST = ref([
 ]);
 const VIDEO_PLAY_LIST = ref([]);
 const NOTICE_LIST = ref([]);
+
+const noticeInfo = ref({
+  total: 0,
+  noticeDetailVisible: false,
+  noticeDetail: {
+    noticeTitle: "",
+    content: "",
+    updateTime: ""
+  }
+});
 
 
 /**
@@ -99,6 +127,16 @@ onMounted(() => {
 /**
  * 操作钩子
  */
+const noticePageChange = (pageInfo) => {
+  console.log(pageInfo);
+  let obj = {
+    currPage: pageInfo.current,
+    size: pageInfo.pageSize
+  };
+  let notice_data_request = setObjToUrlParams(BASE_URL.getNoticeModelPage, obj);
+  // 获取通知数据
+  getNoticeData(notice_data_request);
+};
 
 /**
  * 业务相关
@@ -109,7 +147,6 @@ const getVideoData = (requestUrl) => {
   request.get({
     url: requestUrl
   }).then(res => {
-    console.log(res);
     for (let i = 0; i < res.length; i++) {
       let video_play = {
         index: 0,
@@ -138,11 +175,20 @@ const getNoticeData = (requestUrl) => {
     url: requestUrl
   }).then(res => {
     console.log(res);
+    noticeInfo.value.total = res.total;
     NOTICE_LIST.value = res.records;
   }).catch(err => {
     MessagePlugin.error(err.message);
   }).finally(() => {
   });
+};
+
+// 获取通知详情
+const getNoticeDetail = (item) => {
+  noticeInfo.value.noticeDetail.noticeTitle = item.noticeTitle;
+  noticeInfo.value.noticeDetail.content = item.content;
+  noticeInfo.value.noticeDetail.updateTime = item.updateTime;
+  noticeInfo.value.noticeDetailVisible = true;
 };
 </script>
 <style lang="less" scoped>
