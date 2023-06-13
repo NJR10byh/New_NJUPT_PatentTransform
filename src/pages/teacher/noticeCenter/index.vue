@@ -10,7 +10,7 @@
       <div class="cardTitle">相关资料</div>
     </t-row>
     <div class="resouces">
-      <div class="tdesign-demo-image-viewer__base" v-for="(item,index) in IMAGE_LIST">
+      <div class="image-video-viewer" v-for="(item,index) in IMAGE_LIST">
         <t-image-viewer :key="item" :default-index="index" :images="IMAGE_LIST">
           <template #trigger="{ open }">
             <div class="tdesign-demo-image-viewer__ui-image">
@@ -22,12 +22,128 @@
           </template>
         </t-image-viewer>
       </div>
+      <div class="image-video-viewer" v-for="item in VIDEO_PLAY_LIST" :key="item.fileId">
+        <div class="muiPlayer">
+          <mui-video
+            :container="'id' + item.fileId"
+            :src="item.src"
+            :title="item.title"
+          />
+        </div>
+        <div class="videoInfo">
+          <div class="video_title">
+            {{ item.title }}
+          </div>
+          <div class="video_watchNum">
+            <t-icon name="time" style="margin-right: 3px"></t-icon>
+            <span>{{ item.gmtCreate }}</span>
+          </div>
+        </div>
+      </div>
     </div>
+  </t-card>
+  <t-card class="notice-center-card">
+    <t-row justify="start" class="cardTop">
+      <div class="cardTitle">通知</div>
+    </t-row>
+    <t-list split v-for="item in NOTICE_LIST" :key="item.noticeId">
+      <t-list-item>
+        <t-link theme="primary">{{ item.noticeTitle }}</t-link>
+        <template #action>
+          <span style="color: var(--td-gray-color-5);font-weight: bold;">{{ item.updateTime }}</span>
+        </template>
+      </t-list-item>
+    </t-list>
   </t-card>
 </template>
 
 <script setup lang="ts">
-import { IMAGE_LIST } from "@/pages/cxy/noticeCenter/constants";
+import { onMounted, ref } from "vue";
+import { BASE_URL, VIDEO_PREFIX } from "./constants";
+import { setObjToUrlParams } from "@/utils/request/utils";
+import { request } from "@/utils/request";
+import { MessagePlugin } from "tdesign-vue-next";
+
+// 引入MuiPlayer
+import muiVideo from "@/components/muiPlayer/index.vue";
+
+
+/**
+ * data
+ */
+const IMAGE_LIST = ref([
+  "https://cgzh.njupt.edu.cn/video/lct.png"
+]);
+const VIDEO_PLAY_LIST = ref([]);
+const NOTICE_LIST = ref([]);
+
+
+/**
+ * methods区
+ */
+/* 生命周期 */
+// 组件挂载完成后执行
+onMounted(() => {
+  let obj = {
+    currPage: 1,
+    size: 20
+  };
+  // 获取视频数据
+  getVideoData(BASE_URL.getVideoList);
+
+  let notice_data_request = setObjToUrlParams(BASE_URL.getNoticeModelPage, obj);
+  // 获取通知数据
+  getNoticeData(notice_data_request);
+});
+
+/**
+ * 操作钩子
+ */
+
+/**
+ * 业务相关
+ */
+// 获取视频数据
+const getVideoData = (requestUrl) => {
+  VIDEO_PLAY_LIST.value = [];
+  request.get({
+    url: requestUrl
+  }).then(res => {
+    console.log(res);
+    for (let i = 0; i < res.length; i++) {
+      let video_play = {
+        index: 0,
+        title: "",
+        gmtCreate: "",
+        fileId: "",
+        src: ""
+      };
+      video_play.index = i + 1;
+      video_play.title = res[i].title;
+      video_play.gmtCreate = res[i].gmtCreate;
+      video_play.fileId = res[i].fileId;
+      video_play.src = VIDEO_PREFIX + res[i].filename;
+      VIDEO_PLAY_LIST.value.push(video_play);
+    }
+  }).catch(err => {
+    MessagePlugin.error(err.message);
+  }).finally(() => {
+  });
+};
+
+// 获取通知数据
+const getNoticeData = (requestUrl) => {
+  NOTICE_LIST.value = [];
+  request.get({
+    url: requestUrl
+  }).then(res => {
+    console.log(res);
+    NOTICE_LIST.value = res.records;
+  }).catch(err => {
+    MessagePlugin.error(err.message);
+  }).finally(() => {
+  });
+};
 </script>
 <style lang="less" scoped>
 .notice-center-card {
@@ -54,79 +170,93 @@ import { IMAGE_LIST } from "@/pages/cxy/noticeCenter/constants";
     flex-wrap: wrap;
     margin-top: 10px;
 
-    .tdesign-demo-image-viewer__base {
-      width: 25%;
+    .image-video-viewer {
+      width: 24%;
+      min-width: 300px;
       height: 240px;
       margin: 5px;
       border: 4px solid var(--td-bg-color-secondarycontainer);
       border-radius: var(--td-radius-medium);
+
+      .tdesign-demo-image-viewer__ui-image {
+        width: 100%;
+        height: 100%;
+        display: inline-flex;
+        position: relative;
+        justify-content: center;
+        align-items: center;
+        border-radius: var(--td-radius-small);
+        overflow: hidden;
+
+        &--hover {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          left: 0;
+          top: 0;
+          opacity: 0;
+          background-color: rgba(0, 0, 0, 0.6);
+          color: var(--td-text-color-anti);
+          line-height: 22px;
+          transition: 0.2s;
+        }
+      }
+
+      &:hover {
+        .tdesign-demo-image-viewer__ui-image--hover {
+          opacity: 1;
+          cursor: pointer;
+        }
+      }
+
+      .tdesign-demo-image-viewer__ui-image--img {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        cursor: pointer;
+        position: absolute;
+      }
+
+      .muiPlayer {
+        width: 100%;
+        height: 200px;
+      }
+
+      .videoInfo {
+        width: 100%;
+        height: 35px;
+        padding: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        //background: var(--td-bg-color-secondarycontainer);
+        //border-radius: 0 0 var(--td-radius-medium) var(--td-radius-medium);
+        //border: 1px solid red;
+
+        .video_title {
+          font-size: 15px;
+          font-weight: bold;
+        }
+
+        .video_watchNum {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          color: #999;
+        }
+      }
     }
 
-    .tdesign-demo-image-viewer__ui-image {
-      width: 100%;
-      height: 100%;
-      display: inline-flex;
-      position: relative;
-      justify-content: center;
-      align-items: center;
-      border-radius: var(--td-radius-small);
-      overflow: hidden;
-    }
-
-    .tdesign-demo-image-viewer__ui-image--hover {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: absolute;
-      left: 0;
-      top: 0;
-      opacity: 0;
-      background-color: rgba(0, 0, 0, 0.6);
-      color: var(--td-text-color-anti);
-      line-height: 22px;
-      transition: 0.2s;
-    }
-
-    .tdesign-demo-image-viewer__ui-image:hover .tdesign-demo-image-viewer__ui-image--hover {
-      opacity: 1;
-      cursor: pointer;
-    }
-
-    .tdesign-demo-image-viewer__ui-image--img {
-      width: auto;
-      height: auto;
-      max-width: 100%;
-      max-height: 100%;
-      cursor: pointer;
-      position: absolute;
-    }
-
-    .tdesign-demo-image-viewer__ui-image--footer {
-      padding: 0 16px;
-      height: 56px;
-      width: 100%;
-      line-height: 56px;
-      font-size: 16px;
-      position: absolute;
-      bottom: 0;
-      color: var(--td-text-color-anti);
-      background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
-      display: flex;
-      box-sizing: border-box;
-    }
-
-    .tdesign-demo-image-viewer__ui-image--title {
-      flex: 1;
-    }
-
-    .tdesign-demo-popup__reference {
-      margin-left: 16px;
-    }
-
-    .tdesign-demo-image-viewer__ui-image--icons .tdesign-demo-icon {
-      cursor: pointer;
+    .video-viewer {
+      width: 24%;
+      height: 240px;
+      margin: 5px;
+      border: 4px solid var(--td-bg-color-secondarycontainer);
+      border-radius: var(--td-radius-medium);
     }
   }
 }

@@ -4,7 +4,35 @@
  * @description
  * @version 0.1.0
  */
-export const IMAGE_LIST = ["https://cgzh.njupt.edu.cn/video/lct.png", "https://cgzh.njupt.edu.cn/video/lct.png"];
+export const VIDEO_MANAGE_TABLE_COLUMNS = [
+  // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
+  {
+    title: "序号",
+    align: "center",
+    colKey: "index",
+    width: 50
+  },
+  {
+    title: "视频名称",
+    align: "center",
+    colKey: "title",
+    width: 120,
+    ellipsis: true
+  },
+  {
+    title: "最后更新日期",
+    align: "center",
+    colKey: "gmtCreate",
+    width: 100,
+    ellipsis: true
+  },
+  {
+    fixed: "right",
+    colKey: "settings",
+    width: 50,
+    title: "操作"
+  }
+];
 
 export const NOTICE_MANAGE_TABLE_COLUMNS = [
   // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
