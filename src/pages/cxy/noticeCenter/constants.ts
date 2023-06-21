@@ -44,7 +44,7 @@ export const NOTICE_MANAGE_TABLE_COLUMNS = [
   },
   {
     title: "通知标题",
-    align: "center",
+    align: "left",
     colKey: "noticeTitle",
     width: 200,
     ellipsis: true

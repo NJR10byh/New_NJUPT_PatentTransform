@@ -161,7 +161,7 @@
           <div class="cardTitle">管理</div>
         </t-row>
         <t-row justify="start" class="module">
-          <t-button class="moduleBtn" theme="warning" size="large">
+          <t-button class="moduleBtn" theme="warning" size="large" @click="To_ChangeDistribution">
             <template #icon>
               <t-icon name="chart"></t-icon>
             </template>
@@ -215,7 +215,7 @@ import { useUserStore } from "@/store";
 import { BASE_URL, TEAM_MEMBERS } from "./constants";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
-import { ID_card, phone_number } from "../../../utils/antianaphylaxis";
+import { ID_card, phone_number } from "@/utils/antianaphylaxis";
 import router from "@/router";
 import { getRoleName } from "@/utils/auth";
 
@@ -286,6 +286,10 @@ const getBasicInfo = () => {
   });
 };
 
+// 调整收益分配比例
+const To_ChangeDistribution = () => {
+  router.push("/userCenter/changeDistribution");
+};
 // 用户列表
 const To_UserList = () => {
   router.push("/userCenter/userList");

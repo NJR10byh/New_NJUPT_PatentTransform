@@ -50,7 +50,7 @@
       <t-list-item>
         <t-link theme="primary" @click="getNoticeDetail(item)">{{ item.noticeTitle }}</t-link>
         <template #action>
-          <span style="color: var(--td-gray-color-6);font-weight: bold;">{{ item.updateTime }}</span>
+          <span style="color: var(--td-gray-color-6);">{{ item.updateTime }}</span>
         </template>
       </t-list-item>
     </t-list>

@@ -22,16 +22,22 @@ export default [
         meta: { title: "个人中心", hidden: true, rolePermission: ["root", "teacher", "superadmin", "admin"] }
       },
       {
-        path: "operateLog",
-        name: "operateLog",
-        component: () => import("@/pages/userCenter/operateLog/index.vue"),
-        meta: { title: "操作日志", hidden: true, rolePermission: ["root", "superadmin"] }
+        path: "changeDistribution",
+        name: "changeDistribution",
+        component: () => import("@/pages/userCenter/changeDistribution/index.vue"),
+        meta: { title: "调整收益分配比例", hidden: true, rolePermission: ["root", "superadmin"] }
       },
       {
         path: "userList",
         name: "userList",
         component: () => import("@/pages/userCenter/userList/index.vue"),
         meta: { title: "人员管理", hidden: true, rolePermission: ["root", "superadmin"] }
+      },
+      {
+        path: "operateLog",
+        name: "operateLog",
+        component: () => import("@/pages/userCenter/operateLog/index.vue"),
+        meta: { title: "操作日志", hidden: true, rolePermission: ["root", "superadmin"] }
       }
     ]
   }

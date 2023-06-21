@@ -31,7 +31,7 @@ import { computed, onMounted, ref } from "vue";
 import { prefix } from "@/config/global";
 import { useSettingStore } from "@/store";
 import { useRouter } from "vue-router";
-import { TRANSFER_PRICE_TABLE_COLUMNS } from "./constants";
+import { BASE_URL, TRANSFER_PRICE_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
@@ -74,8 +74,12 @@ const transferPriceTable = ref({
 // 组件挂载完成后执行
 onMounted(() => {
   // 获取表格数据
-  const requestUrl = "/intention/getTransferPriceIntentionPage";
-  getTransferPriceData(requestUrl);
+  let obj = {
+    currPage: transferPriceTable.value.pagination.current,
+    size: transferPriceTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getTransferPriceIntentionPage, obj);
+  getTableData(requestUrl);
 });
 
 /**
@@ -84,23 +88,22 @@ onMounted(() => {
 // 分页钩子
 const transferPriceTablePageChange = (curr) => {
   console.log("分页变化", curr);
-  const requestUrl = "/intention/getTransferPriceIntentionPage";
   transferPriceTable.value.pagination.current = curr.current;
   transferPriceTable.value.pagination.pageSize = curr.pageSize;
-  getTransferPriceData(requestUrl);
+  let obj = {
+    currPage: transferPriceTable.value.pagination.current,
+    size: transferPriceTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getTransferPriceIntentionPage, obj);
+  getTableData(requestUrl);
 };
 
 /**
  * 业务相关
  */
 // 获取表格数据
-const getTransferPriceData = (requestUrl) => {
+const getTableData = (requestUrl) => {
   transferPriceTable.value.tableData = [];
-  let obj = {
-    currPage: transferPriceTable.value.pagination.current,
-    size: transferPriceTable.value.pagination.pageSize
-  };
-  requestUrl = setObjToUrlParams(requestUrl, obj);
   transferPriceTable.value.tableLoading = true;
   request.get({
     url: requestUrl

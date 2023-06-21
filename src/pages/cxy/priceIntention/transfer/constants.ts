@@ -4,6 +4,10 @@
  * @description
  * @version 0.1.0
  */
+export const BASE_URL = {
+  getTransferPriceIntentionPage: "/intention/getTransferPriceIntentionPage"
+};
+
 export const TRANSFER_PRICE_TABLE_COLUMNS = [
   // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
   {

@@ -26,7 +26,6 @@
       :data="videoManageTable.tableData"
       :columns="VIDEO_MANAGE_TABLE_COLUMNS"
       row-key="id"
-
       hover
       stripe
       :loading="videoManageTable.tableLoading"
@@ -57,7 +56,6 @@
       :data="noticeManageTable.tableData"
       :columns="NOTICE_MANAGE_TABLE_COLUMNS"
       row-key="id"
-
       hover
       stripe
       :pagination="noticeManageTable.pagination"
