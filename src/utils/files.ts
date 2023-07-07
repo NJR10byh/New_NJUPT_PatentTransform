@@ -1,18 +1,34 @@
 /**
  * @author baoyuhao
- * @date 2023/4/21 10:42:11
- * @description 下载
+ * @date 2023/7/7 15:42:07
+ * @description
  * @version 0.1.0
  */
+
 import { request } from "@/utils/request";
 import { LoadingPlugin, MessagePlugin, NotifyPlugin } from "tdesign-vue-next";
 import { isNotEmpty } from "@/utils/validate";
+import { useFilesStore } from "@/store";
 
-const link = document.createElement("a");
-link.style.display = "none";
-document.body.appendChild(link);
+const filesStore = useFilesStore();
 
+/**
+ * 文件信息入缓存
+ * @param filesInfo
+ */
+export const fileInfoToCache = async (filesInfo) => {
+  filesStore.getFilesInfo(filesInfo);
+};
+
+/**
+ * 下载文件
+ * @param requestUrl
+ * @param requestBody
+ */
 export const downloadFile = async (requestUrl, requestBody) => {
+  const link = document.createElement("a");
+  link.style.display = "none";
+  document.body.appendChild(link);
   LoadingPlugin(true);
   await request.post({
     url: requestUrl,

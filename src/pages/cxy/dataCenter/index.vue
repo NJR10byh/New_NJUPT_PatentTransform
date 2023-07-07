@@ -195,7 +195,7 @@ import {
 import { useSettingStore } from "@/store";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
-import { downloadFile } from "@/utils/download";
+import { downloadFile } from "@/utils/files";
 import { isNotEmpty } from "@/utils/validate";
 
 const store = useSettingStore();

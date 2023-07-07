@@ -68,7 +68,7 @@ const FORM_RULES = {
 const type = ref("password");
 
 const loginData = ref({
-  username: "teacher",
+  username: "cxy",
   password: "abc123123"
 });
 const showPsw = ref(false);

@@ -10,7 +10,7 @@
       <!-- 进行中 -->
       <t-tab-panel class="tabPanel" :value="tabsData[0].value" :label="tabsData[0].label">
         <t-row justify="end" class="cardTop">
-          <t-button theme="primary" :href="PUBLICITY_PAGE" target="_blank">
+          <t-button theme="primary" :href="BASE_URL.PUBLICITY_PAGE" target="_blank">
             <template #icon>
               <t-icon name="link"></t-icon>
             </template>
@@ -136,7 +136,7 @@
                 确认流程结束
               </t-button>
 
-              <t-button theme="primary">
+              <t-button theme="primary" @click="To_FilesManage(slotProps.row)">
                 <template #icon>
                   <t-icon name="folder-open"></t-icon>
                 </template>
@@ -174,7 +174,6 @@
           :data="contractManageTable.tableData"
           :columns="CONTRACT_MANAGE_TABLE_COLUMNS"
           row-key="id"
-
           hover
           stripe
           table-layout="auto"
@@ -239,7 +238,7 @@
                 已提现
               </t-button>
 
-              <t-button theme="primary">
+              <t-button theme="primary" @click="To_FilesManage(slotProps.row)">
                 <template #icon>
                   <t-icon name="folder-open"></t-icon>
                 </template>
@@ -257,17 +256,15 @@
 import { computed, onMounted, ref } from "vue";
 import { prefix } from "@/config/global";
 import { useSettingStore } from "@/store";
-import { CONTRACT_MANAGE_TABLE_COLUMNS, PUBLICITY_PAGE } from "./constants";
+import { BASE_URL, CONTRACT_MANAGE_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
 import { chargeContractState } from "@/utils/contractState";
+import { fileInfoToCache } from "@/utils/files";
+import router from "@/router";
 
 const store = useSettingStore();
-
-// baseUrl
-const baseUrl_transferring = ref("/contract/getTransferringContractPage");
-const baseUrl_transferred = ref("/contract/getTransferredContractPage");
 /**
  * data
  */
@@ -316,7 +313,7 @@ const contractManageTable = ref({
 // 组件挂载完成后执行
 onMounted(() => {
   // 获取进行中数据
-  getTableData(baseUrl_transferring.value);
+  getTableData(BASE_URL.getTransferringContractPage);
 });
 
 /**
@@ -335,26 +332,26 @@ const contractManageTablePageChange = (curr) => {
   console.log("分页变化", curr);
   contractManageTable.value.pagination.current = curr.current;
   contractManageTable.value.pagination.pageSize = curr.pageSize;
-  getTableData(baseUrl_transferring.value);
+  getTableData(BASE_URL.getTransferringContractPage);
 };
 const passedTablePageChange = (curr) => {
   console.log("分页变化", curr);
   contractManageTable.value.pagination.current = curr.current;
   contractManageTable.value.pagination.pageSize = curr.pageSize;
-  getTableData(baseUrl_transferred.value);
+  getTableData(BASE_URL.getTransferredContractPage);
 };
 // Tab页切换钩子
 const tabChange = async (value) => {
   contractManageTable.value.pagination.current = 1;
   switch (value) {
     case 1:
-      await getTableData(baseUrl_transferring.value);
+      await getTableData(BASE_URL.getTransferringContractPage);
       break;
     case 2:
-      await getTableData(baseUrl_transferred.value);
+      await getTableData(BASE_URL.getTransferredContractPage);
       break;
     default:
-      await getTableData(baseUrl_transferring.value);
+      await getTableData(BASE_URL.getTransferringContractPage);
       break;
   }
 };
@@ -385,6 +382,19 @@ const getTableData = (requestUrl) => {
     MessagePlugin.error(err.message);
   }).finally(() => {
     contractManageTable.value.tableLoading = false;
+  });
+};
+
+const To_FilesManage = (row) => {
+  console.log(row);
+  let obj = {
+    contractInfoId: row.contractInfoId
+  };
+  request.get({
+    url: setObjToUrlParams(BASE_URL.getFileListByContractInfoId, obj)
+  }).then(async res => {
+    await fileInfoToCache(res);
+    await router.push("/filesManage/home");
   });
 };
 </script>

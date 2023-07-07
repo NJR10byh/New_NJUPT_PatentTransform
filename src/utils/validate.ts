@@ -6,7 +6,7 @@
  */
 
 export const isEmpty = (val) => {
-  return val == null || val == "" || val == undefined;
+  return val == null || val == "" || val == undefined || val.length === 0;
 };
 
 export const isNotEmpty = (val) => {
