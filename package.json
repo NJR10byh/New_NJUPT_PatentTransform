@@ -14,8 +14,10 @@
     "stylelint:fix": "stylelint --fix src/**/*.{html,vue,vss,sass,less}",
     "prepare": "node -e \"if(require('fs').existsSync('.git')){process.exit(1)}\" || is-ci || husky install",
     "site:preview": "npm run build && cp -r dist _site",
-    "test": "echo \"no test specified,work in process\"",
-    "test:coverage": "echo \"no test:coverage specified,work in process\""
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@types/nprogress": "^0.2.0",

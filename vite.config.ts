@@ -48,7 +48,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
           // '/patent': {  /* 现网环境 */
           target: "http://cgzh.njupt.edu.cn:8080",
           // 允许跨域
-          changeOrigin: true,
+          changeOrigin: true
           // pathRewrite: { // 在发出请求后将 /patent 替换为''空值，这样不影响接口请求
           //   '^/patent': ''
           // }
