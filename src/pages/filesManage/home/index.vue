@@ -69,7 +69,8 @@
           </t-link>
           <t-link
             v-if="['收益分配','到款凭证','其他相关文件'].includes(slotProps.row.fileName)"
-            :disabled="isEmpty(slotProps.row.updateTime)" style="margin-left: 5px;">
+            :disabled="isEmpty(slotProps.row.updateTime)" style="margin-left: 5px;"
+            @click="openFolder(slotProps.row.fileName)">
             {{ slotProps.row.fileName }}
           </t-link>
         </div>
@@ -215,6 +216,7 @@ onMounted(() => {
 /**
  * 业务相关
  */
+// 获取表格数据
 const getTableData = (filesInfo) => {
   filesManageHomeTable.value.tableData = [];
   filesManageHomeTable.value.tableLoading = true;
@@ -266,8 +268,15 @@ const getTableData = (filesInfo) => {
 
   filesManageHomeTable.value.tableLoading = false;
 };
+
+// 返回上个页面
 const back = () => {
   router.go(-1);
+};
+
+// 打开文件夹
+const openFolder = (folderName) => {
+  console.log(folderName);
 };
 </script>
 

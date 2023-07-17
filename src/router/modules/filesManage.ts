@@ -19,6 +19,12 @@ export default [
         name: "filesManageHome",
         component: () => import("@/pages/filesManage/home/index.vue"),
         meta: { title: "个人中心", hidden: true, rolePermission: ["root", "superadmin", "admin"] }
+      },
+      {
+        path: "incomeDistribution",
+        name: "filesManageIncomeDistribution",
+        component: () => import("@/pages/filesManage/incomeDistribution/index.vue"),
+        meta: { title: "收益分配", hidden: true, rolePermission: ["root", "superadmin", "admin"] }
       }
     ]
   }
