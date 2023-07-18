@@ -25,6 +25,18 @@ export default [
         name: "filesManageIncomeDistribution",
         component: () => import("@/pages/filesManage/incomeDistribution/index.vue"),
         meta: { title: "收益分配", hidden: true, rolePermission: ["root", "superadmin", "admin"] }
+      },
+      {
+        path: "incomeDistributionDetail",
+        name: "filesManageIncomeDistributionDetail",
+        component: () => import("@/pages/filesManage/incomeDistribution/detail.vue"),
+        meta: { title: "收益分配详细", hidden: true, rolePermission: ["root", "superadmin", "admin"] }
+      },
+      {
+        path: "otherFiles",
+        name: "filesManageOtherFiles",
+        component: () => import("@/pages/filesManage/otherFiles/index.vue"),
+        meta: { title: "其他相关文件", hidden: true, rolePermission: ["root", "superadmin", "admin"] }
       }
     ]
   }

@@ -1,31 +1,28 @@
 /**
  * @author baoyuhao
- * @date 2023/7/7 16:41:14
+ * @date 2023/7/18 16:36:07
  * @description
  * @version 0.1.0
  */
-
-export const BASE_URL = {};
-
-export const FILES_MANAGE_HOME_TABLE_COLUMNS = [
-  { colKey: "row-select", type: "multiple", width: 30, fixed: "left" },
+export const FILES_MANAGE_OTHER_FILES_TABLE_COLUMNS = [
+  { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
   {
     title: "文件名",
     align: "left",
-    colKey: "fileName",
-    width: 120,
+    colKey: "fileDisplayName",
+    width: 200,
     ellipsis: true
   },
   {
     title: "操作",
     align: "left",
     colKey: "settings",
-    width: 300
+    width: 100
   },
   {
     title: "更新时间",
     align: "center",
-    colKey: "updateTime",
+    colKey: "gmtCreate",
     width: 80
   }
 ];

@@ -56,20 +56,14 @@
     >
       <template #fileName="slotProps">
         <div style="display: flex;justify-content: flex-start;align-items: center;">
-          <t-icon name="file-word" style="color: #0058df;"
-                  v-if="['入账通知单','个人所得税备案'].includes(slotProps.row.fileName)"></t-icon>
-          <t-icon name="file-pdf" style="color: #e34d59;"
-                  v-else-if="['合同','合同（已盖章）','科技成果认定清单','发票','专利证书'].includes(slotProps.row.fileName)"></t-icon>
-          <t-icon name="folder" style="color: #ebb105;"
-                  v-else-if="['到款凭证','收益分配','其他相关文件'].includes(slotProps.row.fileName)"></t-icon>
+          <t-icon :name="getFileIcon(slotProps.row.fileName)" :style="getFileIconColor(slotProps.row.fileName)" />
           <t-link
             v-if="['合同','合同（已盖章）','入账通知单','科技成果认定清单','发票','专利证书','个人所得税备案'].includes(slotProps.row.fileName)"
             :disabled="isEmpty(slotProps.row.updateTime)" style="margin-left: 5px;">
             {{ slotProps.row.fileName }}
           </t-link>
           <t-link
-            v-if="['收益分配','到款凭证','其他相关文件'].includes(slotProps.row.fileName)"
-            :disabled="isEmpty(slotProps.row.updateTime)" style="margin-left: 5px;"
+            v-if="['收益分配','到款凭证','其他相关文件'].includes(slotProps.row.fileName)" style="margin-left: 5px;"
             @click="openFolder(slotProps.row.fileName)">
             {{ slotProps.row.fileName }}
           </t-link>
@@ -193,7 +187,7 @@ const filesManageHomeTable = ref({
     },
     {
       fileName: "其他相关文件",
-      updateTime: isEmpty(filesStore.filesInfo.otherList) ? "" : filesStore.filesInfo.otherList[filesStore.filesInfo.otherList.length - 1].gmtCreate,
+      updateTime: "",
       fileId: ""
     }
 
@@ -216,10 +210,36 @@ onMounted(() => {
 /**
  * 业务相关
  */
+// 根据文件类型获取图标名称
+const getFileIcon = (fileName) => {
+  if (["入账通知单", "个人所得税备案"].includes(fileName)) {
+    return "file-word";
+  } else if (["合同", "合同（已盖章）", "科技成果认定清单", "发票", "专利证书"].includes(fileName)) {
+    return "file-pdf";
+  } else if (["到款凭证", "收益分配", "其他相关文件"].includes(fileName)) {
+    return "folder";
+  }
+  // 返回默认图标名称
+  return "file-unknown";
+};
+
+// 根据文件类型获取图标颜色
+const getFileIconColor = (fileName) => {
+  if (["入账通知单", "个人所得税备案"].includes(fileName)) {
+    return { color: "#0058df" };
+  } else if (["合同", "合同（已盖章）", "科技成果认定清单", "发票", "专利证书"].includes(fileName)) {
+    return { color: "#e34d59" };
+  } else if (["到款凭证", "收益分配", "其他相关文件"].includes(fileName)) {
+    return { color: "#ebb105" };
+  }
+  // 返回默认图标颜色
+  return { color: "#0058df" };
+};
 // 获取表格数据
 const getTableData = (filesInfo) => {
   filesManageHomeTable.value.tableData = [];
   filesManageHomeTable.value.tableLoading = true;
+  const tableData = [];
   let obj = {
     fileName: "",
     updateTime: "",
@@ -228,44 +248,42 @@ const getTableData = (filesInfo) => {
   obj.fileName = "合同";
   obj.updateTime = isEmpty(filesInfo.emptyContract) ? "" : filesInfo.emptyContract.gmtCreate;
   obj.fileId = isEmpty(filesInfo.emptyContract) ? "" : filesInfo.emptyContract.fileId;
-  filesManageHomeTable.value.tableData.push(obj);
+  tableData.push(obj);
 
   obj.fileName = "合同（已盖章）";
   obj.updateTime = isEmpty(filesInfo.contract) ? "" : filesInfo.contract.gmtCreate;
   obj.fileId = isEmpty(filesInfo.contract) ? "" : filesInfo.contract.fileId;
-  filesManageHomeTable.value.tableData.push(obj);
+  tableData.push(obj);
 
   obj.fileName = "到款凭证";
   obj.updateTime = isEmpty(filesInfo.voucherList) ? "" : filesInfo.voucherList[filesInfo.voucherList.length - 1].gmtCreate;
-  filesManageHomeTable.value.tableData.push(obj);
+  tableData.push(obj);
 
   obj.fileName = "科技成果认定清单";
   obj.updateTime = isEmpty(filesInfo.checklist) ? "" : filesInfo.checklist.gmtCreate;
   obj.fileId = isEmpty(filesInfo.checklist) ? "" : filesInfo.checklist.fileId;
-  filesManageHomeTable.value.tableData.push(obj);
+  tableData.push(obj);
 
   obj.fileName = "入账通知单";
   obj.updateTime = isEmpty(filesInfo.accounting) ? "" : filesInfo.accounting.gmtCreate;
   obj.fileId = isEmpty(filesInfo.accounting) ? "" : filesInfo.accounting.fileId;
-  filesManageHomeTable.value.tableData.push(obj);
+  tableData.push(obj);
 
   obj.fileName = "发票";
   obj.updateTime = isEmpty(filesInfo.invoice) ? "" : filesInfo.invoice.gmtCreate;
   obj.fileId = isEmpty(filesInfo.invoice) ? "" : filesInfo.invoice.fileId;
-  filesManageHomeTable.value.tableData.push(obj);
+  tableData.push(obj);
 
   obj.fileName = "收益分配";
   obj.updateTime = "";
   obj.fileId = "";
-  filesManageHomeTable.value.tableData.push(obj);
+  tableData.push(obj);
 
   obj.fileName = "其他相关文件";
   obj.updateTime = "";
   obj.fileId = "";
-  filesManageHomeTable.value.tableData.push(obj);
-
-  console.log(filesManageHomeTable.value.tableData);
-
+  tableData.push(obj);
+  filesManageHomeTable.value.tableData = tableData;
   filesManageHomeTable.value.tableLoading = false;
 };
 
@@ -276,7 +294,14 @@ const back = () => {
 
 // 打开文件夹
 const openFolder = (folderName) => {
-  console.log(folderName);
+  switch (folderName) {
+    case "收益分配":
+      router.push("/filesManage/incomeDistribution");
+      break;
+    case "其他相关文件":
+      router.push("/filesManage/otherFiles");
+      break;
+  }
 };
 </script>
 

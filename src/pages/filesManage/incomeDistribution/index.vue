@@ -29,7 +29,7 @@
     </t-row>
   </t-card>
 
-  <t-card class="files-manage-home-card">
+  <t-card class="files-manage-income-distribution-card">
     <t-table
       :data="filesManageIncomeDistributionTable.tableData"
       :columns="FILES_MANAGE_INCOME_DISTRIBUTION_TABLE_COLUMNS"
@@ -41,16 +41,13 @@
       :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
       size="small"
     >
-      <template #fileName="slotProps">
+      <template #zlmc="slotProps">
         <div style="display: flex;justify-content: flex-start;align-items: center;">
           <t-icon name="folder" style="color: #ebb105;"></t-icon>
-          <t-link style="margin-left: 5px;">
-            {{ slotProps.row.fileName }}
+          <t-link style="margin-left: 5px;" @click="openFolder(slotProps.row)">
+            {{ slotProps.row.zlmc }}
           </t-link>
         </div>
-      </template>
-      <template #updateTime="slotProps">
-        <div style="color: var(--td-gray-color-7);">{{ slotProps.row.updateTime }}</div>
       </template>
     </t-table>
   </t-card>
@@ -91,7 +88,7 @@ const filesManageIncomeDistributionTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-
+  getTableData();
 });
 /**
  * 操作钩子
@@ -100,9 +97,27 @@ onMounted(() => {
 /**
  * 业务相关
  */
+// 获取文件列表
+const getTableData = () => {
+  filesManageIncomeDistributionTable.value.tableLoading = true;
+  filesManageIncomeDistributionTable.value.tableData = filesStore.filesInfo.patentList;
+  filesManageIncomeDistributionTable.value.tableLoading = false;
+};
 // 返回上个页面
 const back = () => {
   router.go(-1);
+};
+// 查看明细
+const openFolder = (row) => {
+  console.log(row);
+  // 创建响应式对象
+  // const data = reactive({
+  //   row
+  // });
+  router.push({
+    path: "/filesManage/incomeDistributionDetail",
+    query: { zlmc: row.zlmc }
+  });
 };
 </script>
 

@@ -11,16 +11,26 @@ export const FILES_MANAGE_INCOME_DISTRIBUTION_TABLE_COLUMNS = [
   {
     title: "文件名",
     align: "left",
-    colKey: "fileName",
+    colKey: "zlmc",
     width: 120,
+    ellipsis: true
+  }
+];
+
+export const FILES_MANAGE_INCOME_DISTRIBUTION_DETAIL_TABLE_COLUMNS = [
+  { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
+  {
+    title: "文件名",
+    align: "left",
+    colKey: "zlmc",
+    width: 200,
     ellipsis: true
   },
   {
     title: "操作",
     align: "left",
     colKey: "settings",
-    fixed: "right",
-    width: 300
+    width: 100
   },
   {
     title: "更新时间",
