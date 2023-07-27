@@ -13,17 +13,22 @@
       :data="licensePriceTable.tableData"
       :columns="LICENCES_PRICE_TABLE_COLUMNS"
       row-key="id"
-
       stripe
       hover
       :pagination="licensePriceTable.pagination"
       :loading="licensePriceTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
+      :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+      :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
       @page-change="licensePriceTablePageChange"
       style="margin-top: 10px"
-    />
+    >
+      <template #licencePriceIntention="slotProps">
+        <t-tag theme="primary" variant="light-outline">
+          {{ slotProps.row.licencePriceIntention }}
+        </t-tag>
+      </template>
+    </t-table>
   </t-card>
 </template>
 
@@ -31,10 +36,11 @@
 import { computed, onMounted, ref } from "vue";
 import { prefix } from "@/config/global";
 import { useSettingStore } from "@/store";
-import { LICENCES_PRICE_TABLE_COLUMNS } from "./constants";
+import { BASE_URL, LICENCES_PRICE_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
+import { isNotEmpty } from "@/utils/validate";
 
 
 const store = useSettingStore();
@@ -72,35 +78,36 @@ const licensePriceTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-
-  // 获取表格数据
-  const requestUrl = "/intention/getLicencePriceIntentionPage";
-  getLicensePriceData(requestUrl);
+  let obj = {
+    currPage: licensePriceTable.value.pagination.current,
+    size: licensePriceTable.value.pagination.pageSize
+  };
+  const requestUrl = setObjToUrlParams(BASE_URL.getLicencePriceIntentionPage, obj);
+  getTableData(requestUrl);
 });
 
 /**
  * 操作钩子
  */
 // 分页钩子
-const licensePriceTablePageChange = (curr) => {
+const licensePriceTablePageChange = (curr: { current: number; pageSize: number; }) => {
   console.log("分页变化", curr);
-  const requestUrl = "/intention/getLicencePriceIntentionPage";
   licensePriceTable.value.pagination.current = curr.current;
   licensePriceTable.value.pagination.pageSize = curr.pageSize;
-  getLicensePriceData(requestUrl);
+  let obj = {
+    currPage: licensePriceTable.value.pagination.current,
+    size: licensePriceTable.value.pagination.pageSize
+  };
+  const requestUrl = setObjToUrlParams(BASE_URL.getLicencePriceIntentionPage, obj);
+  getTableData(requestUrl);
 };
 
 /**
  * 业务相关
  */
 // 获取表格数据
-const getLicensePriceData = (requestUrl) => {
+const getTableData = (requestUrl: string) => {
   licensePriceTable.value.tableData = [];
-  let obj = {
-    currPage: licensePriceTable.value.pagination.current,
-    size: licensePriceTable.value.pagination.pageSize
-  };
-  requestUrl = setObjToUrlParams(requestUrl, obj);
   licensePriceTable.value.tableLoading = true;
   request.get({
     url: requestUrl
@@ -110,6 +117,9 @@ const getLicensePriceData = (requestUrl) => {
     licensePriceTable.value.pagination.total = res.total;
     for (let i = 0; i < licensePriceTable.value.tableData.length; i++) {
       licensePriceTable.value.tableData[i].index = (licensePriceTable.value.pagination.current - 1) * licensePriceTable.value.pagination.pageSize + i + 1;
+      if (isNotEmpty(licensePriceTable.value.tableData[i].licencePriceIntention)) {
+        licensePriceTable.value.tableData[i].licencePriceIntention += " 万元";
+      }
     }
   }).catch(err => {
     MessagePlugin.error(err.message);

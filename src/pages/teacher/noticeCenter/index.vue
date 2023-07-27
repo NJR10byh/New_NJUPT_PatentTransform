@@ -127,7 +127,7 @@ onMounted(() => {
 /**
  * 操作钩子
  */
-const noticePageChange = (pageInfo) => {
+const noticePageChange = (pageInfo: { current: any; pageSize: any; }) => {
   console.log(pageInfo);
   let obj = {
     currPage: pageInfo.current,
@@ -142,7 +142,7 @@ const noticePageChange = (pageInfo) => {
  * 业务相关
  */
 // 获取视频数据
-const getVideoData = (requestUrl) => {
+const getVideoData = (requestUrl: string) => {
   VIDEO_PLAY_LIST.value = [];
   request.get({
     url: requestUrl
@@ -169,7 +169,7 @@ const getVideoData = (requestUrl) => {
 };
 
 // 获取通知数据
-const getNoticeData = (requestUrl) => {
+const getNoticeData = (requestUrl: string) => {
   NOTICE_LIST.value = [];
   request.get({
     url: requestUrl
@@ -184,10 +184,10 @@ const getNoticeData = (requestUrl) => {
 };
 
 // 获取通知详情
-const getNoticeDetail = (item) => {
-  noticeInfo.value.noticeDetail.noticeTitle = item.noticeTitle;
-  noticeInfo.value.noticeDetail.content = item.content;
-  noticeInfo.value.noticeDetail.updateTime = item.updateTime;
+const getNoticeDetail = (notice: { noticeTitle: string; content: string; updateTime: string; }) => {
+  noticeInfo.value.noticeDetail.noticeTitle = notice.noticeTitle;
+  noticeInfo.value.noticeDetail.content = notice.content;
+  noticeInfo.value.noticeDetail.updateTime = notice.updateTime;
   noticeInfo.value.noticeDetailVisible = true;
 };
 </script>

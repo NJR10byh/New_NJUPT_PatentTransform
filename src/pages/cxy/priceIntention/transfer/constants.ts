@@ -24,7 +24,7 @@ export const TRANSFER_PRICE_TABLE_COLUMNS = [
     ellipsis: true
   },
   {
-    title: "价格意向（万元）",
+    title: "价格意向",
     align: "center",
     colKey: "priceIntention",
     width: 100,

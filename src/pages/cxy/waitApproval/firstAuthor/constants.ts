@@ -4,6 +4,9 @@
  * @description
  * @version 0.1.0
  */
+export const BASE_URL = {
+  getZLDYZZConfirmPage: "/cxy/getZLDYZZConfirmPage"
+};
 export const WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS = [
   {
     title: "序号",

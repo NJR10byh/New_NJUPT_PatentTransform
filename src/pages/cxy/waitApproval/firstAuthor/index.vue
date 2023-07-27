@@ -10,17 +10,21 @@
       :data="waitFirstAuthorApprovalTable.tableData"
       :columns="WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS"
       row-key="id"
-
       hover
       stripe
       :pagination="waitFirstAuthorApprovalTable.pagination"
       :loading="waitFirstAuthorApprovalTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
+      :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+      :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
       @page-change="waitFirstAuthorApprovalTablePageChange"
       size="small"
     >
+      <template #zlmc="slotProps">
+        <t-link theme="primary" @click="getApprovalFormDetail(slotProps.row)">
+          {{ slotProps.row.zlmc }}
+        </t-link>
+      </template>
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
           {{ slotProps.row.zlh }}
@@ -38,13 +42,6 @@
         </t-tag>
       </template>
       <template #settings="slotProps">
-        <t-button theme="primary">
-          <template #icon>
-            <t-icon name="file"></t-icon>
-          </template>
-          查看
-        </t-button>
-
         <t-button theme="success">
           <template #icon>
             <t-icon name="check-circle"></t-icon>
@@ -67,15 +64,14 @@
 import { computed, onMounted, ref } from "vue";
 import { prefix } from "@/config/global";
 import { useSettingStore } from "@/store";
-import { WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS } from "./constants";
+import { BASE_URL, WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
 import { chargeTransferState } from "@/utils/transferState";
+import router from "@/router";
 
 const store = useSettingStore();
-
-const basrUrl = ref("/cxy/getZLDYZZConfirmPage");
 /**
  * data
  */
@@ -90,7 +86,6 @@ const getContainer = () => {
 /**
  * 表格相关
  */
-
 /* 等待第一作者审批表 */
 const waitFirstAuthorApprovalTable = ref({
   tableLoading: false,// 表格加载
@@ -109,33 +104,38 @@ const waitFirstAuthorApprovalTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
+  let obj = {
+    currPage: waitFirstAuthorApprovalTable.value.pagination.current,
+    size: waitFirstAuthorApprovalTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, obj);
   // 获取表格数据
-  getwaitFirstAuthorApprovalData(basrUrl.value);
+  getWaitFirstAuthorApprovalData(requestUrl);
 });
 
 /**
  * 操作钩子
  */
 // 分页钩子
-const waitFirstAuthorApprovalTablePageChange = (curr) => {
+const waitFirstAuthorApprovalTablePageChange = (curr: { current: number; pageSize: number; }) => {
   console.log("分页变化", curr);
   waitFirstAuthorApprovalTable.value.pagination.current = curr.current;
   waitFirstAuthorApprovalTable.value.pagination.pageSize = curr.pageSize;
-  getwaitFirstAuthorApprovalData(basrUrl.value);
+  let obj = {
+    currPage: waitFirstAuthorApprovalTable.value.pagination.current,
+    size: waitFirstAuthorApprovalTable.value.pagination.pageSize
+  };
+  let requestUrl = setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, obj);
+  getWaitFirstAuthorApprovalData(requestUrl);
 };
 
 /**
  * 业务相关
  */
 // 获取表格数据
-const getwaitFirstAuthorApprovalData = (requestUrl) => {
-  waitFirstAuthorApprovalTable.value.tableData = [];
-  let obj = {
-    currPage: waitFirstAuthorApprovalTable.value.pagination.current,
-    size: waitFirstAuthorApprovalTable.value.pagination.pageSize
-  };
-  requestUrl = setObjToUrlParams(requestUrl, obj);
+const getWaitFirstAuthorApprovalData = (requestUrl: string) => {
   waitFirstAuthorApprovalTable.value.tableLoading = true;
+  waitFirstAuthorApprovalTable.value.tableData = [];
   request.get({
     url: requestUrl
   }).then(res => {
@@ -151,6 +151,17 @@ const getwaitFirstAuthorApprovalData = (requestUrl) => {
     MessagePlugin.error(err.message);
   }).finally(() => {
     waitFirstAuthorApprovalTable.value.tableLoading = false;
+  });
+};
+
+// 跳转至审批表详情
+const getApprovalFormDetail = (row: { wid: any; }) => {
+  console.log(row);
+  router.push({
+    name: "approvalFormDetail",
+    query: {
+      wid: row.wid
+    }
   });
 };
 </script>

@@ -51,7 +51,7 @@
       stripe
       :loading="filesManageHomeTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
+      :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
       size="small"
     >
       <template #fileName="slotProps">

@@ -4,6 +4,11 @@
  * @description
  * @version 0.1.0
  */
+export const BASE_URL = {
+  getVideoList: "/file/getVideoList",
+  getNoticePage: "/notice/getNoticePage",
+  getNoticeModelPage: "/notice/getNoticeModelPage"
+};
 export const VIDEO_MANAGE_TABLE_COLUMNS = [
   // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
   {

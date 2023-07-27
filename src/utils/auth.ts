@@ -126,7 +126,7 @@ export const userInfoToCache = async (info) => {
  * 获取权限名称
  * @param role
  */
-export const getRoleName = (role) => {
+export const getRoleName = (role: any) => {
   let roleName = "";
   switch (role) {
     case "root":
@@ -152,5 +152,28 @@ export const getRoleName = (role) => {
       break;
   }
   return roleName;
+};
+
+/**
+ * 根据权限组获取权限名称
+ * @param roleList
+ */
+export const getRoleNameByList = (roleList: string | any[]) => {
+  let roleName = "";
+  const roleMapping = {
+    root: "root",
+    superadmin: "产学研超级管理员",
+    admin: "产学研管理员",
+    teacher: "教师",
+    fzr: "产学研负责人",
+    academy: "学院",
+    finance: "财务处"
+  };
+  for (let i = 0; i < roleList.length; i++) {
+    const role = roleList[i];
+    roleName += roleMapping[role] || ""; // 如果该角色在映射中有对应的名称，则添加到 roleName 中
+  }
+  return roleName;
+
 };
 

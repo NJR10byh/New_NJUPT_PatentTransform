@@ -34,8 +34,8 @@
       :pagination="operateLogTable.pagination"
       :loading="operateLogTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
+      :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+      :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
       @page-change="operateLogTablePageChange"
       size="small"
     >

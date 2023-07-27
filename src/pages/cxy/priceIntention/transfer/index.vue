@@ -18,11 +18,17 @@
       :pagination="transferPriceTable.pagination"
       :loading="transferPriceTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
+      :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+      :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
       @page-change="transferPriceTablePageChange"
       style="margin-top: 10px"
-    />
+    >
+      <template #priceIntention="slotProps">
+        <t-tag theme="primary" variant="light-outline">
+          {{ slotProps.row.priceIntention }}
+        </t-tag>
+      </template>
+    </t-table>
   </t-card>
 </template>
 
@@ -35,6 +41,7 @@ import { BASE_URL, TRANSFER_PRICE_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
+import { isNotEmpty } from "@/utils/validate";
 
 
 const store = useSettingStore();
@@ -86,7 +93,7 @@ onMounted(() => {
  * 操作钩子
  */
 // 分页钩子
-const transferPriceTablePageChange = (curr) => {
+const transferPriceTablePageChange = (curr: { current: number; pageSize: number; }) => {
   console.log("分页变化", curr);
   transferPriceTable.value.pagination.current = curr.current;
   transferPriceTable.value.pagination.pageSize = curr.pageSize;
@@ -102,7 +109,7 @@ const transferPriceTablePageChange = (curr) => {
  * 业务相关
  */
 // 获取表格数据
-const getTableData = (requestUrl) => {
+const getTableData = (requestUrl: string) => {
   transferPriceTable.value.tableData = [];
   transferPriceTable.value.tableLoading = true;
   request.get({
@@ -113,6 +120,9 @@ const getTableData = (requestUrl) => {
     transferPriceTable.value.pagination.total = res.total;
     for (let i = 0; i < transferPriceTable.value.tableData.length; i++) {
       transferPriceTable.value.tableData[i].index = (transferPriceTable.value.pagination.current - 1) * transferPriceTable.value.pagination.pageSize + i + 1;
+      if (isNotEmpty(transferPriceTable.value.tableData[i].priceIntention)) {
+        transferPriceTable.value.tableData[i].priceIntention += " 万元";
+      }
     }
   }).catch(err => {
     MessagePlugin.error(err.message);

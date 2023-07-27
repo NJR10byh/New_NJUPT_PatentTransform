@@ -38,7 +38,7 @@
       stripe
       :loading="filesManageIncomeDistributionTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
+      :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
       size="small"
     >
       <template #zlmc="slotProps">

@@ -4,6 +4,9 @@
  * @description
  * @version 0.1.0
  */
+export const BASE_URL = {
+  getOpenLicencePriceIntentionPage: "/intention/getOpenLicencePriceIntentionPage"
+};
 export const OPEN_LICENCES_PRICE_TABLE_COLUMNS = [
   // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
   {
@@ -20,7 +23,7 @@ export const OPEN_LICENCES_PRICE_TABLE_COLUMNS = [
     ellipsis: true
   },
   {
-    title: "价格意向（万元）",
+    title: "价格意向",
     align: "center",
     colKey: "openLicencePriceIntention",
     width: 100,

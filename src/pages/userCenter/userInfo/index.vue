@@ -185,7 +185,9 @@
 
     <t-col :flex="1">
       <t-card class="user-intro">
-        <t-avatar size="90px">N</t-avatar>
+        <t-avatar size="90px">
+          <t-icon name="user"></t-icon>
+        </t-avatar>
         <div class="name">{{ userStore.userInfo.userName }}</div>
         <div class="position">{{ userStore.userInfo.userDepartment }} {{ userStore.userInfo.userName }}
           {{ userStore.userInfo.userGh }}

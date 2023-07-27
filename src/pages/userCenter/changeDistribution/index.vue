@@ -17,7 +17,7 @@
       stripe
       :loading="changeDistributionTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
+      :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
       style="margin-top: 10px"
     >
       <template #settings="slotProps">

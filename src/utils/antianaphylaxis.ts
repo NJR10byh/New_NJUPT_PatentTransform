@@ -10,7 +10,7 @@ import { isEmpty } from "@/utils/validate";
 /**
  * 身份证号脱敏
  */
-export const ID_card = (idCard) => {
+export const ID_card = (idCard: string) => {
   if (isEmpty(idCard)) {
     return "";
   }
@@ -21,7 +21,7 @@ export const ID_card = (idCard) => {
 /**
  * 手机号脱敏
  */
-export const phone_number = (tel) => {
+export const phone_number = (tel: string) => {
   if (isEmpty(tel)) {
     return "";
   }

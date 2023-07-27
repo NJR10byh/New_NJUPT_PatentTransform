@@ -30,7 +30,7 @@
       stripe
       :loading="videoManageTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
+      :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
       style="margin-top: 10px"
       size="small"
     >
@@ -61,12 +61,15 @@
       :pagination="noticeManageTable.pagination"
       :loading="noticeManageTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
+      :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+      :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
       @page-change="patentTablePageChange"
       style="margin-top: 10px"
       size="small"
     >
+      <template #noticeTitle="slotProps">
+        <t-link theme="primary" @click="getNoticeDetail(slotProps.row)">{{ slotProps.row.noticeTitle }}</t-link>
+      </template>
       <template #settings="slotProps">
         <t-button theme="warning" variant="base">
           <template #icon>
@@ -82,6 +85,15 @@
       </template>
     </t-table>
   </t-card>
+
+  <t-dialog
+    v-model:visible="noticeInfo.noticeDetailVisible"
+    :header="noticeInfo.noticeDetail.noticeTitle"
+    :body="noticeInfo.noticeDetail.content"
+    :footer="false"
+    attach="body"
+    width="800px"
+  />
 </template>
 
 <script setup lang="ts">
@@ -89,7 +101,7 @@ import { computed, onMounted, ref } from "vue";
 import { prefix } from "@/config/global";
 import { useSettingStore } from "@/store";
 import { useRouter } from "vue-router";
-import { NOTICE_MANAGE_TABLE_COLUMNS, VIDEO_MANAGE_TABLE_COLUMNS } from "./constants";
+import { BASE_URL, NOTICE_MANAGE_TABLE_COLUMNS, VIDEO_MANAGE_TABLE_COLUMNS } from "./constants";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
@@ -109,6 +121,16 @@ const offsetTop = computed(() => {
 const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
+
+// 通知详情
+const noticeInfo = ref({
+  noticeDetailVisible: false,
+  noticeDetail: {
+    noticeTitle: "",
+    content: "",
+    updateTime: ""
+  }
+});
 /**
  * 表格相关
  */
@@ -136,17 +158,20 @@ const noticeManageTable = ref({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(async () => {
+  let obj = {
+    currPage: noticeManageTable.value.pagination.current,
+    size: noticeManageTable.value.pagination.pageSize
+  };
   // 获取表格数据
-  const videoUrl = "/file/getVideoList";
-  const noticeUrl = "/notice/getNoticePage";
-  await getVideoData(videoUrl);
-  getNoticeData(noticeUrl);
+  getVideoData(BASE_URL.getVideoList);
+  let notice_data_request = setObjToUrlParams(BASE_URL.getNoticeModelPage, obj);
+  getNoticeData(notice_data_request);
 });
 /**
  * 操作钩子
  */
 // 分页钩子
-const patentTablePageChange = (curr) => {
+const patentTablePageChange = (curr: { current: number; pageSize: number; }) => {
   console.log("分页变化", curr);
   const requestUrl = "/notice/getNoticePage";
   noticeManageTable.value.pagination.current = curr.current;
@@ -158,13 +183,12 @@ const patentTablePageChange = (curr) => {
  * 业务相关
  */
 // 获取视频列表
-const getVideoData = (videoUrl) => {
+const getVideoData = (videoUrl: string) => {
   videoManageTable.value.tableData = [];
   videoManageTable.value.tableLoading = true;
   request.get({
     url: videoUrl
   }).then(res => {
-    console.log(res);
     videoManageTable.value.tableData = res;
     for (let i = 0; i < videoManageTable.value.tableData.length; i++) {
       videoManageTable.value.tableData[i].index = i + 1;
@@ -176,17 +200,13 @@ const getVideoData = (videoUrl) => {
   });
 };
 // 获取通知列表
-const getNoticeData = (noticeUrl) => {
+const getNoticeData = (noticeUrl: string) => {
   noticeManageTable.value.tableData = [];
-  let obj = {
-    currPage: noticeManageTable.value.pagination.current,
-    size: noticeManageTable.value.pagination.pageSize
-  };
-  noticeUrl = setObjToUrlParams(noticeUrl, obj);
   noticeManageTable.value.tableLoading = true;
   request.get({
     url: noticeUrl
   }).then(res => {
+    console.log(res);
     noticeManageTable.value.tableData = res.records;
     noticeManageTable.value.pagination.total = res.total;
     for (let i = 0; i < noticeManageTable.value.tableData.length; i++) {
@@ -197,6 +217,15 @@ const getNoticeData = (noticeUrl) => {
   }).finally(() => {
     noticeManageTable.value.tableLoading = false;
   });
+};
+
+// 获取通知详情
+const getNoticeDetail = (notice: { noticeTitle: string; content: string; updateTime: string; }) => {
+  console.log(notice);
+  noticeInfo.value.noticeDetail.noticeTitle = notice.noticeTitle;
+  noticeInfo.value.noticeDetail.content = notice.content;
+  noticeInfo.value.noticeDetail.updateTime = notice.updateTime;
+  noticeInfo.value.noticeDetailVisible = true;
 };
 </script>
 
