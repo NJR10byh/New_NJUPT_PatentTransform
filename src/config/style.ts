@@ -1,7 +1,7 @@
 export default {
   showFooter: false, // 是否展示Footer
   isSidebarCompact: false, // 是否固定sideBar
-  showBreadcrumb: false, // 是否展示面包屑
+  showBreadcrumb: true, // 是否展示面包屑
   mode: "light", // 主题模式
   layout: "side", // 导航布局
   splitMenu: false, // 是否分割菜单

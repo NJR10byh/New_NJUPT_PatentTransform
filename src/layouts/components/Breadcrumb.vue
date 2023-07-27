@@ -7,13 +7,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 
 const crumbs = computed(() => {
   const route = useRoute();
 
-  const pathArray = route.path.split('/');
+  const pathArray = route.path.split("/");
   pathArray.shift();
 
   const breadcrumbs = pathArray.reduce((breadcrumbArray, path, idx) => {
@@ -25,7 +25,7 @@ const crumbs = computed(() => {
     breadcrumbArray.push({
       path,
       to: breadcrumbArray[idx - 1] ? `/${breadcrumbArray[idx - 1].path}/${path}` : `/${path}`,
-      title: route.matched[idx]?.meta?.title ?? path,
+      title: route.matched[idx]?.meta?.title ?? path
     });
     return breadcrumbArray;
   }, []);
@@ -34,6 +34,6 @@ const crumbs = computed(() => {
 </script>
 <style scoped>
 .tdesign-breadcrumb {
-  margin-bottom: 24px;
+  margin-left: 10px;
 }
 </style>

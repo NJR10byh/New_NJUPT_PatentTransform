@@ -23,6 +23,7 @@
               <t-icon v-else class="collapsed-icon" name="menu-unfold" />
             </template>
           </t-button>
+          <l-breadcrumb v-if="settingStore.showBreadcrumb" />
           <!--          <search :layout="layout" />-->
         </div>
       </template>
@@ -112,6 +113,7 @@ import { getPermissionStore, useSettingStore, useUserStore } from "@/store";
 import { getActive } from "@/router";
 import { prefix } from "@/config/global";
 import { MenuRoute } from "@/types/interface";
+import LBreadcrumb from "@/layouts/components/Breadcrumb.vue";
 
 const props = defineProps({
   theme: {
