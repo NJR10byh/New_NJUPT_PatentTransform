@@ -80,4 +80,8 @@ watch(
 );
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.t-layout {
+  height: 100vh;
+}
+</style>
