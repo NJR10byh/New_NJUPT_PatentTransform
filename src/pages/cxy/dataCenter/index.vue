@@ -69,9 +69,8 @@
     <t-row justify="start" class="cardTop searchConditionStyle" v-if="tableType=='1'">
       <t-input class="inputStyle" v-for="item in PATENT_SEARCH_CONDITION" :key="item.name"
                v-model="patentSearch.searchCondition[item.name]" :placeholder="item.placeholder" clearable />
-      <t-range-input class="inputStyle rangeInputStyle" v-model="patentPriceRange"
-                     :placeholder="['价格（万元）起', '价格（万元）止']"
-                     clearable />
+      <t-range-input style="margin: 5px;width: 410px;" v-model="patentPriceRange"
+                     :placeholder="['价格（万元）起', '价格（万元）止']" clearable />
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="patentTimeRange"
                            :placeholder="['专利申请时间 起', '专利申请时间 止']" clearable />
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="patentSQRQRange"
@@ -90,9 +89,9 @@
       <t-input class="inputStyle" v-for="item in CONTRACT_SEARCH_CONDITION" :key="item.name"
                v-model="contractSearch.searchCondition[item.name]" :placeholder="item.placeholder" clearable>
       </t-input>
-      <t-range-input class="inputStyle rangeInputStyle" v-model="contractCodeRange"
+      <t-range-input style="margin: 5px;width: 410px;" v-model="contractCodeRange"
                      :placeholder="['合同编号 起', '合同编号 止']" clearable />
-      <t-range-input class="inputStyle rangeInputStyle" v-model="contractAmountRange"
+      <t-range-input style="margin: 5px;width: 410px;" v-model="contractAmountRange"
                      :placeholder="['价格（万元）起', '价格（万元）止']" clearable />
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="contractCompleteTimeRange"
                            :placeholder="['转化完成时间 起', '转化完成时间 止']" clearable />
@@ -686,6 +685,7 @@ const exportExcel = () => {
     .cascaderStyle {
       width: 410px;
     }
+
   }
 }
 </style>
