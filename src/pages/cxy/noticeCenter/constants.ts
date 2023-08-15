@@ -6,8 +6,12 @@
  */
 export const BASE_URL = {
   getVideoList: "/file/getVideoList",
+  uploadVideo: "/file/uploadVideo",
+
   getNoticePage: "/notice/getNoticePage",
-  getNoticeModelPage: "/notice/getNoticeModelPage"
+  getNoticeModelPage: "/notice/getNoticeModelPage",
+  addNotice: "/notice/addNotice",
+  deleteNoticeById: "/notice/deleteNoticeById"
 };
 export const VIDEO_MANAGE_TABLE_COLUMNS = [
   // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },

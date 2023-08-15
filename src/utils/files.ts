@@ -16,8 +16,52 @@ const filesStore = useFilesStore();
  * 文件信息入缓存
  * @param filesInfo
  */
-export const fileInfoToCache = async (filesInfo) => {
+export const fileInfoToCache = async (filesInfo: any) => {
   filesStore.getFilesInfo(filesInfo);
+};
+
+/**
+ * 文件校验
+ * @param params
+ */
+export const validateFile = (params: { files: any; type: any; }) => {
+  const { type } = params;
+  const messageMap = {
+    FILE_OVER_SIZE_LIMIT: "文件大小超出限制，已自动过滤",
+    FILES_OVER_LENGTH_LIMIT: "文件数量超出限制，仅上传未超出数量的文件",
+    FILTER_FILE_SAME_NAME: "不允许上传同名文件",
+    BEFORE_ALL_FILES_UPLOAD: "beforeAllFilesUpload 方法拦截了文件",
+    CUSTOM_BEFORE_UPLOAD: "beforeUpload 方法拦截了文件"
+  };
+  messageMap[type] && MessagePlugin.warning(messageMap[type]);
+};
+
+
+/**
+ * 上传文件
+ * @param requestUrl
+ * @param formData
+ */
+export const uploadFile = async (requestUrl: string, formData: FormData) => {
+  return new Promise((resolve, reject) => {
+    request.post({
+      url: requestUrl,
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      },
+      timeout: 30 * 1000
+    }).then(res => {
+      if ("errCode" in res) {
+        // 上传失败
+        reject(res.errMsg);
+      } else {
+        resolve(res);
+      }
+    }).catch(err => {
+      reject(err);
+    });
+  });
 };
 
 /**
@@ -25,7 +69,7 @@ export const fileInfoToCache = async (filesInfo) => {
  * @param requestUrl
  * @param requestBody
  */
-export const downloadFile = async (requestUrl, requestBody) => {
+export const downloadFile = async (requestUrl: any, requestBody: any) => {
   const link = document.createElement("a");
   link.style.display = "none";
   document.body.appendChild(link);
