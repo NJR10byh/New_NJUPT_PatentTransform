@@ -46,7 +46,7 @@
         </t-link>
       </template>
       <template #settings="slotProps">
-        <t-button theme="danger">
+        <t-button theme="danger" @click="deleteVideo(slotProps.row)">
           <template #icon>
             <t-icon name="delete"></t-icon>
           </template>
@@ -117,16 +117,23 @@
         <t-input placeholder="请输入视频标题" v-model="addVideoFormData.videoTitle" />
       </t-form-item>
       <t-form-item label="视频文件" name="videoFile">
-        <t-upload
-          ref="uploadVideo"
-          v-model="addVideoFormData.file"
-          accept="video/*"
-          :autoUpload="false"
-          :request-method="uploadVideoFile"
-          tips="只支持上传视频文件，且视频大小在100M内"
-          :size-limit="{ size: 100, unit: 'MB' }"
-          @validate="validateFile"
-        />
+        <div style="display: flex;flex-direction: column;">
+          <t-upload
+            ref="uploadVideo"
+            v-model="addVideoFormData.file"
+            accept="video/*"
+            :autoUpload="false"
+            :showUploadProgress="false"
+            :useMockProgress="false"
+            :request-method="uploadVideoFile"
+            tips="只支持上传视频文件，且视频大小在100M内"
+            :size-limit="{ size: 100, unit: 'MB' }"
+            @validate="validateFile"
+          />
+          <div style="width:200px;margin-top: 10px;" v-if="showVideoProgress">
+            <t-progress :percentage="videoProgress" />
+          </div>
+        </div>
       </t-form-item>
       <div class="formBtns">
         <t-button theme="default">取消</t-button>
@@ -146,15 +153,22 @@
                     v-model="addNoticeFormData.content" />
       </t-form-item>
       <t-form-item label="相关附件" name="noticeFile">
-        <t-upload
-          ref="uploadNotice"
-          v-model="addNoticeFormData.file"
-          :autoUpload="false"
-          :request-method="uploadNoticeFile"
-          tips="要求文件大小在1M内"
-          :size-limit="{ size: 1, unit: 'MB' }"
-          @validate="validateFile"
-        />
+        <div style="display: flex;flex-direction: column;">
+          <t-upload
+            ref="uploadNotice"
+            v-model="addNoticeFormData.file"
+            :autoUpload="false"
+            :showUploadProgress="false"
+            :useMockProgress="false"
+            :request-method="uploadNoticeFile"
+            tips="要求文件大小在1M内"
+            :size-limit="{ size: 1, unit: 'MB' }"
+            @validate="validateFile"
+          />
+          <div style="width:200px;margin-top: 10px;" v-if="showNoticeProgress">
+            <t-progress :percentage="noticeProgress" />
+          </div>
+        </div>
       </t-form-item>
       <div class="formBtns">
         <t-button theme="default">取消</t-button>
@@ -197,6 +211,8 @@ const getContainer = () => {
  */
 // 新增通知
 const uploadNotice = ref();
+const showNoticeProgress = ref(false);
+const noticeProgress = ref(0);
 const addNoticeVisible = ref(false);
 const addNoticeBtnLoading = ref(false);
 const addNoticeFormData = reactive({
@@ -234,6 +250,8 @@ const noticeManageTable = reactive({
  */
 // 新增视频
 const uploadVideo = ref();
+const showVideoProgress = ref(false);
+const videoProgress = ref(0);
 const addVideoVisible = ref(false);
 const addVideoBtnLoading = ref(false);
 const addVideoFormData = reactive({
@@ -292,6 +310,42 @@ const getVideoData = () => {
     videoManageTable.tableLoading = false;
   });
 };
+// 删除视频
+const deleteVideo = (video: any) => {
+  const confirmDialog = DialogPlugin.confirm({
+    header: "提示",
+    theme: "warning",
+    body: "此操作将永久删除该视频, 是否继续？",
+    confirmBtn: {
+      content: "删除",
+      variant: "base",
+      theme: "danger"
+    },
+    cancelBtn: "取消",
+    onConfirm: () => {
+      let obj = {
+        fileId: video.fileId
+      };
+      let requestUrl = setObjToUrlParams(BASE_URL.deleteVideoById, obj);
+      request.get({
+        url: requestUrl
+      }).then(res => {
+        console.log(res);
+        MessagePlugin.success("删除成功");
+      }).catch(err => {
+        MessagePlugin.error(err.message);
+      }).finally(() => {
+        getVideoData();
+      });
+      // 请求成功后，销毁弹框
+      confirmDialog.destroy();
+    },
+    onClose: () => {
+      confirmDialog.hide();
+    }
+  });
+};
+
 // 获取通知列表
 const getNoticeData = () => {
   noticeManageTable.tableData = [];
@@ -300,7 +354,7 @@ const getNoticeData = () => {
     currPage: noticeManageTable.pagination.current,
     size: noticeManageTable.pagination.pageSize
   };
-  let requestUrl = setObjToUrlParams(BASE_URL.getNoticePage, obj);
+  let requestUrl = setObjToUrlParams(BASE_URL.getNoticeModelPage, obj);
   request.get({
     url: requestUrl
   }).then(res => {
@@ -384,55 +438,39 @@ const addVideo = () => {
   addVideoVisible.value = true;
 };
 // 上传视频文件
-const uploadVideoFile = (file) => {
-  return new Promise((resolve) => {
-    let fileFormData = new FormData();
-    fileFormData.append("file", file.raw);
-    fileFormData.append("title", addVideoFormData.videoTitle);
-    // TODO 研究一下如何将上传进度返回给组件
-    // let percent = 0;
-    // const percentTimer = setInterval(() => {
-    //   if (percent + 10 < 99) {
-    //     percent += 10;
-    //     uploadVideo.value.uploadFilePercent();
-    //   } else {
-    //     clearInterval(percentTimer);
-    //   }
-    // }, 100);
-    // const timer = setTimeout(() => {
-    //   // resolve 参数为关键代码
-    //   resolve({ status: "success", response: { url: "https://tdesign.gtimg.com/site/avatar.jpg" } });
-    //
-    //   clearTimeout(timer);
-    //   clearInterval(percentTimer);
-    // }, 1000);
-    request.post({
-      url: BASE_URL.uploadVideo,
-      data: fileFormData,
-      headers: {
-        "Content-Type": "multipart/form-data"
-      },
-      timeout: 30 * 1000,
-      onUploadProgress: progressEvent => {
-        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        console.log(`Upload Progress: ${percentCompleted}%`);
-        // You can update your UI or perform other actions with the upload progress here
-        // uploadVideo.value.uploadFilePercent({ file, percentCompleted });
-      }
-    }).then(res => {
-      if ("errCode" in res) {
-        // 上传失败
-        MessagePlugin.error(res.errMsg);
-      } else {
-        MessagePlugin.success("新增成功");
-      }
-    }).catch(err => {
-      MessagePlugin.error(err);
-    }).finally(() => {
-      addVideoVisible.value = false;
-      addVideoBtnLoading.value = false;
-      getVideoData();
-    });
+const uploadVideoFile = (file: { raw: string | Blob; }) => {
+  let fileFormData = new FormData();
+  fileFormData.append("file", file.raw);
+  fileFormData.append("title", addVideoFormData.videoTitle);
+  // TODO 研究一下如何将上传进度返回给组件
+  // let percent = 0;
+  // const percentTimer = setInterval(() => {
+  //   if (percent + 10 < 99) {
+  //     percent += 10;
+  //     uploadVideo.value.uploadFilePercent();
+  //   } else {
+  //     clearInterval(percentTimer);
+  //   }
+  // }, 100);
+  // const timer = setTimeout(() => {
+  //   // resolve 参数为关键代码
+  //   resolve({ status: "success", response: { url: "https://tdesign.gtimg.com/site/avatar.jpg" } });
+  //
+  //   clearTimeout(timer);
+  //   clearInterval(percentTimer);
+  // }, 1000);
+  showVideoProgress.value = true;
+  uploadFile(BASE_URL.uploadVideo, fileFormData, percentCompleted => {
+    videoProgress.value = percentCompleted;
+  }).then(res => {
+    MessagePlugin.success("新增成功");
+  }).catch(err => {
+    MessagePlugin.error(err);
+  }).finally(() => {
+    addVideoVisible.value = false;
+    addVideoBtnLoading.value = false;
+    showVideoProgress.value = false;
+    getVideoData();
   });
 };
 // 提交视频
@@ -465,13 +503,17 @@ const uploadNoticeFile = () => {
   fileFormData.append("content", addNoticeFormData.content);
   fileFormData.append("noticeTitle", addNoticeFormData.noticeTitle);
   fileFormData.append("publishUser", userStore.userInfo.userName);
-  uploadFile(BASE_URL.addNotice, fileFormData).then(res => {
+  showNoticeProgress.value = true;
+  uploadFile(BASE_URL.addNotice, fileFormData, percentCompleted => {
+    noticeProgress.value = percentCompleted;
+  }).then(res => {
     MessagePlugin.success("新增成功");
   }).catch(err => {
     MessagePlugin.error(err);
   }).finally(() => {
     addNoticeVisible.value = false;
     addNoticeBtnLoading.value = false;
+    showNoticeProgress.value = false;
     refreshNoticeData();
   });
 };

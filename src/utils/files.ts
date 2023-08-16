@@ -42,7 +42,7 @@ export const validateFile = (params: { files: any; type: any; }) => {
  * @param requestUrl
  * @param formData
  */
-export const uploadFile = async (requestUrl: string, formData: FormData) => {
+export const uploadFile = async (requestUrl: string, formData: FormData, progressCallback: (percentCompleted: number) => void) => {
   return new Promise((resolve, reject) => {
     request.post({
       url: requestUrl,
@@ -50,7 +50,11 @@ export const uploadFile = async (requestUrl: string, formData: FormData) => {
       headers: {
         "Content-Type": "multipart/form-data"
       },
-      timeout: 30 * 1000
+      timeout: 30 * 1000,
+      onUploadProgress: progressEvent => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        progressCallback(percentCompleted); // 调用回调函数传递进度信息
+      }
     }).then(res => {
       if ("errCode" in res) {
         // 上传失败
