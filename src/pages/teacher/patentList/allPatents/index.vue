@@ -20,21 +20,31 @@
           查询
         </t-button>
       </div>
+      <div>
+        <t-button @click="exportReferences">
+          <template #icon>
+            <t-icon name="link-1"></t-icon>
+          </template>
+          导出引用
+        </t-button>
+      </div>
     </t-row>
     <t-table
       class="tableStyle"
       :data="allPatentsTable.tableData"
       :columns="ALL_PATENTS_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       table-layout="auto"
       :pagination="allPatentsTable.pagination"
       :loading="allPatentsTable.tableLoading"
+      :selected-row-keys="allPatentsTable.selectedRowKeys"
       :header-affixed-top="{ offsetTop, container: getContainer }"
       :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
       :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
       @page-change="allPatentsTablePageChange"
+      @select-change="allPatentsTableSelectChange"
       size="small"
       v-resize="resize"
     >
@@ -75,6 +85,23 @@
       </template>
     </t-table>
   </t-card>
+
+  <t-dialog
+    v-model:visible="exportReferencesDialog.visible"
+    :header="exportReferencesDialog.title"
+    attach="body"
+    width="800px"
+  >
+    <template #body>
+      <div v-html="exportReferencesDialog.content" id="CopyContent"></div>
+    </template>
+    <template #footer>
+      <div class="dialog-footer">
+        <t-button theme="default" @click="exportReferencesDialog.visible = false">取 消</t-button>
+        <t-button theme="primary" @click="copyExportReferences('CopyContent')">复 制</t-button>
+      </div>
+    </template>
+  </t-dialog>
 </template>
 
 <script setup lang="ts">
@@ -114,6 +141,13 @@ const currRequestBody = ref({
   size: 20
 });
 
+// 导出引用
+const exportReferencesDialog = reactive({
+  visible: false,
+  title: "导出引用",
+  content: ""
+});
+
 /**
  * 搜索相关
  */
@@ -131,6 +165,8 @@ const searchText = ref("");
  */
 const allPatentsTable = ref({
   tableLoading: false,// 表格加载
+  selectedRowKeys: [],// 选中的行
+  selectedPatents: [],// 已选择的专利
   tableData: [],// 表格数据
   // 表格分页
   pagination: {
@@ -183,6 +219,11 @@ const allPatentsTablePageChange = (curr: { current: number; pageSize: number; })
   currRequestBody.value.size = allPatentsTable.value.pagination.pageSize;
   let requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
   getTableData(requestUrl);
+};
+// 表格选择钩子
+const allPatentsTableSelectChange = (selectIndex: any[], { selectedRowData }: any) => {
+  allPatentsTable.value.selectedRowKeys = selectIndex;
+  allPatentsTable.value.selectedPatents = selectedRowData;
 };
 
 /**
@@ -252,6 +293,80 @@ const searchData = () => {
   }
   let requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
   getTableData(requestUrl);
+};
+
+// 导出引用
+function getPatentType(code: any) {
+  switch (code) {
+    case "1":
+      return "发明专利";
+    case "2":
+      return "实用新型专利";
+    case "3":
+      return "外观设计专利";
+    default:
+      return "";
+  }
+}
+
+const exportReferences = () => {
+  console.log(allPatentsTable.value.selectedPatents);
+  if (isEmpty(allPatentsTable.value.selectedPatents)) {
+    MessagePlugin.warning("请选择要导出的专利");
+    return;
+  }
+  let content = "";
+  const selectedPatents = allPatentsTable.value.selectedPatents;
+
+  if (selectedPatents.length > 0) {
+    content = selectedPatents.map(patent => {
+      const patentType = getPatentType(patent.zlh.split("")[4]);
+      return `${patent.cymd}、${patent.zlmc}、${patentType}、${patent.zlh}`;
+    }).join("<br><br>");
+  }
+  console.log(content);
+  exportReferencesDialog.content = content;
+  exportReferencesDialog.visible = true;
+};
+
+/**
+ * 复制导出引用-老版本
+ * document.execCommand("copy");（被弃用）
+ * @param elId
+ */
+// const copyExportReferences = (elId: string) => {
+//   const el = document.getElementById(elId);
+//   if (document.createRange && window.getSelection) {
+//     let range = document.createRange();
+//     let sel = window.getSelection();
+//     sel.removeAllRanges();
+//     try {
+//       range.selectNodeContents(el);
+//       sel.addRange(range);
+//     } catch (e) {
+//       range.selectNode(el);
+//       sel.addRange(range);
+//     }
+//     document.execCommand("copy");
+//     //取消文本选中状态
+//     window.getSelection().empty();
+//     MessagePlugin.success("已复制！");
+//   }
+// };
+/**
+ * 复制导出引用-优化版本
+ * @param elId
+ */
+const copyExportReferences = async (elId: string) => {
+  const el = document.getElementById(elId);
+  const textContent = el.innerHTML.replace(/<br>/g, "\n");
+  try {
+    await navigator.clipboard.writeText(textContent);
+    await MessagePlugin.success("已复制！");
+  } catch (error) {
+    console.error("复制失败：", error);
+    await MessagePlugin.error("复制失败！");
+  }
 };
 </script>
 

@@ -5,15 +5,15 @@
  * @version 0.1.0
  */
 
-export const isEmpty = (val) => {
+export const isEmpty = (val: string | any[]) => {
   return val == null || val == "" || val == undefined || val.length === 0;
 };
 
-export const isNotEmpty = (val) => {
+export const isNotEmpty = (val: string | any[]) => {
   return !isEmpty(val);
 };
 
-export const validateMobilePhone = (val) => {
+export const validateMobilePhone = (val: string) => {
   // 检查手机号码格式
   let validateRule = /^((13[0-9])|(14[5-9])|(15([0-3]|[5-9]))|(16[6-7])|(17[1-8])|(18[0-9])|(19[1|3|5|6|8|9]))\d{8}$/;
   if ([undefined, null, ""].includes(val)) {
@@ -25,7 +25,7 @@ export const validateMobilePhone = (val) => {
   }
 };
 
-export const validateEmail = (val) => {
+export const validateEmail = (val: string) => {
   // 检查邮箱格式
   let validateRule = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
   if ([undefined, null, ""].includes(val)) {

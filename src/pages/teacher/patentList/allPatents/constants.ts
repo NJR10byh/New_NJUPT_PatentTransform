@@ -12,7 +12,7 @@ export const BASE_URL = {
 };
 
 export const ALL_PATENTS_TABLE_COLUMNS = [
-  // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
+  { colKey: "row-select", type: "multiple", width: 30, fixed: "left" },
   {
     title: "序号",
     align: "center",
