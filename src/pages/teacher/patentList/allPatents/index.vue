@@ -12,8 +12,8 @@
                   :options="searchField.options"
                   placeholder="查询字段" clearable @change="searchFieldSelectChange">
         </t-select>
-        <t-input class="inputStyle" placeholder="请输入查询内容" v-model="requestData.condition" clearable></t-input>
-        <t-button>
+        <t-input class="inputStyle" placeholder="请输入查询内容" v-model="searchText" clearable></t-input>
+        <t-button @click="searchData">
           <template #icon>
             <t-icon name="search"></t-icon>
           </template>
@@ -78,9 +78,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
+import { useSettingStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
@@ -90,6 +90,7 @@ import { isEmpty, isNotEmpty } from "@/utils/validate";
 
 
 const store = useSettingStore();
+const userStore = useUserStore();
 const router = useRouter();
 
 /**
@@ -107,18 +108,23 @@ const getContainer = () => {
 // tableContentWidth
 const tableContentWidth = ref("1300px");
 
+const currUrl = ref("");
+const currRequestBody = ref({
+  currPage: 1,
+  size: 20
+});
+
 /**
  * 搜索相关
  */
-const searchField = ref({
+const searchField = reactive({
   value: "",
   options: [
-    { label: "专利名称", value: 1 },
-    { label: "专利第一作者", value: 2 },
-    { label: "成员名单", value: 3 },
-    { label: "所属学院", value: 4 }
+    { label: "专利名称", value: "专利名称" },
+    { label: "专利号", value: "专利号" }
   ]
 });
+const searchText = ref("");
 
 /**
  * 表格相关
@@ -126,7 +132,6 @@ const searchField = ref({
 const allPatentsTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
-  searchText: "",
   // 表格分页
   pagination: {
     total: 0,
@@ -135,27 +140,18 @@ const allPatentsTable = ref({
   }
 });
 
-// 请求体
-const requestData = ref({
-  contractType: 1,
-  currPage: allPatentsTable.value.pagination.current,
-  size: allPatentsTable.value.pagination.pageSize,
-  search: 0,
-  patentState: 5,
-  condition: ""
-});
-
 /**
  * methods区
  */
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-  let obj = {
-    currPage: allPatentsTable.value.pagination.current,
-    size: allPatentsTable.value.pagination.pageSize
+  currRequestBody.value = {
+    currPage: 1,
+    size: 20
   };
-  let requestUrl = setObjToUrlParams(BASE_URL.getMyPatentPage, obj);
+  currUrl.value = BASE_URL.getMyPatentPage;
+  let requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
   getTableData(requestUrl);
 });
 
@@ -163,7 +159,7 @@ onMounted(() => {
  * 操作钩子
  */
 // 监听容器宽高变化
-const resize = (resizeValue) => {
+const resize = (resizeValue: { contentRect: { width: number; }; }[]) => {
   console.log(resizeValue[0].contentRect);
   if (resizeValue[0].contentRect.width > 1300) {
     tableContentWidth.value = resizeValue[0].contentRect.width + "px";
@@ -172,25 +168,20 @@ const resize = (resizeValue) => {
   }
 };
 // 查询字段选择器钩子
-const searchFieldSelectChange = async (value) => {
+const searchFieldSelectChange = (value: any) => {
   // clearble会触发change钩子，此时value为 undefined
-  if (value != undefined) {
-    requestData.value.search = value;
-  } else {
-    requestData.value.search = 0;
+  if (value) {
+    searchField.value = value;
   }
 };
 // 分页钩子
-const allPatentsTablePageChange = (curr) => {
+const allPatentsTablePageChange = (curr: { current: number; pageSize: number; }) => {
   console.log("分页变化", curr);
   allPatentsTable.value.pagination.current = curr.current;
   allPatentsTable.value.pagination.pageSize = curr.pageSize;
-  let obj = {
-    currPage: allPatentsTable.value.pagination.current,
-    size: allPatentsTable.value.pagination.pageSize,
-    companyName: allPatentsTable.value.searchText
-  };
-  let requestUrl = setObjToUrlParams(BASE_URL.getPatentPageByZLMC, obj);
+  currRequestBody.value.currPage = allPatentsTable.value.pagination.current;
+  currRequestBody.value.size = allPatentsTable.value.pagination.pageSize;
+  let requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
   getTableData(requestUrl);
 };
 
@@ -198,7 +189,7 @@ const allPatentsTablePageChange = (curr) => {
  * 业务相关
  */
 // 获取表格数据
-const getTableData = (requestUrl) => {
+const getTableData = (requestUrl: string) => {
   allPatentsTable.value.tableData = [];
   allPatentsTable.value.tableLoading = true;
   request.get({
@@ -220,12 +211,46 @@ const getTableData = (requestUrl) => {
 // 搜索数据
 const searchData = () => {
   allPatentsTable.value.pagination.current = 1;
-  let obj = {
-    currPage: allPatentsTable.value.pagination.current,
-    size: allPatentsTable.value.pagination.pageSize,
-    companyName: allPatentsTable.value.searchText
-  };
-  let requestUrl = setObjToUrlParams(BASE_URL.getPatentPageByZLMC, obj);
+  allPatentsTable.value.pagination.pageSize = 20;
+  if (isEmpty(searchField.value) && isEmpty(searchText.value)) {
+    currRequestBody.value = {
+      currPage: allPatentsTable.value.pagination.current,
+      size: allPatentsTable.value.pagination.pageSize
+    };
+    currUrl.value = BASE_URL.getMyPatentPage;
+    let requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
+    getTableData(requestUrl);
+  } else {
+    if (isEmpty(searchField.value)) {
+      MessagePlugin.warning("请选择查询字段");
+      return;
+    }
+    if (isEmpty(searchText.value)) {
+      MessagePlugin.warning("请输入查询内容");
+      return;
+    }
+    let obj = {
+      currPage: allPatentsTable.value.pagination.current,
+      size: allPatentsTable.value.pagination.pageSize,
+      userGh: userStore.userInfo.userGh,
+      userName: userStore.userInfo.userName,
+      zlmc: searchText.value,
+      zlh: searchText.value
+    };
+    switch (searchField.value) {
+      case "专利名称":
+        currUrl.value = BASE_URL.getPatentPageByZLMC;
+        delete obj.zlh;
+        currRequestBody.value = obj;
+        break;
+      case "专利号":
+        currUrl.value = BASE_URL.getPatentPageByZLH;
+        delete obj.zlmc;
+        currRequestBody.value = obj;
+        break;
+    }
+  }
+  let requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
   getTableData(requestUrl);
 };
 </script>

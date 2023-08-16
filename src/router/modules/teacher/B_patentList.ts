@@ -11,7 +11,7 @@ export default [
     path: "/patent",
     name: "patentList",
     component: Layout,
-    meta: { title: "专利列表", icon: "view-module" },
+    meta: { title: "专利列表", icon: "file-1" },
     children: [
       {
         path: "all",
