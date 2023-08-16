@@ -53,7 +53,7 @@
           </t-button>
           <t-button variant="outline" theme="primary" v-if="!slotProps.row.price_filled">
             <template #icon>
-              <t-icon name="money-circle"></t-icon>
+              <t-icon name="currency-exchange"></t-icon>
             </template>
             价格意向
           </t-button>

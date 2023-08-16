@@ -13,7 +13,7 @@ export default [
     name: "contractManage",
     component: Layout,
     redirect: "/contractManage/contract",
-    meta: { title: "合同管理", icon: "user-circle" },
+    meta: { title: "合同管理", icon: "file-safety" },
     children: [
       {
         path: "contract",

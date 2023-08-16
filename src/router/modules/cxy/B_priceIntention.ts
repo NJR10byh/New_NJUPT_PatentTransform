@@ -12,7 +12,7 @@ export default [
     path: "/priceIntention",
     name: "priceIntention",
     component: Layout,
-    meta: { title: "价格意向", icon: "money-circle" },
+    meta: { title: "价格意向", icon: "currency-exchange" },
     children: [
       {
         path: "transfer",

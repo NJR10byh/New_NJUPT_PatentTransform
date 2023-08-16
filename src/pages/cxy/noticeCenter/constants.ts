@@ -7,8 +7,8 @@
 export const BASE_URL = {
   getVideoList: "/file/getVideoList",
   uploadVideo: "/file/uploadVideo",
+  deleteVideoById: "/file/deleteVideoById",
 
-  getNoticePage: "/notice/getNoticePage",
   getNoticeModelPage: "/notice/getNoticeModelPage",
   addNotice: "/notice/addNotice",
   deleteNoticeById: "/notice/deleteNoticeById"
