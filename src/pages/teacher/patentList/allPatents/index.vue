@@ -37,6 +37,9 @@
       hover
       stripe
       table-layout="auto"
+      :expand-icon="false"
+      :select-on-row-click="false"
+      :expand-on-row-click="true"
       :pagination="allPatentsTable.pagination"
       :loading="allPatentsTable.tableLoading"
       :selected-row-keys="allPatentsTable.selectedRowKeys"
@@ -48,6 +51,124 @@
       size="small"
       v-resize="resize"
     >
+      <template #expandedRow="slotProps">
+        <t-row class="content">
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              专利号
+            </div>
+            <t-tag theme="primary" variant="light-outline">
+              {{ slotProps.row.zlh }}
+            </t-tag>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              成员名单
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.cymd }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              成员工号
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.cygh }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              专利第一作者姓名
+            </div>
+            <div class="contract-detail">
+              {{ ID_card(slotProps.row.zldyzzxm) }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              专利第一作者工号
+            </div>
+            <div class="contract-detail">
+              {{ phone_number(slotProps.row.zldyzzgh) }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              授权日期
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.sqrq }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              归属单位
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.gsdw }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              所有权人
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zlqr }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              专利代理人
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zldlr }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              转让价格
+            </div>
+            <div class="contract-detail">
+              {{ isEmpty(slotProps.row.priceIntention) ? "暂无" : slotProps.row.priceIntention + " 万元" }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              许可价格
+            </div>
+            <div class="contract-detail">
+              {{ isEmpty(slotProps.row.licencePriceIntention) ? "暂无" : slotProps.row.licencePriceIntention + " 万元"
+              }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              开放许可价格
+            </div>
+            <div class="contract-detail">
+              {{ isEmpty(slotProps.row.openLicencePriceIntention) ? "暂无" : slotProps.row.openLicencePriceIntention + " 万元"
+              }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              已公示
+            </div>
+            <div class="contract-detail">
+              {{ isEmpty(slotProps.row.publicNoticeTime) ? "暂无数据" : slotProps.row.publicNoticeTime + " 天" }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              最后更新时间
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.gmtUpdate }}
+            </div>
+          </t-col>
+        </t-row>
+      </template>
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
           {{ slotProps.row.zlh }}
@@ -114,6 +235,7 @@ import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
 import { ALL_PATENTS_TABLE_COLUMNS, BASE_URL } from "./constants";
 import { isEmpty, isNotEmpty } from "@/utils/validate";
+import { ID_card, phone_number } from "@/utils/antianaphylaxis";
 
 
 const store = useSettingStore();
@@ -401,6 +523,38 @@ const copyExportReferences = async (elId: string) => {
   .tableStyle {
     width: 100%;
     margin-top: 10px;
+
+    .content {
+      width: 100%;
+      //border: 1px solid red;
+
+      .contract {
+        height: 80px;
+
+        &-title {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          line-height: 24px;
+          margin: 20px 0 6px;
+          font-size: 14px;
+          color: var(--td-text-color-placeholder);
+        }
+
+        &-detail {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          line-height: 40px;
+          font-size: 14px;
+          color: var(--td-text-color-secondary);
+        }
+      }
+
+      .contract:last-child {
+        margin-bottom: 0;
+      }
+    }
 
     .settingBtns {
       display: flex;
