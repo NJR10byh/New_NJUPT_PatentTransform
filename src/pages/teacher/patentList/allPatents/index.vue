@@ -182,7 +182,8 @@
             </template>
             填写审批
           </t-button>
-          <t-button variant="outline" theme="primary" v-if="!slotProps.row.price_filled">
+          <t-button variant="outline" theme="primary" v-if="!slotProps.row.price_filled"
+                    @click="priceIntention(slotProps.row)">
             <template #icon>
               <t-icon name="currency-exchange"></t-icon>
             </template>
@@ -196,7 +197,8 @@
             上传专利证书
           </t-button>
           <t-button variant="outline" theme="primary"
-                    v-if="isNotEmpty(slotProps.row.zlzsxzdz) || isNotEmpty(slotProps.row.certificateId)">
+                    v-if="isNotEmpty(slotProps.row.zlzsxzdz) || isNotEmpty(slotProps.row.certificateId)"
+                    @click="downloadCertificate(slotProps.row)">
             <template #icon>
               <t-icon name="download"></t-icon>
             </template>
@@ -207,6 +209,7 @@
     </t-table>
   </t-card>
 
+  <!-- 导出引用 -->
   <t-dialog
     v-model:visible="exportReferencesDialog.visible"
     :header="exportReferencesDialog.title"
@@ -223,6 +226,28 @@
       </div>
     </template>
   </t-dialog>
+
+  <!-- 价格意向 -->
+  <t-dialog
+    v-model:visible="priceIntentionDialog.visible"
+    :header="priceIntentionDialog.title"
+    attach="body"
+    @confirm="priceIntentionConfirm"
+  >
+    <template #body>
+      <t-form :data="priceIntentionDialog.formData">
+        <t-form-item label="转让" name="transferPrice">
+          <t-input v-model="priceIntentionDialog.formData.transferPrice" suffix="万元" />
+        </t-form-item>
+        <t-form-item label="许可" name="licensePrice">
+          <t-input v-model="priceIntentionDialog.formData.licensePrice" suffix="万元" />
+        </t-form-item>
+        <t-form-item label="开放许可" name="openLicensePrice">
+          <t-input v-model="priceIntentionDialog.formData.openLicensePrice" suffix="万元" />
+        </t-form-item>
+      </t-form>
+    </template>
+  </t-dialog>
 </template>
 
 <script setup lang="ts">
@@ -236,6 +261,7 @@ import { MessagePlugin } from "tdesign-vue-next";
 import { ALL_PATENTS_TABLE_COLUMNS, BASE_URL } from "./constants";
 import { isEmpty, isNotEmpty } from "@/utils/validate";
 import { ID_card, phone_number } from "@/utils/antianaphylaxis";
+import { downloadFile } from "@/utils/files";
 
 
 const store = useSettingStore();
@@ -268,6 +294,18 @@ const exportReferencesDialog = reactive({
   visible: false,
   title: "导出引用",
   content: ""
+});
+
+// 价格意向
+const priceIntentionDialog = reactive({
+  visible: false,
+  title: "价格意向",
+  wid: "",
+  formData: {
+    transferPrice: null,
+    licensePrice: null,
+    openLicensePrice: null
+  }
 });
 
 /**
@@ -318,7 +356,6 @@ onMounted(() => {
  */
 // 监听容器宽高变化
 const resize = (resizeValue: { contentRect: { width: number; }; }[]) => {
-  console.log(resizeValue[0].contentRect);
   if (resizeValue[0].contentRect.width > 1300) {
     tableContentWidth.value = resizeValue[0].contentRect.width + "px";
   } else {
@@ -489,6 +526,93 @@ const copyExportReferences = async (elId: string) => {
     console.error("复制失败：", error);
     await MessagePlugin.error("复制失败！");
   }
+};
+
+// 下载专利证书
+const downloadCertificate = (row: { wid: any; }) => {
+  event.stopPropagation();
+  let obj = {
+    wid: row.wid
+  };
+  let fileUrl = setObjToUrlParams(BASE_URL.downloadCertificate, obj);
+  downloadFile(fileUrl);
+};
+
+// 价格意向
+const priceIntention = (row: any) => {
+  event.stopPropagation();
+  priceIntentionDialog.wid = row.wid;
+  priceIntentionDialog.formData.transferPrice = row.priceIntention;
+  priceIntentionDialog.formData.licensePrice = row.licensePriceIntention;
+  priceIntentionDialog.formData.openLicensePrice = row.openLicensePriceIntention;
+  priceIntentionDialog.visible = true;
+};
+// 价格意向确认
+const priceIntentionConfirm = async () => {
+  priceIntentionDialog.visible = false;
+  let successFlag = false;
+
+  const updatePrice = async (requestUrl: string, priceKey: string, message: string) => {
+    if (isNotEmpty(priceIntentionDialog.formData[priceKey])) {
+      let requestBody = {};
+      switch (priceKey) {
+        case "transferPrice":
+          requestBody = {
+            priceIntention: parseFloat(priceIntentionDialog.formData[priceKey]).toFixed(4),
+            wid: priceIntentionDialog.wid
+          };
+          break;
+        case "licensePrice":
+          requestBody = {
+            licensePriceIntention: parseFloat(priceIntentionDialog.formData[priceKey]).toFixed(4),
+            wid: priceIntentionDialog.wid
+          };
+          break;
+        case "openLicensePrice":
+          requestBody = {
+            openLicensePriceIntention: parseFloat(priceIntentionDialog.formData[priceKey]).toFixed(4),
+            wid: priceIntentionDialog.wid
+          };
+          break;
+      }
+
+      if (await updatePriceIntention(requestUrl, requestBody)) {
+        successFlag = true;
+      } else {
+        await MessagePlugin.error(`更新${message}失败`);
+      }
+    }
+  };
+
+  await updatePrice(BASE_URL.updateTransferPriceIntention, "transferPrice", "转让价格意向");
+  await updatePrice(BASE_URL.updateLicencePriceIntention, "licensePrice", "许可价格意向");
+  await updatePrice(BASE_URL.updateOpenLicencePriceIntention, "openLicensePrice", "开放许可价格意向");
+
+  if (successFlag) {
+    await MessagePlugin.success("更新价格意向成功");
+  }
+  currRequestBody.value = {
+    currPage: 1,
+    size: 20
+  };
+  currUrl.value = BASE_URL.getMyPatentPage;
+  let requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
+  getTableData(requestUrl);
+};
+
+// 更新价格意向
+const updatePriceIntention = async (requestUrl: string, requestBody: any) => {
+  let flag = false;
+  await request.post({
+    url: requestUrl,
+    data: requestBody
+  }).then(res => {
+    console.log(res);
+    flag = true;
+  }).catch(err => {
+    MessagePlugin.error(err.message);
+  });
+  return flag;
 };
 </script>
 

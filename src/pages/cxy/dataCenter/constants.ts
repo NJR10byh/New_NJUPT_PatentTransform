@@ -101,7 +101,7 @@ export const PATENT_TABLE_COLUMNS = [
     title: "专利号",
     align: "center",
     colKey: "zlh",
-    width: 70,
+    width: 80,
     ellipsis: true
   },
   {

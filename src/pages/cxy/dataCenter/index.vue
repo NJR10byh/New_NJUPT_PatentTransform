@@ -194,7 +194,7 @@ import {
 import { useSettingStore } from "@/store";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
-import { downloadFile } from "@/utils/files";
+import { exportFile } from "@/utils/files";
 import { isNotEmpty } from "@/utils/validate";
 
 const store = useSettingStore();
@@ -649,7 +649,7 @@ const exportExcel = () => {
         };
         break;
     }
-    downloadFile(requestUrl, requestBody);
+    exportFile(requestUrl, requestBody);
     columnMapDialogVisible.value = false;
   }
 };

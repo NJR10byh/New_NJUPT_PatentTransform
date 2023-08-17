@@ -70,10 +70,44 @@ export const uploadFile = async (requestUrl: string, formData: FormData, progres
 
 /**
  * 下载文件
+ * @param fileUrl
+ */
+export const downloadFile = async (fileUrl: string) => {
+  LoadingPlugin(true);
+  await request.get({
+    url: fileUrl,
+    responseType: "blob"
+  }).then(res => {
+    if (isNotEmpty(res.headers["content-disposition"])) {
+      NotifyPlugin.success({
+        title: "成功",
+        content: "已进入后台开始下载，您可以进行其他操作"
+      });
+      let fileName = decodeURI(res.headers["content-disposition"].split("fileName=")[1]);
+      const blob = new Blob([res.data], {
+        type: "application/force-download"
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", fileName);
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }).catch(err => {
+    MessagePlugin.error(err);
+  }).finally(() => {
+    LoadingPlugin(false);
+  });
+};
+
+/**
+ * 导出文件（Excel）
  * @param requestUrl
  * @param requestBody
  */
-export const downloadFile = async (requestUrl: any, requestBody: any) => {
+export const exportFile = async (requestUrl: string, requestBody: any) => {
   const link = document.createElement("a");
   link.style.display = "none";
   document.body.appendChild(link);
@@ -83,22 +117,24 @@ export const downloadFile = async (requestUrl: any, requestBody: any) => {
     data: requestBody,
     responseType: "blob"
   }).then(res => {
-    NotifyPlugin.success({
-      title: "成功",
-      content: "已进入后台开始下载，您可以进行其他操作"
-    });
-    let fileName = "文件";
     if (isNotEmpty(res.headers["content-disposition"])) {
-      fileName = decodeURI(res.headers["content-disposition"].split("fileName=")[1]) + ".xls";
+      NotifyPlugin.success({
+        title: "成功",
+        content: "已进入后台开始下载，您可以进行其他操作"
+      });
+      let fileName = decodeURI(res.headers["content-disposition"].split("fileName=")[1]) + ".xlsx";
+      const blob = new Blob([res.data], {
+        type: "application/force-download"
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", fileName);
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
-    const blob = new Blob([res.data], {
-      type: "application/force-download"
-    });
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", fileName);
-    link.click();
   }).catch(err => {
-    console.log(err);
     MessagePlugin.error(err);
   }).finally(() => {
     LoadingPlugin(false);

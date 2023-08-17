@@ -8,7 +8,16 @@
 export const BASE_URL = {
   getMyPatentPage: "/teacher/getMyPatentPage",
   getPatentPageByZLMC: "/teacher/getPatentPageByZLMC",
-  getPatentPageByZLH: "/teacher/getPatentPageByZLH"
+  getPatentPageByZLH: "/teacher/getPatentPageByZLH",
+  downloadCertificate: "/teacher/downloadCertificate",
+
+  // 价格意向
+  updateTransferPriceIntention: "/intention/updateTransferPriceIntention",
+  updateLicencePriceIntention: "/intention/updateLicencePriceIntention",
+  updateOpenLicencePriceIntention: "/intention/updateOpenLicencePriceIntention",
+  deleteTransferPriceIntentionByWid: "/intention/deleteTransferPriceIntentionByWid",
+  deleteLicencePriceIntentionByWid: "/intention/deleteLicencePriceIntentionByWid",
+  deleteOpenLicencePriceIntentionByWid: "/intention/deleteOpenLicencePriceIntentionByWid"
 };
 
 export const ALL_PATENTS_TABLE_COLUMNS = [
