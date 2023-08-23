@@ -479,11 +479,15 @@ const exportReferences = () => {
 
   if (selectedPatents.length > 0) {
     content = selectedPatents.map(patent => {
-      const patentType = getPatentType(patent.zlh.split("")[4]);
+      let patentType: string;
+      if (patent.zlh.indexOf("/") != -1) {
+        patentType = getPatentType(patent.zlh.split("/")[2].split("")[0]);
+      } else {
+        patentType = getPatentType(patent.zlh.split("")[6]);
+      }
       return `${patent.cymd}、${patent.zlmc}、${patentType}、${patent.zlh}`;
     }).join("<br><br>");
   }
-  console.log(content);
   exportReferencesDialog.content = content;
   exportReferencesDialog.visible = true;
 };
@@ -530,7 +534,6 @@ const copyExportReferences = async (elId: string) => {
 
 // 下载专利证书
 const downloadCertificate = (row: { wid: any; }) => {
-  event.stopPropagation();
   let obj = {
     wid: row.wid
   };
@@ -540,7 +543,6 @@ const downloadCertificate = (row: { wid: any; }) => {
 
 // 价格意向
 const priceIntention = (row: any) => {
-  event.stopPropagation();
   priceIntentionDialog.wid = row.wid;
   priceIntentionDialog.formData.transferPrice = row.priceIntention;
   priceIntentionDialog.formData.licensePrice = row.licensePriceIntention;
