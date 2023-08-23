@@ -17,7 +17,10 @@ export const BASE_URL = {
   updateOpenLicencePriceIntention: "/intention/updateOpenLicencePriceIntention",
   deleteTransferPriceIntentionByWid: "/intention/deleteTransferPriceIntentionByWid",
   deleteLicencePriceIntentionByWid: "/intention/deleteLicencePriceIntentionByWid",
-  deleteOpenLicencePriceIntentionByWid: "/intention/deleteOpenLicencePriceIntentionByWid"
+  deleteOpenLicencePriceIntentionByWid: "/intention/deleteOpenLicencePriceIntentionByWid",
+
+  // 上传专利证书
+  uploadCertificate: "/file/uploadCertificate"
 };
 
 export const ALL_PATENTS_TABLE_COLUMNS = [

@@ -54,7 +54,6 @@ export const WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS = [
     stopPropagation: true,
     colKey: "settings",
     fixed: "right",
-    width: 150,
-    stopPropagation: true
+    width: 150
   }
 ];

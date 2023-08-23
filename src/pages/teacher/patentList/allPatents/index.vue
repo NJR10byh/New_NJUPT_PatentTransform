@@ -38,11 +38,11 @@
       stripe
       table-layout="auto"
       :expand-icon="false"
-      :select-on-row-click="false"
       :expand-on-row-click="true"
       :pagination="allPatentsTable.pagination"
       :loading="allPatentsTable.tableLoading"
       :selected-row-keys="allPatentsTable.selectedRowKeys"
+      :select-on-row-click="false"
       :header-affixed-top="{ offsetTop, container: getContainer }"
       :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
       :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
@@ -189,13 +189,27 @@
             </template>
             价格意向
           </t-button>
-          <t-button variant="outline" theme="primary"
-                    v-if="isEmpty(slotProps.row.zlzsxzdz) && isEmpty(slotProps.row.certificateId)">
-            <template #icon>
-              <t-icon name="upload"></t-icon>
-            </template>
-            上传专利证书
-          </t-button>
+          <t-upload
+            ref="uploadVideo"
+            v-model="certificateUpload.file"
+            accept="image/*"
+            :autoUpload="true"
+            :showUploadProgress="true"
+            :useMockProgress="true"
+            :before-upload="beforeUpload"
+            :request-method="uploadCertificate"
+            :size-limit="{ size: 10, unit: 'MB' }"
+            @validate="validateFile"
+            v-if="isEmpty(slotProps.row.zlzsxzdz) && isEmpty(slotProps.row.certificateId)"
+            style="margin-left: 8px;"
+          >
+            <t-button @click="getUploadInfo(slotProps.row)">
+              <template #icon>
+                <t-icon name="upload"></t-icon>
+              </template>
+              上传专利证书
+            </t-button>
+          </t-upload>
           <t-button variant="outline" theme="primary"
                     v-if="isNotEmpty(slotProps.row.zlzsxzdz) || isNotEmpty(slotProps.row.certificateId)"
                     @click="downloadCertificate(slotProps.row)">
@@ -237,13 +251,28 @@
     <template #body>
       <t-form :data="priceIntentionDialog.formData">
         <t-form-item label="转让" name="transferPrice">
-          <t-input v-model="priceIntentionDialog.formData.transferPrice" suffix="万元" />
+          <t-input type="number" v-model="priceIntentionDialog.formData.transferPrice" suffix="万元" />
+          <t-button theme="danger" style="margin-left: 10px;"
+                    v-if="isNotEmpty(priceIntentionDialog.formData.transferPrice)"
+                    @click="deletePriceIntention('transferPrice')">
+            删除
+          </t-button>
         </t-form-item>
         <t-form-item label="许可" name="licensePrice">
-          <t-input v-model="priceIntentionDialog.formData.licensePrice" suffix="万元" />
+          <t-input type="number" v-model="priceIntentionDialog.formData.licensePrice" suffix="万元" />
+          <t-button theme="danger" style="margin-left: 10px;"
+                    v-if="isNotEmpty(priceIntentionDialog.formData.licensePrice)"
+                    @click="deletePriceIntention('licensePrice')">
+            删除
+          </t-button>
         </t-form-item>
         <t-form-item label="开放许可" name="openLicensePrice">
-          <t-input v-model="priceIntentionDialog.formData.openLicensePrice" suffix="万元" />
+          <t-input type="number" v-model="priceIntentionDialog.formData.openLicensePrice" suffix="万元" />
+          <t-button theme="danger" style="margin-left: 10px;"
+                    v-if="isNotEmpty(priceIntentionDialog.formData.openLicensePrice)"
+                    @click="deletePriceIntention('openLicensePrice')">
+            删除
+          </t-button>
         </t-form-item>
       </t-form>
     </template>
@@ -257,11 +286,11 @@ import { useSettingStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
-import { MessagePlugin } from "tdesign-vue-next";
+import { DialogPlugin, MessagePlugin } from "tdesign-vue-next";
 import { ALL_PATENTS_TABLE_COLUMNS, BASE_URL } from "./constants";
 import { isEmpty, isNotEmpty } from "@/utils/validate";
 import { ID_card, phone_number } from "@/utils/antianaphylaxis";
-import { downloadFile } from "@/utils/files";
+import { downloadFile, uploadFile, validateFile, validateFileType } from "@/utils/files";
 
 
 const store = useSettingStore();
@@ -306,6 +335,14 @@ const priceIntentionDialog = reactive({
     licensePrice: null,
     openLicensePrice: null
   }
+});
+
+/**
+ * 上传相关
+ */
+const certificateUpload = reactive({
+  file: [],
+  wid: ""
 });
 
 /**
@@ -545,18 +582,17 @@ const downloadCertificate = (row: { wid: any; }) => {
 const priceIntention = (row: any) => {
   priceIntentionDialog.wid = row.wid;
   priceIntentionDialog.formData.transferPrice = row.priceIntention;
-  priceIntentionDialog.formData.licensePrice = row.licensePriceIntention;
-  priceIntentionDialog.formData.openLicensePrice = row.openLicensePriceIntention;
+  priceIntentionDialog.formData.licensePrice = row.licencePriceIntention;
+  priceIntentionDialog.formData.openLicensePrice = row.openLicencePriceIntention;
   priceIntentionDialog.visible = true;
 };
 // 价格意向确认
 const priceIntentionConfirm = async () => {
-  priceIntentionDialog.visible = false;
-  let successFlag = false;
-
   const updatePrice = async (requestUrl: string, priceKey: string, message: string) => {
     if (isNotEmpty(priceIntentionDialog.formData[priceKey])) {
       let requestBody = {};
+      console.log(priceKey);
+      console.log(priceIntentionDialog.formData[priceKey]);
       switch (priceKey) {
         case "transferPrice":
           requestBody = {
@@ -566,40 +602,42 @@ const priceIntentionConfirm = async () => {
           break;
         case "licensePrice":
           requestBody = {
-            licensePriceIntention: parseFloat(priceIntentionDialog.formData[priceKey]).toFixed(4),
+            licencePriceIntention: parseFloat(priceIntentionDialog.formData[priceKey]).toFixed(4),
             wid: priceIntentionDialog.wid
           };
           break;
         case "openLicensePrice":
           requestBody = {
-            openLicensePriceIntention: parseFloat(priceIntentionDialog.formData[priceKey]).toFixed(4),
+            openLicencePriceIntention: parseFloat(priceIntentionDialog.formData[priceKey]).toFixed(4),
             wid: priceIntentionDialog.wid
           };
           break;
       }
 
       if (await updatePriceIntention(requestUrl, requestBody)) {
-        successFlag = true;
+        await MessagePlugin.success(`更新${message}成功`);
       } else {
         await MessagePlugin.error(`更新${message}失败`);
       }
     }
   };
 
-  await updatePrice(BASE_URL.updateTransferPriceIntention, "transferPrice", "转让价格意向");
-  await updatePrice(BASE_URL.updateLicencePriceIntention, "licensePrice", "许可价格意向");
-  await updatePrice(BASE_URL.updateOpenLicencePriceIntention, "openLicensePrice", "开放许可价格意向");
-
-  if (successFlag) {
-    await MessagePlugin.success("更新价格意向成功");
+  if (isEmpty(priceIntentionDialog.formData.transferPrice) && isEmpty(priceIntentionDialog.formData.licensePrice) && isEmpty(priceIntentionDialog.formData.openLicensePrice)) {
+    await MessagePlugin.warning("请至少填写一个价格意向");
+    return;
   }
-  currRequestBody.value = {
-    currPage: 1,
-    size: 20
-  };
-  currUrl.value = BASE_URL.getMyPatentPage;
+  if (isNotEmpty(priceIntentionDialog.formData.transferPrice)) {
+    await updatePrice(BASE_URL.updateTransferPriceIntention, "transferPrice", "转让价格意向");
+  }
+  if (isNotEmpty(priceIntentionDialog.formData.licensePrice)) {
+    await updatePrice(BASE_URL.updateLicencePriceIntention, "licensePrice", "许可价格意向");
+  }
+  if (isNotEmpty(priceIntentionDialog.formData.openLicensePrice)) {
+    await updatePrice(BASE_URL.updateOpenLicencePriceIntention, "openLicensePrice", "开放许可价格意向");
+  }
   let requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
   getTableData(requestUrl);
+  priceIntentionDialog.visible = false;
 };
 
 // 更新价格意向
@@ -615,6 +653,99 @@ const updatePriceIntention = async (requestUrl: string, requestBody: any) => {
     MessagePlugin.error(err.message);
   });
   return flag;
+};
+
+const deletePriceIntention = (priceKey: string) => {
+  const confirmDialog = DialogPlugin.confirm({
+    header: "提示",
+    theme: "warning",
+    body: "确认要删除吗？",
+    confirmBtn: {
+      content: "删除",
+      variant: "base",
+      theme: "danger"
+    },
+    cancelBtn: "取消",
+    onConfirm: () => {
+      let requestUrl = "";
+      let message = "";
+      switch (priceKey) {
+        case "transferPrice":
+          requestUrl = BASE_URL.deleteTransferPriceIntentionByWid;
+          message = "转让价格意向";
+          break;
+        case "licensePrice":
+          requestUrl = BASE_URL.deleteLicencePriceIntentionByWid;
+          message = "许可价格意向";
+          break;
+        case "openLicensePrice":
+          requestUrl = BASE_URL.deleteOpenLicencePriceIntentionByWid;
+          message = "开放许可价格意向";
+          break;
+      }
+      let params = {
+        wid: priceIntentionDialog.wid
+      };
+      request.get({
+        url: setObjToUrlParams(requestUrl, params)
+      }).then(res => {
+        MessagePlugin.success(`删除${message}成功`);
+      }).catch(err => {
+        MessagePlugin.error(err.message);
+      }).finally(() => {
+        requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
+        getTableData(requestUrl);
+        priceIntentionDialog.visible = false;
+      });
+      // 请求成功后，销毁弹框
+      confirmDialog.destroy();
+    },
+    onClose: () => {
+      confirmDialog.hide();
+    }
+  });
+};
+
+// 获取上传信息
+const getUploadInfo = (row: any) => {
+  console.log(row);
+  certificateUpload.wid = row.wid;
+};
+const beforeUpload = (file: { type: string; }) => {
+  return validateFileType("image/*", file.type);
+};
+// 上传专利证书
+const uploadCertificate = (file: { type: string; raw: string | Blob; }) => {
+
+  let fileFormData = new FormData();
+  fileFormData.append("file", file.raw);
+  fileFormData.append("wid", certificateUpload.wid);
+  // TODO 研究一下如何将上传进度返回给组件
+  // let percent = 0;
+  // const percentTimer = setInterval(() => {
+  //   if (percent + 10 < 99) {
+  //     percent += 10;
+  //     uploadVideo.value.uploadFilePercent();
+  //   } else {
+  //     clearInterval(percentTimer);
+  //   }
+  // }, 100);
+  // const timer = setTimeout(() => {
+  //   // resolve 参数为关键代码
+  //   resolve({ status: "success", response: { url: "https://tdesign.gtimg.com/site/avatar.jpg" } });
+  //
+  //   clearTimeout(timer);
+  //   clearInterval(percentTimer);
+  // }, 1000);
+  uploadFile(BASE_URL.uploadCertificate, fileFormData, percentCompleted => {
+  }).then(res => {
+    MessagePlugin.success("上传成功");
+  }).catch(err => {
+    MessagePlugin.error(err);
+  }).finally(() => {
+    let requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
+    getTableData(requestUrl);
+  });
 };
 </script>
 
