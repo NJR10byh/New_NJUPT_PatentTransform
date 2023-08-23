@@ -7,8 +7,11 @@
 <template>
   <t-card class="transferred-patents-card">
     <t-row justify="start" class="cardTop">
-      <t-date-range-picker class="inputStyle rangeInputStyle" v-model="patentCompleteTimeRange"
-                           :placeholder="['转化完成时间 起', '转化完成时间 止']" clearable @change="dateRangeChange" />
+      <t-date-range-picker
+        class="inputStyle rangeInputStyle"
+        :placeholder="['转化完成时间 起', '转化完成时间 止']"
+        clearable @change="dateRangeChange"
+      />
     </t-row>
     <t-table
       class="tableStyle"
@@ -178,11 +181,6 @@ const offsetTop = computed(() => {
 const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
-
-/**
- * 搜索相关
- */
-const patentCompleteTimeRange = ref([]); // 转化完成时间
 /**
  * 表格相关
  */
