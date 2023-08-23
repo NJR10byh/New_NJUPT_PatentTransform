@@ -38,6 +38,7 @@ export const USER_LIST_TABLE_COLUMNS = [
   },
   {
     title: "操作",
+    stopPropagation: true,
     align: "left",
     colKey: "settings",
     width: 80,

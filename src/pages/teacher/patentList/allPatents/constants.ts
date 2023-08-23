@@ -44,6 +44,7 @@ export const ALL_PATENTS_TABLE_COLUMNS = [
   },
   {
     title: "操作",
+    stopPropagation: true,
     align: "left",
     colKey: "settings",
     fixed: "right",

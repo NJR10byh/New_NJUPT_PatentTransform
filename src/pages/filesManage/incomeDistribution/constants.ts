@@ -28,6 +28,7 @@ export const FILES_MANAGE_INCOME_DISTRIBUTION_DETAIL_TABLE_COLUMNS = [
   },
   {
     title: "操作",
+    stopPropagation: true,
     align: "left",
     colKey: "settings",
     width: 100

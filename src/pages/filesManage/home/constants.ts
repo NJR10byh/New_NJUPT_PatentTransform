@@ -18,6 +18,7 @@ export const FILES_MANAGE_HOME_TABLE_COLUMNS = [
   },
   {
     title: "操作",
+    stopPropagation: true,
     align: "left",
     colKey: "settings",
     width: 300

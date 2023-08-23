@@ -46,6 +46,7 @@ export const SAVED_APPROVAL_TABLE_COLUMNS = [
   },
   {
     title: "操作",
+    stopPropagation: true,
     align: "left",
     colKey: "settings",
     fixed: "right",

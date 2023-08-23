@@ -57,6 +57,7 @@ export const CONTRACT_MANAGE_TABLE_COLUMNS = [
   },
   {
     title: "操作",
+    stopPropagation: true,
     colKey: "settings",
     fixed: "right",
     width: 30,

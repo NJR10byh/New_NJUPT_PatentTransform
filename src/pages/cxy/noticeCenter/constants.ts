@@ -84,6 +84,7 @@ export const NOTICE_MANAGE_TABLE_COLUMNS = [
     colKey: "settings",
     width: 100,
     title: "操作",
+    stopPropagation: true,
     stopPropagation: true
   }
 ];
