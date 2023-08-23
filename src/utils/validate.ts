@@ -5,11 +5,11 @@
  * @version 0.1.0
  */
 
-export const isEmpty = (val: string | any[]) => {
-  return val == null || val == "" || val == undefined || val.length === 0;
+export const isEmpty = (val: any) => {
+  return val === null || val === "" || val === undefined || val.length === 0;
 };
 
-export const isNotEmpty = (val: string | any[]) => {
+export const isNotEmpty = (val: any) => {
   return !isEmpty(val);
 };
 
