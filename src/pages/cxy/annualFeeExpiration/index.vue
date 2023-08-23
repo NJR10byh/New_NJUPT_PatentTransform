@@ -22,7 +22,7 @@
       class="tableStyle"
       :data="annualFeeExpirationTable.tableData"
       :columns="ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
 
       hover
       stripe

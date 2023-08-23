@@ -122,7 +122,7 @@
       v-if="tableType=='1'"
       :data="dataCenterPatentTable.tableData"
       :columns="PATENT_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :pagination="dataCenterPatentTable.pagination"
@@ -146,7 +146,7 @@
       v-if="tableType=='2'"
       :data="dataCenterContractTable.tableData"
       :columns="CONTRACT_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :pagination="dataCenterContractTable.pagination"

@@ -9,7 +9,7 @@
     <t-table
       :data="waitFirstAuthorApprovalTable.tableData"
       :columns="WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :pagination="waitFirstAuthorApprovalTable.pagination"

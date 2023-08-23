@@ -88,7 +88,7 @@
         </t-col>
         <t-col :span="4">
           <t-tooltip :content="approvalFormInfo.paContactPhone">
-            <div>{{ phone_number(approvalFormInfo.paContactPhone) }}</div>
+            <div>{{ PhoneLock(approvalFormInfo.paContactPhone) }}</div>
           </t-tooltip>
         </t-col>
       </t-row>
@@ -298,7 +298,7 @@
               style="box-sizing: border-box;"
               :data="cashRewardTable.tableData"
               :columns="CASH_REWARD_TABLE_COLUMNS"
-              row-key="id"
+              row-key="index"
               hover
               borderd
               stripe
@@ -337,7 +337,7 @@ import { setObjToUrlParams } from "@/utils/request/utils";
 import { useRoute } from "vue-router";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
-import { ID_card, phone_number } from "@/utils/antianaphylaxis";
+import { IDCardLock, PhoneLock } from "@/utils/antianaphylaxis";
 
 const route = useRoute();
 /**
@@ -407,7 +407,7 @@ const getApprovalFormInfo = (requestUrl: string) => {
     cashRewardTable.value.tableData = res.distributionList;
     for (let i = 0; i < cashRewardTable.value.tableData.length; i++) {
       cashRewardTable.value.tableData[i].index = i + 1;
-      cashRewardTable.value.tableData[i].idCard = ID_card(cashRewardTable.value.tableData[i].idCard);
+      cashRewardTable.value.tableData[i].idCard = IDCardLock(cashRewardTable.value.tableData[i].idCard);
       cashRewardTable.value.tableData[i].amount += " 万元";
     }
   }).catch(err => {

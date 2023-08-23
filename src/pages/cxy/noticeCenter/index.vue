@@ -31,7 +31,7 @@
     <t-table
       :data="videoManageTable.tableData"
       :columns="VIDEO_MANAGE_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :loading="videoManageTable.tableLoading"
@@ -68,7 +68,7 @@
     <t-table
       :data="noticeManageTable.tableData"
       :columns="NOTICE_MANAGE_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :pagination="noticeManageTable.pagination"

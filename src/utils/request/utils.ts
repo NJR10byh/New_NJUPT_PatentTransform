@@ -52,13 +52,3 @@ export function setObjToUrlParams(baseUrl: string, obj: object): string {
   parameters = parameters.replace(/&$/, "");
   return /\?$/.test(baseUrl) ? baseUrl + parameters : baseUrl.replace(/\/?$/, "?") + parameters;
 }
-
-// 手机号脱敏
-export function PhoneLock(phone: string): string {
-  return phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
-}
-
-// 身份证号脱敏
-export function IDCardLock(phone: string): string {
-  return phone.replace(/^(.{6})(?:\d+)(.{4})$/, "$1********$2");
-}

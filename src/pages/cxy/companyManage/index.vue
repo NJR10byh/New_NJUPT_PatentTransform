@@ -30,7 +30,7 @@
       class="tableStyle"
       :data="companyManageTable.tableData"
       :columns="COMPANY_MANAGE_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
 
       hover
       stripe

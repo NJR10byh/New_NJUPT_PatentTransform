@@ -10,7 +10,7 @@
       class="tableStyle"
       :data="waitConfirmTable.tableData"
       :columns="WAIT_CONFIRM_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       table-layout="auto"

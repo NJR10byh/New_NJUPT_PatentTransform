@@ -26,7 +26,7 @@
           class="tableStyle"
           :data="patentApprovalTable.tableData"
           :columns="PATENT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+          row-key="index"
           hover
           stripe
           table-layout="auto"
@@ -101,7 +101,7 @@
           class="tableStyle"
           :data="patentApprovalTable.tableData"
           :columns="PATENT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+          row-key="index"
 
           hover
           stripe
@@ -190,7 +190,7 @@
           class="tableStyle"
           :data="patentApprovalTable.tableData"
           :columns="PATENT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+          row-key="index"
 
           hover
           stripe
@@ -273,7 +273,7 @@
           class="tableStyle"
           :data="patentApprovalTable.tableData"
           :columns="PATENT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+          row-key="index"
 
           hover
           stripe
@@ -316,7 +316,7 @@
           class="tableStyle"
           :data="patentApprovalTable.tableData"
           :columns="PATENT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+          row-key="index"
 
           hover
           stripe

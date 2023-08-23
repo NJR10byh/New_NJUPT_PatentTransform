@@ -43,7 +43,7 @@
               身份证号
             </div>
             <div class="contract-detail">
-              {{ ID_card(userStore.userInfo.userIdCard) }}
+              {{ IDCardLock(userStore.userInfo.userIdCard) }}
             </div>
           </t-col>
           <t-col class="contract" :span="3">
@@ -51,7 +51,7 @@
               联系方式
             </div>
             <div class="contract-detail">
-              {{ phone_number(userStore.userInfo.userPhone) }}
+              {{ PhoneLock(userStore.userInfo.userPhone) }}
             </div>
           </t-col>
           <t-col class="contract" :span="3">
@@ -94,7 +94,7 @@
               电话
             </div>
             <div class="contract-detail">
-              {{ phone_number(basicInfo.contractPbTel) }}
+              {{ PhoneLock(basicInfo.contractPbTel) }}
             </div>
           </t-col>
           <t-col class="contract" :span="3">
@@ -217,7 +217,7 @@ import { useUserStore } from "@/store";
 import { BASE_URL, TEAM_MEMBERS } from "./constants";
 import { request } from "@/utils/request";
 import { MessagePlugin } from "tdesign-vue-next";
-import { ID_card, phone_number } from "@/utils/antianaphylaxis";
+import { IDCardLock, PhoneLock } from "@/utils/antianaphylaxis";
 import router from "@/router";
 import { getRoleName } from "@/utils/auth";
 

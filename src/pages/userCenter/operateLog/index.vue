@@ -28,7 +28,7 @@
       class="tableStyle"
       :data="operateLogTable.tableData"
       :columns="OPERATE_LOG_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :pagination="operateLogTable.pagination"

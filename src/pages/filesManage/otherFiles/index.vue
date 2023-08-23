@@ -33,7 +33,7 @@
     <t-table
       :data="filesManageOtherFilesTable.tableData"
       :columns="FILES_MANAGE_OTHER_FILES_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :loading="filesManageOtherFilesTable.tableLoading"

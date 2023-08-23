@@ -12,7 +12,7 @@
     <t-table
       :data="openLicensePriceTable.tableData"
       :columns="OPEN_LICENCES_PRICE_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :pagination="openLicensePriceTable.pagination"

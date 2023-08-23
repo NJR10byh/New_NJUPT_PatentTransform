@@ -13,7 +13,7 @@
           class="tableStyle"
           :data="waitApprovalTable.tableData"
           :columns="WAIT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+          row-key="index"
 
           hover
           stripe
@@ -76,7 +76,7 @@
           class="tableStyle"
           :data="waitApprovalTable.tableData"
           :columns="WAIT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+          row-key="index"
 
           hover
           stripe

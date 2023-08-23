@@ -51,7 +51,7 @@
     <t-table
       :data="filesManageIncomeDistributionDetailTable.tableData"
       :columns="FILES_MANAGE_INCOME_DISTRIBUTION_DETAIL_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :loading="filesManageIncomeDistributionDetailTable.tableLoading"

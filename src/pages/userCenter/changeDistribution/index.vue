@@ -12,7 +12,7 @@
     <t-table
       :data="changeDistributionTable.tableData"
       :columns="CHANGE_DISTRIBUTION_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :loading="changeDistributionTable.tableLoading"

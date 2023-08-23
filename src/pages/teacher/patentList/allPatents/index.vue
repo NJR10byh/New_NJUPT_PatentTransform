@@ -53,15 +53,7 @@
     >
       <template #expandedRow="slotProps">
         <t-row class="content">
-          <t-col class="contract" :span="2">
-            <div class="contract-title">
-              专利号
-            </div>
-            <t-tag theme="primary" variant="light-outline">
-              {{ slotProps.row.zlh }}
-            </t-tag>
-          </t-col>
-          <t-col class="contract" :span="2">
+          <t-col class="contract" :span="4">
             <div class="contract-title">
               成员名单
             </div>
@@ -69,7 +61,7 @@
               {{ slotProps.row.cymd }}
             </div>
           </t-col>
-          <t-col class="contract" :span="2">
+          <t-col class="contract" :span="4">
             <div class="contract-title">
               成员工号
             </div>
@@ -82,7 +74,7 @@
               专利第一作者姓名
             </div>
             <div class="contract-detail">
-              {{ ID_card(slotProps.row.zldyzzxm) }}
+              {{ slotProps.row.zldyzzxm }}
             </div>
           </t-col>
           <t-col class="contract" :span="2">
@@ -90,18 +82,18 @@
               专利第一作者工号
             </div>
             <div class="contract-detail">
-              {{ phone_number(slotProps.row.zldyzzgh) }}
+              {{ slotProps.row.zldyzzgh }}
             </div>
           </t-col>
-          <t-col class="contract" :span="2">
-            <div class="contract-title">
-              授权日期
-            </div>
-            <div class="contract-detail">
-              {{ slotProps.row.sqrq }}
-            </div>
-          </t-col>
-          <t-col class="contract" :span="2">
+          <!--          <t-col class="contract" :span="1">-->
+          <!--            <div class="contract-title">-->
+          <!--              授权日期-->
+          <!--            </div>-->
+          <!--            <div class="contract-detail">-->
+          <!--              {{ slotProps.row.sqrq }}-->
+          <!--            </div>-->
+          <!--          </t-col>-->
+          <t-col class="contract" :span="3">
             <div class="contract-title">
               归属单位
             </div>
@@ -109,15 +101,15 @@
               {{ slotProps.row.gsdw }}
             </div>
           </t-col>
-          <t-col class="contract" :span="2">
-            <div class="contract-title">
-              所有权人
-            </div>
-            <div class="contract-detail">
-              {{ slotProps.row.zlqr }}
-            </div>
-          </t-col>
-          <t-col class="contract" :span="2">
+          <!--          <t-col class="contract" :span="1">-->
+          <!--            <div class="contract-title">-->
+          <!--              所有权人-->
+          <!--            </div>-->
+          <!--            <div class="contract-detail">-->
+          <!--              {{ slotProps.row.zlqr }}-->
+          <!--            </div>-->
+          <!--          </t-col>-->
+          <t-col class="contract" :span="1">
             <div class="contract-title">
               专利代理人
             </div>
@@ -125,38 +117,46 @@
               {{ slotProps.row.zldlr }}
             </div>
           </t-col>
-          <t-col class="contract" :span="2">
+          <t-col class="contract" :span="1">
             <div class="contract-title">
               转让价格
             </div>
             <div class="contract-detail">
-              {{ isEmpty(slotProps.row.priceIntention) ? "暂无" : slotProps.row.priceIntention + " 万元" }}
+              <t-tag theme="primary" variant="light">
+                {{ isEmpty(slotProps.row.priceIntention) ? "暂无" : slotProps.row.priceIntention + " 万元" }}
+              </t-tag>
             </div>
           </t-col>
-          <t-col class="contract" :span="2">
+          <t-col class="contract" :span="1">
             <div class="contract-title">
               许可价格
             </div>
             <div class="contract-detail">
-              {{ isEmpty(slotProps.row.licencePriceIntention) ? "暂无" : slotProps.row.licencePriceIntention + " 万元"
-              }}
+              <t-tag theme="primary" variant="light">
+                {{ isEmpty(slotProps.row.licencePriceIntention) ? "暂无" : slotProps.row.licencePriceIntention + " 万元"
+                }}
+              </t-tag>
             </div>
           </t-col>
-          <t-col class="contract" :span="2">
+          <t-col class="contract" :span="1">
             <div class="contract-title">
               开放许可价格
             </div>
             <div class="contract-detail">
-              {{ isEmpty(slotProps.row.openLicencePriceIntention) ? "暂无" : slotProps.row.openLicencePriceIntention + " 万元"
-              }}
+              <t-tag theme="primary" variant="light">
+                {{ isEmpty(slotProps.row.openLicencePriceIntention) ? "暂无" : slotProps.row.openLicencePriceIntention + " 万元"
+                }}
+              </t-tag>
             </div>
           </t-col>
-          <t-col class="contract" :span="2">
+          <t-col class="contract" :span="1">
             <div class="contract-title">
               已公示
             </div>
             <div class="contract-detail">
-              {{ isEmpty(slotProps.row.publicNoticeTime) ? "暂无数据" : slotProps.row.publicNoticeTime + " 天" }}
+              <t-tag theme="warning" variant="light">
+                {{ isEmpty(slotProps.row.publicNoticeTime) ? "暂无数据" : slotProps.row.publicNoticeTime + " 天" }}
+              </t-tag>
             </div>
           </t-col>
           <t-col class="contract" :span="2">
@@ -289,7 +289,6 @@ import { setObjToUrlParams } from "@/utils/request/utils";
 import { DialogPlugin, MessagePlugin } from "tdesign-vue-next";
 import { ALL_PATENTS_TABLE_COLUMNS, BASE_URL } from "./constants";
 import { isEmpty, isNotEmpty } from "@/utils/validate";
-import { ID_card, phone_number } from "@/utils/antianaphylaxis";
 import { downloadFile, uploadFile, validateFile, validateFileType } from "@/utils/files";
 
 
@@ -435,9 +434,9 @@ const getTableData = (requestUrl: string) => {
     console.log(res);
     allPatentsTable.value.tableData = res.records;
     allPatentsTable.value.pagination.total = res.total;
-    for (let i = 0; i < allPatentsTable.value.tableData.length; i++) {
-      allPatentsTable.value.tableData[i].index = (allPatentsTable.value.pagination.current - 1) * allPatentsTable.value.pagination.pageSize + i + 1;
-    }
+    allPatentsTable.value.tableData.map((item, index) => {
+      item.index = (allPatentsTable.value.pagination.current - 1) * allPatentsTable.value.pagination.pageSize + index + 1;
+    });
   }).catch(err => {
     MessagePlugin.error(err.message);
   }).finally(() => {
@@ -783,7 +782,7 @@ const uploadCertificate = (file: { type: string; raw: string | Blob; }) => {
 
     .content {
       width: 100%;
-      //border: 1px solid red;
+      margin-top: -20px;
 
       .contract {
         height: 80px;

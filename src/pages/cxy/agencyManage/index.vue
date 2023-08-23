@@ -30,7 +30,7 @@
       class="tableStyle"
       :data="agencyManageTable.tableData"
       :columns="AGENCY_MANAGE_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       table-layout="auto"

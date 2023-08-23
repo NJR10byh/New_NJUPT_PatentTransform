@@ -12,7 +12,7 @@
     <t-table
       :data="transferPriceTable.tableData"
       :columns="TRANSFER_PRICE_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :pagination="transferPriceTable.pagination"

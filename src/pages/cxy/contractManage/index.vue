@@ -33,7 +33,7 @@
           class="tableStyle"
           :data="contractManageTable.tableData"
           :columns="CONTRACT_MANAGE_TABLE_COLUMNS"
-          row-key="id"
+          row-key="index"
           hover
           stripe
           table-layout="auto"
@@ -173,7 +173,7 @@
           class="tableStyle"
           :data="contractManageTable.tableData"
           :columns="CONTRACT_MANAGE_TABLE_COLUMNS"
-          row-key="id"
+          row-key="index"
           hover
           stripe
           table-layout="auto"

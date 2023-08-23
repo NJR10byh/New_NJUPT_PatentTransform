@@ -10,7 +10,7 @@
       class="tableStyle"
       :data="savedApprovalTable.tableData"
       :columns="SAVED_APPROVAL_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       table-layout="auto"

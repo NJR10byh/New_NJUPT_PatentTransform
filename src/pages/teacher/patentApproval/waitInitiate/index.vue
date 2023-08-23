@@ -9,7 +9,7 @@
     <t-table
       :data="waitInitiateTable.tableData"
       :columns="WAIT_INITIATED_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       table-layout="auto"

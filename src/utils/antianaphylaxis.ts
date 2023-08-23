@@ -9,8 +9,10 @@ import { isEmpty } from "@/utils/validate";
 
 /**
  * 身份证号脱敏
+ * @param idCard
+ * @constructor
  */
-export const ID_card = (idCard: string) => {
+export const IDCardLock = (idCard: string) => {
   if (isEmpty(idCard)) {
     return "";
   }
@@ -20,8 +22,10 @@ export const ID_card = (idCard: string) => {
 
 /**
  * 手机号脱敏
+ * @param tel
+ * @constructor
  */
-export const phone_number = (tel: string) => {
+export const PhoneLock = (tel: string) => {
   if (isEmpty(tel)) {
     return "";
   }

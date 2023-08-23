@@ -33,7 +33,7 @@
     <t-table
       :data="filesManageIncomeDistributionTable.tableData"
       :columns="FILES_MANAGE_INCOME_DISTRIBUTION_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :loading="filesManageIncomeDistributionTable.tableLoading"

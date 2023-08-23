@@ -32,7 +32,7 @@
       class="tableStyle"
       :data="userListTable.tableData"
       :columns="USER_LIST_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :loading="userListTable.tableLoading"

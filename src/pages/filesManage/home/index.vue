@@ -46,7 +46,7 @@
     <t-table
       :data="filesManageHomeTable.tableData"
       :columns="FILES_MANAGE_HOME_TABLE_COLUMNS"
-      row-key="id"
+      row-key="index"
       hover
       stripe
       :loading="filesManageHomeTable.tableLoading"
