@@ -59,8 +59,7 @@ export const PATENT_APPROVAL_TABLE_COLUMNS = [
     stopPropagation: true,
     colKey: "settings",
     fixed: "right",
-    width: 30,
-    stopPropagation: true
+    width: 30
   }
 ];
 
@@ -113,7 +112,6 @@ export const PATENT_APPROVAL_TABLE_COLUMNS_WITH_SELECT = [
     stopPropagation: true,
     colKey: "settings",
     fixed: "right",
-    width: 30,
-    stopPropagation: true
+    width: 30
   }
 ];

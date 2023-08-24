@@ -51,7 +51,6 @@ export const WAIT_APPROVAL_TABLE_COLUMNS = [
     stopPropagation: true,
     colKey: "settings",
     fixed: "right",
-    width: 30,
-    stopPropagation: true
+    width: 30
   }
 ];
