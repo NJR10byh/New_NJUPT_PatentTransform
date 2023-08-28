@@ -113,13 +113,13 @@
             </template>
             查看审批表
           </t-button>
-          <t-button theme="success">
+          <t-button theme="success" @click="passApproval(slotProps.row)">
             <template #icon>
               <t-icon name="check-circle"></t-icon>
             </template>
             通过
           </t-button>
-          <t-button theme="danger">
+          <t-button theme="danger" @click="cancelApproval(slotProps.row)">
             <template #icon>
               <t-icon name="close-circle"></t-icon>
             </template>
@@ -129,10 +129,22 @@
       </template>
     </t-table>
   </t-card>
+
+  <t-dialog
+    v-model:visible="cancelApprovalDialog.visible"
+    theme="warning"
+    header="提示"
+    @confirm="cancelApprovalConfirm"
+  >
+    <template #body>
+      <div style="margin-bottom: 10px;">确认不通过吗？</div>
+      <t-input v-model="cancelApprovalDialog.params.remarks" placeholder="不通过请写备注" />
+    </template>
+  </t-dialog>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useSettingStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import { prefix } from "@/config/global";
@@ -140,7 +152,7 @@ import { BASE_URL, WAIT_CONFIRM_TABLE_COLUMNS } from "./constants";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { request } from "@/utils/request";
 import { isEmpty } from "@/utils/validate";
-import { MessagePlugin } from "tdesign-vue-next";
+import { DialogPlugin, MessagePlugin } from "tdesign-vue-next";
 
 const store = useSettingStore();
 const userStore = useUserStore();
@@ -163,7 +175,6 @@ const getContainer = () => {
 const waitConfirmTable = ref({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
-  searchText: "",
   // 表格分页
   pagination: {
     total: 0,
@@ -172,19 +183,28 @@ const waitConfirmTable = ref({
   }
 });
 
+const cancelApprovalDialog = reactive({
+  visible: false,
+  params: {
+    transferApplicationFormId: "",
+    remarks: ""
+  }
+});
+
+const currentRequestBody = reactive({
+  currPage: 1,
+  size: 20,
+  userGh: userStore.userInfo.userGh,
+  userName: userStore.userInfo.userName
+});
+
 /**
  * methods区
  */
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-  let obj = {
-    currPage: waitConfirmTable.value.pagination.current,
-    size: waitConfirmTable.value.pagination.pageSize,
-    userGh: userStore.userInfo.userGh,
-    userName: userStore.userInfo.userName
-  };
-  let requestUrl = setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, obj);
+  let requestUrl = setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, currentRequestBody);
   getTableData(requestUrl);
 });
 /**
@@ -194,20 +214,18 @@ const waitConfirmTablePageChange = (curr) => {
   console.log("分页变化", curr);
   waitConfirmTable.value.pagination.current = curr.current;
   waitConfirmTable.value.pagination.pageSize = curr.pageSize;
-  let obj = {
-    currPage: waitConfirmTable.value.pagination.current,
-    size: waitConfirmTable.value.pagination.pageSize,
-    userGh: userStore.userInfo.userGh,
-    userName: userStore.userInfo.userName
-  };
-  let requestUrl = setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, obj);
+  Object.assign(currentRequestBody, {
+    currPage: curr.current,
+    size: curr.pageSize
+  });
+  let requestUrl = setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, currentRequestBody);
   getTableData(requestUrl);
 };
 /**
  * 业务相关
  */
 // 获取表格数据
-const getTableData = (requestUrl) => {
+const getTableData = (requestUrl: string) => {
   waitConfirmTable.value.tableData = [];
   waitConfirmTable.value.tableLoading = true;
   request.get({
@@ -224,6 +242,56 @@ const getTableData = (requestUrl) => {
     MessagePlugin.error(err.message);
   }).finally(() => {
     waitConfirmTable.value.tableLoading = false;
+  });
+};
+
+// 通过审批
+const passApproval = (row: any) => {
+  console.log(row);
+  const confirmDialog = DialogPlugin.confirm({
+    header: "提示",
+    theme: "warning",
+    body: "确认通过吗？",
+    onConfirm: () => {
+      request.get({
+        url: setObjToUrlParams(BASE_URL.approvalTransferApplicationByZLDYZZ, {
+          transferApplicationFormId: row.transferApplicationFormId
+        })
+      }).then(res => {
+        console.log(res);
+        MessagePlugin.success("已通过");
+      }).catch(err => {
+        MessagePlugin.error(err.message);
+      }).finally(() => {
+        getTableData(setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, currentRequestBody));
+        // 请求成功后，销毁弹框
+        confirmDialog.destroy();
+      });
+    },
+    onClose: () => {
+      confirmDialog.hide();
+    }
+  });
+};
+
+// 不通过审批
+const cancelApproval = (row: any) => {
+  cancelApprovalDialog.params.remarks = "";
+  cancelApprovalDialog.params.transferApplicationFormId = row.transferApplicationFormId;
+  cancelApprovalDialog.visible = true;
+};
+
+const cancelApprovalConfirm = () => {
+  request.get({
+    url: setObjToUrlParams(BASE_URL.approvalTransferApplicationByZLDYZZ, cancelApprovalDialog.params)
+  }).then(res => {
+    console.log(res);
+    MessagePlugin.success("不通过");
+  }).catch(err => {
+    MessagePlugin.error(err.message);
+  }).finally(() => {
+    getTableData(setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, currentRequestBody));
+    cancelApprovalDialog.visible = false;
   });
 };
 </script>

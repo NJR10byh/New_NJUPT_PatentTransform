@@ -5,7 +5,9 @@
  * @version 0.1.0
  */
 export const BASE_URL = {
-  getZLDYZZConfirmPage: "/teacher/getZLDYZZConfirmPage"
+  getZLDYZZConfirmPage: "/teacher/getZLDYZZConfirmPage",
+  approvalTransferApplicationByZLDYZZ: "/process/approvalTransferApplicationByZLDYZZ",
+  notApprovalTransferApplicationByZLDYZZ: "/process/notApprovalTransferApplicationByZLDYZZ"
 };
 
 export const WAIT_CONFIRM_TABLE_COLUMNS = [

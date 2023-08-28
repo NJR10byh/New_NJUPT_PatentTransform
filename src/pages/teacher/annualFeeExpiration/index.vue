@@ -183,7 +183,7 @@ const annualFeeExpirationTable = ref({
 
 const editReminderDateDialog = reactive({
   visible: false,
-  title: "编辑提醒日期",
+  title: "修改提醒日期",
   editReminderDateForm: {
     wid: "",
     reminderDate: ""
