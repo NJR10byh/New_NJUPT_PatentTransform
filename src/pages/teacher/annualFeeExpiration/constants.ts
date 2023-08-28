@@ -5,7 +5,8 @@
  * @version 0.1.0
  */
 export const BASE_URL = {
-  getRequireAnnualFeePatentPageByGh: "/annualFee/getRequireAnnualFeePatentPageByGh"
+  getRequireAnnualFeePatentPageByGh: "/annualFee/getRequireAnnualFeePatentPageByGh",
+  updateAnnualFeeReminderDate: "/annualFee/updateAnnualFeeReminderDate"
 };
 
 export const ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS = [

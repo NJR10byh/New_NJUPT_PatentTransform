@@ -10,7 +10,8 @@
       <t-date-range-picker
         class="inputStyle rangeInputStyle"
         :placeholder="['转化完成时间 起', '转化完成时间 止']"
-        clearable @change="dateRangeChange"
+        clearable
+        @change="dateRangeChange"
       />
     </t-row>
     <t-table
