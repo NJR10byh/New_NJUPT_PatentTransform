@@ -40,7 +40,8 @@
       hover
       stripe
       table-layout="auto"
-      table-content-width="1600px"
+      :expand-icon="false"
+      :expand-on-row-click="true"
       :pagination="initiatedTable.pagination"
       :loading="initiatedTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -49,6 +50,124 @@
       @page-change="initiatedTablePageChange"
       size="small"
     >
+      <template #expandedRow="slotProps">
+        <t-row class="content">
+          <t-col class="contract" :span="4">
+            <div class="contract-title">
+              成员名单
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.cymd }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="4">
+            <div class="contract-title">
+              成员工号
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.cygh }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              专利第一作者姓名
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zldyzzxm }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              专利第一作者工号
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zldyzzgh }}
+            </div>
+          </t-col>
+          <!--          <t-col class="contract" :span="1">-->
+          <!--            <div class="contract-title">-->
+          <!--              授权日期-->
+          <!--            </div>-->
+          <!--            <div class="contract-detail">-->
+          <!--              {{ slotProps.row.sqrq }}-->
+          <!--            </div>-->
+          <!--          </t-col>-->
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              归属单位
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.gsdw }}
+            </div>
+          </t-col>
+          <!--          <t-col class="contract" :span="1">-->
+          <!--            <div class="contract-title">-->
+          <!--              所有权人-->
+          <!--            </div>-->
+          <!--            <div class="contract-detail">-->
+          <!--              {{ slotProps.row.zlqr }}-->
+          <!--            </div>-->
+          <!--          </t-col>-->
+          <t-col class="contract" :span="1">
+            <div class="contract-title">
+              专利代理人
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zldlr }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="1">
+            <div class="contract-title">
+              转让价格
+            </div>
+            <div class="contract-detail">
+              <t-tag theme="primary" variant="light">
+                {{ isEmpty(slotProps.row.priceIntention) ? "暂无" : slotProps.row.priceIntention + " 万元" }}
+              </t-tag>
+            </div>
+          </t-col>
+          <t-col class="contract" :span="1">
+            <div class="contract-title">
+              许可价格
+            </div>
+            <div class="contract-detail">
+              <t-tag theme="primary" variant="light">
+                {{ isEmpty(slotProps.row.licencePriceIntention) ? "暂无" : slotProps.row.licencePriceIntention + " 万元"
+                }}
+              </t-tag>
+            </div>
+          </t-col>
+          <t-col class="contract" :span="1">
+            <div class="contract-title">
+              开放许可价格
+            </div>
+            <div class="contract-detail">
+              <t-tag theme="primary" variant="light">
+                {{ isEmpty(slotProps.row.openLicencePriceIntention) ? "暂无" : slotProps.row.openLicencePriceIntention + " 万元"
+                }}
+              </t-tag>
+            </div>
+          </t-col>
+          <t-col class="contract" :span="1">
+            <div class="contract-title">
+              已公示
+            </div>
+            <div class="contract-detail">
+              <t-tag theme="warning" variant="light">
+                {{ isEmpty(slotProps.row.publicNoticeTime) ? "暂无数据" : slotProps.row.publicNoticeTime + " 天" }}
+              </t-tag>
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              最后更新时间
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.gmtUpdate }}
+            </div>
+          </t-col>
+        </t-row>
+      </template>
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
           {{ slotProps.row.zlh }}
@@ -146,7 +265,7 @@ import { MessagePlugin } from "tdesign-vue-next";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { chargeTransferState } from "@/utils/transferState";
 import router from "@/router";
-import { isNotEmpty } from "@/utils/validate";
+import { isEmpty, isNotEmpty } from "@/utils/validate";
 
 const store = useSettingStore();
 
@@ -268,6 +387,38 @@ const toSavedApproval = () => {
   .tableStyle {
     width: 100%;
     margin-top: 10px;
+
+    .content {
+      width: 100%;
+      margin-top: -20px;
+
+      .contract {
+        height: 80px;
+
+        &-title {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          line-height: 24px;
+          margin: 20px 0 6px;
+          font-size: 14px;
+          color: var(--td-text-color-placeholder);
+        }
+
+        &-detail {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          line-height: 40px;
+          font-size: 14px;
+          color: var(--td-text-color-secondary);
+        }
+      }
+
+      .contract:last-child {
+        margin-bottom: 0;
+      }
+    }
 
     .settingBtns {
       display: flex;

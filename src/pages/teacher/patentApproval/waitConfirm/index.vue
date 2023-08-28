@@ -14,6 +14,8 @@
       hover
       stripe
       table-layout="auto"
+      :expand-icon="false"
+      :expand-on-row-click="true"
       :pagination="waitConfirmTable.pagination"
       :loading="waitConfirmTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -22,6 +24,82 @@
       @page-change="waitConfirmTablePageChange"
       size="small"
     >
+      <template #expandedRow="slotProps">
+        <t-row class="content">
+          <t-col class="contract" :span="4">
+            <div class="contract-title">
+              成员名单
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.cymd }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="4">
+            <div class="contract-title">
+              成员工号
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.cygh }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              专利第一作者姓名
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zldyzzxm }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              专利第一作者工号
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zldyzzgh }}
+            </div>
+          </t-col>
+          <!--          <t-col class="contract" :span="1">-->
+          <!--            <div class="contract-title">-->
+          <!--              授权日期-->
+          <!--            </div>-->
+          <!--            <div class="contract-detail">-->
+          <!--              {{ slotProps.row.sqrq }}-->
+          <!--            </div>-->
+          <!--          </t-col>-->
+          <t-col class="contract" :span="3">
+            <div class="contract-title">
+              归属单位
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.gsdw }}
+            </div>
+          </t-col>
+          <!--          <t-col class="contract" :span="1">-->
+          <!--            <div class="contract-title">-->
+          <!--              所有权人-->
+          <!--            </div>-->
+          <!--            <div class="contract-detail">-->
+          <!--              {{ slotProps.row.zlqr }}-->
+          <!--            </div>-->
+          <!--          </t-col>-->
+          <t-col class="contract" :span="1">
+            <div class="contract-title">
+              专利代理人
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zldlr }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              最后更新时间
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.gmtUpdate }}
+            </div>
+          </t-col>
+        </t-row>
+      </template>
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
           {{ slotProps.row.zlh }}
@@ -166,6 +244,29 @@ const getTableData = (requestUrl) => {
   .tableStyle {
     width: 100%;
     margin-top: 10px;
+
+    .contract {
+      height: 80px;
+
+      &-title {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        line-height: 24px;
+        margin: 20px 0 6px;
+        font-size: 14px;
+        color: var(--td-text-color-placeholder);
+      }
+
+      &-detail {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        line-height: 40px;
+        font-size: 14px;
+        color: var(--td-text-color-secondary);
+      }
+    }
 
     .settingBtns {
       display: flex;

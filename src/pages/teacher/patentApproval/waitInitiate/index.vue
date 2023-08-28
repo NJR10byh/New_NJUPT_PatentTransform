@@ -7,12 +7,15 @@
 <template>
   <t-card class="wait-initiate-card">
     <t-table
+      class="tableStyle"
       :data="waitInitiateTable.tableData"
       :columns="WAIT_INITIATED_TABLE_COLUMNS"
       row-key="index"
       hover
       stripe
       table-layout="auto"
+      :expand-icon="false"
+      :expand-on-row-click="true"
       :pagination="waitInitiateTable.pagination"
       :loading="waitInitiateTable.tableLoading"
       :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -22,18 +25,64 @@
       style="margin-top: 10px"
       size="small"
     >
+      <template #expandedRow="slotProps">
+        <t-row class="content">
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              第一作者
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zldyzzxm }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="4">
+            <div class="contract-title">
+              成员名单
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.cymd }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              专利权人
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zlqr }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              专利授权日期
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zlsqrq }}
+            </div>
+          </t-col>
+          <t-col class="contract" :span="2">
+            <div class="contract-title">
+              最后更新时间
+            </div>
+            <div class="contract-detail">
+              {{ slotProps.row.zhgxsj }}
+            </div>
+          </t-col>
+        </t-row>
+      </template>
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
           {{ slotProps.row.zlh }}
         </t-tag>
       </template>
       <template #settings="slotProps">
-        <t-button theme="warning">
-          <template #icon>
-            <t-icon name="edit"></t-icon>
-          </template>
-          编辑
-        </t-button>
+        <div class="settingBtns">
+          <t-button theme="warning">
+            <template #icon>
+              <t-icon name="edit"></t-icon>
+            </template>
+            编辑
+          </t-button>
+        </div>
       </template>
     </t-table>
   </t-card>
@@ -157,6 +206,50 @@ const getTableData = (requestUrl) => {
 
     .cascaderStyle {
       width: 410px;
+    }
+  }
+
+  .tableStyle {
+    width: 100%;
+    margin-top: 10px;
+
+    .content {
+      width: 100%;
+      margin-top: -20px;
+
+      .contract {
+        height: 80px;
+
+        &-title {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          line-height: 24px;
+          margin: 20px 0 6px;
+          font-size: 14px;
+          color: var(--td-text-color-placeholder);
+        }
+
+        &-detail {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          line-height: 40px;
+          font-size: 14px;
+          color: var(--td-text-color-secondary);
+        }
+      }
+
+      .contract:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .settingBtns {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      overflow: auto;
     }
   }
 }
