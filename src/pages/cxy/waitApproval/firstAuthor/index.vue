@@ -148,6 +148,7 @@ const getWaitFirstAuthorApprovalData = (requestUrl: string) => {
       waitFirstAuthorApprovalTable.value.tableData[i].state = chargeTransferState(waitFirstAuthorApprovalTable.value.tableData[i]);
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     waitFirstAuthorApprovalTable.value.tableLoading = false;

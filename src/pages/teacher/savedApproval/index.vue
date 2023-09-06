@@ -143,6 +143,7 @@ const getSavedApprovalTableData = (requestUrl) => {
       }
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     savedApprovalTable.value.tableLoading = false;

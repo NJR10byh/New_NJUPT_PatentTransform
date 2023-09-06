@@ -168,6 +168,7 @@ const getAgencyData = (requestUrl) => {
       agencyManageTable.value.tableData[i].index = (agencyManageTable.value.pagination.current - 1) * agencyManageTable.value.pagination.pageSize + i + 1;
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     agencyManageTable.value.tableLoading = false;

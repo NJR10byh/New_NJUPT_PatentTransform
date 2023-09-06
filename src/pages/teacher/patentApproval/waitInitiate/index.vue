@@ -170,6 +170,7 @@ const getTableData = (requestUrl) => {
       }
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     waitInitiateTable.value.tableLoading = false;

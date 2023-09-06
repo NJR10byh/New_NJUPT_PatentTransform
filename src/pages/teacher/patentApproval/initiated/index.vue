@@ -143,7 +143,8 @@
             </div>
             <div class="contract-detail">
               <t-tag theme="primary" variant="light">
-                {{ isEmpty(slotProps.row.openLicencePriceIntention) ? "暂无" : slotProps.row.openLicencePriceIntention + " 万元"
+                {{ isEmpty(slotProps.row.openLicencePriceIntention) ? "暂无" : slotProps.row.openLicencePriceIntention +
+                " 万元"
                 }}
               </t-tag>
             </div>
@@ -353,6 +354,7 @@ const getTableData = (requestUrl) => {
       }
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     initiatedTable.value.tableLoading = false;

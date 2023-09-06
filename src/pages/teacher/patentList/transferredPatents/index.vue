@@ -265,6 +265,7 @@ const getTableData = (requestUrl: string) => {
       item.patentPrice = isEmpty(item.patentPrice) ? "" : item.patentPrice + " 万元";
     });
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     transferredPatentsTable.value.tableLoading = false;

@@ -89,6 +89,7 @@ const onSubmit = async ({ validateResult }) => {
         console.log(res);
         await userInfoToCache(res);
       }).catch(err => {
+        MessagePlugin.closeAll();
         MessagePlugin.error(err.message);
       }).finally(() => {
         loginBtnLoading.value = false;

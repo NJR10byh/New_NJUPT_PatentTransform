@@ -122,6 +122,7 @@ const getTableData = (requestUrl: string) => {
       }
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     licensePriceTable.value.tableLoading = false;

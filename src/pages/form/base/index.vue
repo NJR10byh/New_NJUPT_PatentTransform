@@ -41,8 +41,8 @@
           <t-col :span="8">
             <t-form-item label="合同收付类型" name="payment">
               <t-radio-group v-model="formData.payment">
-                <t-radio value="1"> 收款 </t-radio>
-                <t-radio value="2"> 付款 </t-radio>
+                <t-radio value="1"> 收款</t-radio>
+                <t-radio value="2"> 付款</t-radio>
               </t-radio-group>
               <span class="space-item" />
               <div>
@@ -125,7 +125,7 @@
                 :before-upload="beforeUpload"
                 @fail="handleFail"
               >
-                <t-button class="form-submit-upload-btn" variant="outline"> 上传合同文件 </t-button>
+                <t-button class="form-submit-upload-btn" variant="outline"> 上传合同文件</t-button>
               </t-upload>
             </t-form-item>
           </t-col>
@@ -149,8 +149,8 @@
     <div class="form-submit-container">
       <div class="form-submit-sub">
         <div class="form-submit-left">
-          <t-button theme="primary" class="form-submit-confirm" type="submit"> 提交 </t-button>
-          <t-button type="reset" class="form-submit-cancel" theme="default" variant="base"> 取消 </t-button>
+          <t-button theme="primary" class="form-submit-confirm" type="submit"> 提交</t-button>
+          <t-button type="reset" class="form-submit-cancel" theme="default" variant="base"> 取消</t-button>
         </div>
       </div>
     </div>
@@ -159,42 +159,47 @@
 
 <script lang="ts">
 export default {
-  name: 'FormBase',
+  name: "FormBase"
 };
 </script>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { MessagePlugin } from 'tdesign-vue-next';
-import { FORM_RULES, INITIAL_DATA, TYPE_OPTIONS, PARTY_A_OPTIONS, PARTY_B_OPTIONS } from './constants';
+import { ref } from "vue";
+import { MessagePlugin } from "tdesign-vue-next";
+import { FORM_RULES, INITIAL_DATA, TYPE_OPTIONS, PARTY_A_OPTIONS, PARTY_B_OPTIONS } from "./constants";
 
 const formData = ref({ ...INITIAL_DATA });
 
 const onReset = () => {
-  MessagePlugin.warning('取消新建');
+  MessagePlugin.closeAll();
+  MessagePlugin.warning("取消新建");
 };
 const onSubmit = ({ validateResult }) => {
   if (validateResult === true) {
-    MessagePlugin.success('新建成功');
+    MessagePlugin.closeAll();
+    MessagePlugin.success("新建成功");
   }
 };
 const beforeUpload = (file) => {
   if (!/\.(pdf)$/.test(file.name)) {
-    MessagePlugin.warning('请上传pdf文件');
+    MessagePlugin.closeAll();
+    MessagePlugin.warning("请上传pdf文件");
     return false;
   }
   if (file.size > 60 * 1024 * 1024) {
-    MessagePlugin.warning('上传文件不能大于60M');
+    MessagePlugin.closeAll();
+    MessagePlugin.warning("上传文件不能大于60M");
     return false;
   }
   return true;
 };
 const handleFail = ({ file }) => {
+  MessagePlugin.closeAll();
   MessagePlugin.error(`文件 ${file.name} 上传失败`);
 };
 // 用于格式化接口响应值，error 会被用于上传失败的提示文字；url 表示文件/图片地址
 const formatResponse = (res) => {
-  return { ...res, error: '上传失败，请重试', url: res.url };
+  return { ...res, error: "上传失败，请重试", url: res.url };
 };
 </script>
 

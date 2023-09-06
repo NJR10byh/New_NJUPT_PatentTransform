@@ -259,6 +259,7 @@ const getTableData = (requestUrl) => {
       waitApprovalTable.value.tableData[i].state = chargeTransferState(waitApprovalTable.value.tableData[i]);
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     waitApprovalTable.value.tableLoading = false;

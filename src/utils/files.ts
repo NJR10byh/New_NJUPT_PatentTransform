@@ -127,7 +127,8 @@ export const downloadFile = async (fileUrl: string) => {
       document.body.removeChild(link);
     }
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.closeAll();
+    MessagePlugin.error(err.message);
   }).finally(() => {
     LoadingPlugin(false);
   });
@@ -166,7 +167,8 @@ export const exportFile = async (requestUrl: string, requestBody: any) => {
       document.body.removeChild(link);
     }
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.closeAll();
+    MessagePlugin.error(err.message);
   }).finally(() => {
     LoadingPlugin(false);
   });

@@ -379,6 +379,7 @@ const getTableData = (requestUrl) => {
       contractManageTable.value.tableData[i].state = chargeContractState(contractManageTable.value.tableData[i]);
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     contractManageTable.value.tableLoading = false;

@@ -283,6 +283,7 @@ const getBasicInfo = () => {
     console.log(res);
     basicInfo.value = res;
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
   });

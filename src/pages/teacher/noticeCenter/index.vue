@@ -163,6 +163,7 @@ const getVideoData = (requestUrl: string) => {
       VIDEO_PLAY_LIST.value.push(video_play);
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
   });
@@ -178,6 +179,7 @@ const getNoticeData = (requestUrl: string) => {
     noticeInfo.value.total = res.total;
     NOTICE_LIST.value = res.records;
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
   });

@@ -168,6 +168,7 @@ const getCompanyData = (requestUrl) => {
       companyManageTable.value.tableData[i].index = (companyManageTable.value.pagination.current - 1) * companyManageTable.value.pagination.pageSize + i + 1;
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     companyManageTable.value.tableLoading = false;

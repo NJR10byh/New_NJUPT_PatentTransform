@@ -239,6 +239,7 @@ const getTableData = (requestUrl: string) => {
       waitConfirmTable.value.tableData[i].patentPrice = isEmpty(waitConfirmTable.value.tableData[i].patentPrice) ? "" : waitConfirmTable.value.tableData[i].patentPrice + " 万元";
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     waitConfirmTable.value.tableLoading = false;
@@ -259,8 +260,10 @@ const passApproval = (row: any) => {
         })
       }).then(res => {
         console.log(res);
+        MessagePlugin.closeAll();
         MessagePlugin.success("已通过");
       }).catch(err => {
+        MessagePlugin.closeAll();
         MessagePlugin.error(err.message);
       }).finally(() => {
         getTableData(setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, currentRequestBody));
@@ -286,8 +289,10 @@ const cancelApprovalConfirm = () => {
     url: setObjToUrlParams(BASE_URL.approvalTransferApplicationByZLDYZZ, cancelApprovalDialog.params)
   }).then(res => {
     console.log(res);
+    MessagePlugin.closeAll();
     MessagePlugin.success("不通过");
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     getTableData(setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, currentRequestBody));

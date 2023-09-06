@@ -79,6 +79,7 @@ export const userInfoToCache = async (info) => {
     userInfo.value.userIdCard = res.userIdCard;
     userStore.getUserInfo(userInfo.value);
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
   });

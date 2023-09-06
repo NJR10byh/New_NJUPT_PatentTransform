@@ -496,6 +496,7 @@ const getPatentTableData = (requestUrl) => {
       }
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     dataCenterPatentTable.value.tableLoading = false;
@@ -517,6 +518,7 @@ const getContractTableData = (requestUrl) => {
       }
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     dataCenterContractTable.value.tableLoading = false;
@@ -620,6 +622,7 @@ const getColumnMap = () => {
       columnMapValues.value.push(res[i].columnName);
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
   });
@@ -631,6 +634,7 @@ const exportExcel = () => {
   let requestUrl = "";
   let requestBody = {};
   if (columnMapValues.value.length == 0) {
+    MessagePlugin.closeAll();
     MessagePlugin.warning("请选择需要导出的列");
   } else {
     switch (tableType.value) {

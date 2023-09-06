@@ -57,6 +57,7 @@ router.beforeEach(async (to, from, next) => {
     try {
       next("/result/403");
     } catch (error) {
+      MessagePlugin.closeAll();
       await MessagePlugin.error(error);
       NProgress.done();
     }

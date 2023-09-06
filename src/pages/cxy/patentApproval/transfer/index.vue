@@ -561,6 +561,7 @@ const getLabelNum = async () => {
     console.log(res);
     tabsData.value[0].label = tabsData.value[0].label + " (" + res.total + ")";
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
   });
@@ -572,6 +573,7 @@ const getLabelNum = async () => {
     console.log(res);
     tabsData.value[1].label = tabsData.value[1].label + " (" + res.total + ")";
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
   });
@@ -600,6 +602,7 @@ const getPatentApprovalTableData = (requestUrl) => {
       patentApprovalTable.value.tableData[i].state = chargeTransferState(patentApprovalTable.value.tableData[i]);
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     patentApprovalTable.value.tableLoading = false;

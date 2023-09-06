@@ -305,6 +305,7 @@ const getVideoData = () => {
       videoManageTable.tableData[i].index = i + 1;
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     videoManageTable.tableLoading = false;
@@ -331,8 +332,10 @@ const deleteVideo = (video: any) => {
         url: requestUrl
       }).then(res => {
         console.log(res);
+        MessagePlugin.closeAll();
         MessagePlugin.success("删除成功");
       }).catch(err => {
+        MessagePlugin.closeAll();
         MessagePlugin.error(err.message);
       }).finally(() => {
         getVideoData();
@@ -365,6 +368,7 @@ const getNoticeData = () => {
       noticeManageTable.tableData[i].index = (noticeManageTable.pagination.current - 1) * noticeManageTable.pagination.pageSize + i + 1;
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     noticeManageTable.tableLoading = false;
@@ -415,8 +419,10 @@ const deleteNotice = (notice: any) => {
         url: requestUrl
       }).then(res => {
         console.log(res);
+        MessagePlugin.closeAll();
         MessagePlugin.success("删除成功");
       }).catch(err => {
+        MessagePlugin.closeAll();
         MessagePlugin.error(err.message);
       }).finally(() => {
         refreshNoticeData();
@@ -463,9 +469,11 @@ const uploadVideoFile = (file: { raw: string | Blob; }) => {
   uploadFile(BASE_URL.uploadVideo, fileFormData, percentCompleted => {
     videoProgress.value = percentCompleted;
   }).then(res => {
+    MessagePlugin.closeAll();
     MessagePlugin.success("新增成功");
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.closeAll();
+    MessagePlugin.error(err.message);
   }).finally(() => {
     addVideoVisible.value = false;
     addVideoBtnLoading.value = false;
@@ -477,12 +485,14 @@ const uploadVideoFile = (file: { raw: string | Blob; }) => {
 const submitVideo = ({ validateResult, firstError }) => {
   if (validateResult === true) {
     if (addVideoFormData.file.length === 0) {
+      MessagePlugin.closeAll();
       MessagePlugin.warning("请上传视频文件");
       return;
     }
     addVideoBtnLoading.value = true;
     uploadVideo.value.uploadFiles();
   } else {
+    MessagePlugin.closeAll();
     MessagePlugin.warning(firstError);
   }
 };
@@ -507,9 +517,11 @@ const uploadNoticeFile = () => {
   uploadFile(BASE_URL.addNotice, fileFormData, percentCompleted => {
     noticeProgress.value = percentCompleted;
   }).then(res => {
+    MessagePlugin.closeAll();
     MessagePlugin.success("新增成功");
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.closeAll();
+    MessagePlugin.error(err.message);
   }).finally(() => {
     addNoticeVisible.value = false;
     addNoticeBtnLoading.value = false;
@@ -521,12 +533,14 @@ const uploadNoticeFile = () => {
 const submitNotice = ({ validateResult, firstError }) => {
   if (validateResult === true) {
     if (addNoticeFormData.file.length === 0) {
+      MessagePlugin.closeAll();
       MessagePlugin.warning("请上传通知文件");
       return;
     }
     addNoticeBtnLoading.value = true;
     uploadNotice.value.uploadFiles();
   } else {
+    MessagePlugin.closeAll();
     MessagePlugin.warning(firstError);
   }
 };

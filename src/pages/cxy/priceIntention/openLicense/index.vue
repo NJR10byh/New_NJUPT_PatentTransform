@@ -123,6 +123,7 @@ const getTableData = (requestUrl: string) => {
       }
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     openLicensePriceTable.value.tableLoading = false;

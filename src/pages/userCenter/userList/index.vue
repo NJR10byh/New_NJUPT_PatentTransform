@@ -124,6 +124,7 @@ const getTableData = (requestUrl) => {
       userListTable.value.tableData[i].index = i + 1;
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     userListTable.value.tableLoading = false;

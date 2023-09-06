@@ -159,6 +159,7 @@ const getTableData = (requestUrl) => {
       operateLogTable.value.tableData[i].index = (operateLogTable.value.pagination.current - 1) * operateLogTable.value.pagination.pageSize + i + 1;
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     operateLogTable.value.tableLoading = false;

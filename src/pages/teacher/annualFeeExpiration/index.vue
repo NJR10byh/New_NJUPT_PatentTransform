@@ -97,7 +97,8 @@
             </div>
             <div class="contract-detail">
               <t-tag theme="primary" variant="light">
-                {{ isEmpty(slotProps.row.openLicencePriceIntention) ? "暂无" : slotProps.row.openLicencePriceIntention + " 万元"
+                {{ isEmpty(slotProps.row.openLicencePriceIntention) ? "暂无" : slotProps.row.openLicencePriceIntention +
+                " 万元"
                 }}
               </t-tag>
             </div>
@@ -221,6 +222,7 @@ const getTableData = (requestUrl: string) => {
       annualFeeExpirationTable.value.tableData[i].index = i + 1;
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     annualFeeExpirationTable.value.tableLoading = false;
@@ -240,8 +242,10 @@ const editReminderDateConfirm = () => {
     data: editReminderDateDialog.editReminderDateForm
   }).then(res => {
     console.log(res);
+    MessagePlugin.closeAll();
     MessagePlugin.success("修改成功");
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     editReminderDateDialog.visible = false;

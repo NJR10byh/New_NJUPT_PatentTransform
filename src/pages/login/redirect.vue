@@ -33,6 +33,7 @@ onMounted(() => {
     }).then(res => {
       userInfoToCache(res);
     }).catch(err => {
+      MessagePlugin.closeAll();
       MessagePlugin.error(err.message);
     }).finally(() => {
     });

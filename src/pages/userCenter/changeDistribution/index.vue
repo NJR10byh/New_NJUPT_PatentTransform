@@ -106,6 +106,7 @@ const getTableData = (requestUrl) => {
       changeDistributionTable.value.tableData[i].priceRange = changeDistributionTable.value.tableData[i].priceRangeBegin + " ~ " + changeDistributionTable.value.tableData[i].priceRangeEnd + " 万元";
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     changeDistributionTable.value.tableLoading = false;

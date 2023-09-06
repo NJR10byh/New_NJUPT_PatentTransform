@@ -391,6 +391,7 @@ const getPatentInfo = (requestUrl: string) => {
     console.log(res);
     patentInfo.value = res;
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
   });
@@ -411,6 +412,7 @@ const getApprovalFormInfo = (requestUrl: string) => {
       cashRewardTable.value.tableData[i].amount += " 万元";
     }
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     cashRewardTable.value.tableLoading = false;

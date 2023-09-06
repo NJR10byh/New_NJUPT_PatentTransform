@@ -144,7 +144,8 @@
             </div>
             <div class="contract-detail">
               <t-tag theme="primary" variant="light">
-                {{ isEmpty(slotProps.row.openLicencePriceIntention) ? "暂无" : slotProps.row.openLicencePriceIntention + " 万元"
+                {{ isEmpty(slotProps.row.openLicencePriceIntention) ? "暂无" : slotProps.row.openLicencePriceIntention +
+                " 万元"
                 }}
               </t-tag>
             </div>
@@ -290,6 +291,7 @@ import { DialogPlugin, MessagePlugin } from "tdesign-vue-next";
 import { ALL_PATENTS_TABLE_COLUMNS, BASE_URL } from "./constants";
 import { isEmpty, isNotEmpty } from "@/utils/validate";
 import { downloadFile, uploadFile, validateFile, validateFileType } from "@/utils/files";
+import { copyInfo } from "@/utils/tools";
 
 
 const store = useSettingStore();
@@ -438,6 +440,7 @@ const getTableData = (requestUrl: string) => {
       item.index = (allPatentsTable.value.pagination.current - 1) * allPatentsTable.value.pagination.pageSize + index + 1;
     });
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
     allPatentsTable.value.tableLoading = false;
@@ -458,10 +461,12 @@ const searchData = () => {
     getTableData(requestUrl);
   } else {
     if (isEmpty(searchField.value)) {
+      MessagePlugin.closeAll();
       MessagePlugin.warning("请选择查询字段");
       return;
     }
     if (isEmpty(searchText.value)) {
+      MessagePlugin.closeAll();
       MessagePlugin.warning("请输入查询内容");
       return;
     }
@@ -507,6 +512,7 @@ function getPatentType(code: any) {
 const exportReferences = () => {
   console.log(allPatentsTable.value.selectedPatents);
   if (isEmpty(allPatentsTable.value.selectedPatents)) {
+    MessagePlugin.closeAll();
     MessagePlugin.warning("请选择要导出的专利");
     return;
   }
@@ -529,51 +535,18 @@ const exportReferences = () => {
 };
 
 /**
- * 复制导出引用-老版本
- * document.execCommand("copy");（被弃用）
- * @param elId
- */
-// const copyExportReferences = (elId: string) => {
-//   const el = document.getElementById(elId);
-//   if (document.createRange && window.getSelection) {
-//     let range = document.createRange();
-//     let sel = window.getSelection();
-//     sel.removeAllRanges();
-//     try {
-//       range.selectNodeContents(el);
-//       sel.addRange(range);
-//     } catch (e) {
-//       range.selectNode(el);
-//       sel.addRange(range);
-//     }
-//     document.execCommand("copy");
-//     //取消文本选中状态
-//     window.getSelection().empty();
-//     MessagePlugin.success("已复制！");
-//   }
-// };
-/**
- * 复制导出引用-优化版本
+ * 复制导出引用
  * @param elId
  */
 const copyExportReferences = async (elId: string) => {
   const el = document.getElementById(elId);
   const textContent = el.innerHTML.replace(/<br>/g, "\n");
-  try {
-    await navigator.clipboard.writeText(textContent);
-    await MessagePlugin.success("已复制！");
-  } catch (error) {
-    console.error("复制失败：", error);
-    await MessagePlugin.error("复制失败！");
-  }
+  copyInfo(textContent);
 };
 
 // 下载专利证书
 const downloadCertificate = (row: { wid: any; }) => {
-  let obj = {
-    wid: row.wid
-  };
-  let fileUrl = setObjToUrlParams(BASE_URL.downloadCertificate, obj);
+  let fileUrl = setObjToUrlParams(BASE_URL.downloadCertificate, { wid: row.wid });
   downloadFile(fileUrl);
 };
 
@@ -614,6 +587,7 @@ const priceIntentionConfirm = async () => {
       }
 
       if (await updatePriceIntention(requestUrl, requestBody)) {
+        MessagePlugin.closeAll();
         await MessagePlugin.success(`更新${message}成功`);
       } else {
         await MessagePlugin.error(`更新${message}失败`);
@@ -622,6 +596,7 @@ const priceIntentionConfirm = async () => {
   };
 
   if (isEmpty(priceIntentionDialog.formData.transferPrice) && isEmpty(priceIntentionDialog.formData.licensePrice) && isEmpty(priceIntentionDialog.formData.openLicensePrice)) {
+    MessagePlugin.closeAll();
     await MessagePlugin.warning("请至少填写一个价格意向");
     return;
   }
@@ -649,6 +624,7 @@ const updatePriceIntention = async (requestUrl: string, requestBody: any) => {
     console.log(res);
     flag = true;
   }).catch(err => {
+    MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   });
   return flag;
@@ -688,8 +664,10 @@ const deletePriceIntention = (priceKey: string) => {
       request.get({
         url: setObjToUrlParams(requestUrl, params)
       }).then(res => {
+        MessagePlugin.closeAll();
         MessagePlugin.success(`删除${message}成功`);
       }).catch(err => {
+        MessagePlugin.closeAll();
         MessagePlugin.error(err.message);
       }).finally(() => {
         requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
@@ -738,9 +716,11 @@ const uploadCertificate = (file: { type: string; raw: string | Blob; }) => {
   // }, 1000);
   uploadFile(BASE_URL.uploadCertificate, fileFormData, percentCompleted => {
   }).then(res => {
+    MessagePlugin.closeAll();
     MessagePlugin.success("上传成功");
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.closeAll();
+    MessagePlugin.error(err.message);
   }).finally(() => {
     let requestUrl = setObjToUrlParams(currUrl.value, currRequestBody.value);
     getTableData(requestUrl);
