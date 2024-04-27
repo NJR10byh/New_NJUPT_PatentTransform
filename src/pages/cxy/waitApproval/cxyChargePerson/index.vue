@@ -14,7 +14,6 @@
           :data="waitApprovalTable.tableData"
           :columns="WAIT_APPROVAL_TABLE_COLUMNS"
           row-key="index"
-
           hover
           stripe
           table-layout="auto"
@@ -32,6 +31,11 @@
             <t-tag theme="primary" variant="light-outline">
               {{ slotProps.row.zlh }}
             </t-tag>
+          </template>
+          <template #zlmc="slotProps">
+            <t-link theme="primary" @click="getApprovalFormDetail(slotProps.row)">
+              {{ slotProps.row.zlmc }}
+            </t-link>
           </template>
           <template #state="slotProps">
             <t-tag v-if="slotProps.row.state.indexOf('未通过')!=-1" theme="warning" variant="light-outline"
@@ -77,7 +81,6 @@
           :data="waitApprovalTable.tableData"
           :columns="WAIT_APPROVAL_TABLE_COLUMNS"
           row-key="index"
-
           hover
           stripe
           table-layout="auto"
@@ -137,6 +140,8 @@ import { request } from "@/utils/request";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { MessagePlugin } from "tdesign-vue-next";
 import { chargeTransferState } from "@/utils/transferState";
+import router from "@/router";
+
 
 const store = useSettingStore();
 
@@ -263,6 +268,17 @@ const getTableData = (requestUrl) => {
     MessagePlugin.error(err.message);
   }).finally(() => {
     waitApprovalTable.value.tableLoading = false;
+  });
+};
+
+// 跳转至审批表详情
+const getApprovalFormDetail = (row: { wid: any; }) => {
+  console.log(row);
+  router.push({
+    name: "approvalFormDetail",
+    query: {
+      wid: row.wid
+    }
   });
 };
 </script>

@@ -153,15 +153,17 @@
           <div>是否有服务方</div>
         </t-col>
         <t-col :span="4">
-          <div>{{ approvalFormInfo.hasAgency }}</div>
+          <div>{{ approvalFormInfo.hasAgency ? "有" : "无" }}</div>
         </t-col>
       </t-row>
-      <t-row v-if="approvalFormInfo.hasAgency=='有'">
+      <t-row v-if="approvalFormInfo.hasAgency">
         <t-col :span="2" class="props">
           <div>服务方名称</div>
         </t-col>
         <t-col :span="2">
-          <div>{{ approvalFormInfo.pcName }}</div>
+          <div style="box-sizing:border-box;overflow: auto;white-space: nowrap;padding: 0 10px;">
+            {{ approvalFormInfo.pcName }}
+          </div>
         </t-col>
         <t-col :span="2" class="props">
           <div>服务方联系人</div>
@@ -220,7 +222,7 @@
           <div>{{ approvalFormInfo.pcBankAccount }}</div>
         </t-col>
       </t-row>
-      <t-row v-if="approvalFormInfo.hasAgency=='有'">
+      <t-row v-if="approvalFormInfo.hasAgency">
         <t-col :span="2" class="props">
           <div>纳税人识别号</div>
         </t-col>
@@ -231,7 +233,7 @@
           <div>是否存在关联关系说明</div>
         </t-col>
         <t-col :span="4">
-          <div>{{ approvalFormInfo.associationRelationship }}</div>
+          <div>{{ getAssociationRelationship(approvalFormInfo.associationRelationship) }}</div>
         </t-col>
       </t-row>
       <t-row>
@@ -275,7 +277,9 @@
           <div>收益分配</div>
         </t-col>
         <t-col :span="10">
-          <div>{{ approvalFormInfo.distributionResult }}</div>
+          <div style="box-sizing:border-box;overflow: auto;white-space: nowrap;padding: 0 10px;">
+            {{ approvalFormInfo.distributionResult }}
+          </div>
         </t-col>
       </t-row>
       <t-row v-if="approvalFormInfo.drawMoneyMethod == '现金奖励'">
@@ -320,7 +324,7 @@
             <p class="props">成果完成人意见：</p>
             <br />
             <p>
-              团队负责人承诺，该专利转换<b><i>已经经全体发明人同意</i></b>，
+              团队负责人承诺，该专利转换 <b><i>已经经全体发明人同意</i></b> ，
               确认该项成果相关信息属实。该项成果转化对我校已签署的合同不会带来任何法律纠纷，对本研究组以后的技术研发、成果申报和推广应用不会产生任何不良影响。如存在关联关系，承诺与关联方的交易符合国家法律法规和学校各项管理规定，保证不从事不公正的关联交易，不损害国家和学校利益。
             </p>
           </div>
@@ -331,7 +335,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { BASE_URL, CASH_REWARD_TABLE_COLUMNS } from "./constants";
 import { setObjToUrlParams } from "@/utils/request/utils";
 import { useRoute } from "vue-router";
@@ -344,15 +348,71 @@ const route = useRoute();
  * data
  */
 // 审批表涉及专利信息
-const patentInfo = ref({});
+const patentInfo = ref({
+  zlmc: "",
+  zlqr: "",
+  cymd: "",
+  zldyzzxm: ""
+});
 // 审批表信息
-const approvalFormInfo = ref({});
+const approvalFormInfo = ref({
+  accountingCodeNumber: null,
+  associationRelationship: null,
+  certificateNumber: "",
+  contractType: "",
+  contractValidateBegin: "",
+  contractValidateEnd: "",
+  distributionList: [],
+  drawMoneyMethod: "",
+  evaluationCompany: "",
+  evaluationPrice: null,
+  fzyDepartment: "",
+  fzyGh: "",
+  fzyName: "",
+  fzyPhone: "",
+  gmtCreate: "",
+  gmtUpdate: "",
+  hasAgency: null,
+  paAddress: "",
+  paCity: "",
+  paCityCode: "",
+  paContactEmail: "",
+  paContactPerson: "",
+  paContactPhone: "",
+  paDistrict: "",
+  paDistrictCode: "",
+  paField: "",
+  paMailingAddress: "",
+  paName: "",
+  paPostalCode: "",
+  paProvince: "",
+  paProvinceCode: "",
+  paRepresentative: "",
+  patentPrice: 0,
+  pcAddress: "",
+  pcBankAccount: "",
+  pcBankName: "",
+  pcContactEmail: "",
+  pcContactPerson: "",
+  pcContactPhone: "",
+  pcMailingAddress: "",
+  pcName: "",
+  pcRepresentative: "",
+  pcTaxpayerCode: "",
+  pricingMethod: "",
+  projectCodeNumber: null,
+  taxpayerCode: "",
+  transferApplicationFormId: null,
+  version: null,
+  wid: "",
+  distributionResult: ""
+});
 
 /**
  * 表格相关
  */
 /* 现金奖励表 */
-const cashRewardTable = ref({
+const cashRewardTable = reactive({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
   // 表格分页
@@ -398,24 +458,73 @@ const getPatentInfo = (requestUrl: string) => {
 };
 // 获取审批表数据
 const getApprovalFormInfo = (requestUrl: string) => {
-  cashRewardTable.value.tableLoading = true;
-  cashRewardTable.value.tableData = [];
+  cashRewardTable.tableLoading = true;
+  cashRewardTable.tableData = [];
   request.get({
     url: requestUrl
   }).then(res => {
     console.log(res);
     approvalFormInfo.value = res;
-    cashRewardTable.value.tableData = res.distributionList;
-    for (let i = 0; i < cashRewardTable.value.tableData.length; i++) {
-      cashRewardTable.value.tableData[i].index = i + 1;
-      cashRewardTable.value.tableData[i].idCard = IDCardLock(cashRewardTable.value.tableData[i].idCard);
-      cashRewardTable.value.tableData[i].amount += " 万元";
+    cashRewardTable.tableData = res.distributionList;
+    for (let i = 0; i < cashRewardTable.tableData.length; i++) {
+      cashRewardTable.tableData[i].index = i + 1;
+      cashRewardTable.tableData[i].idCard = IDCardLock(cashRewardTable.tableData[i].idCard);
+      cashRewardTable.tableData[i].amount += " 万元";
     }
   }).catch(err => {
     MessagePlugin.closeAll();
     MessagePlugin.error(err.message);
   }).finally(() => {
-    cashRewardTable.value.tableLoading = false;
+    getDistributionResult();
+  });
+};
+
+// 获取关联关系说明
+const getAssociationRelationship = (associationRelationship: number) => {
+  // 关联关系说明
+  switch (associationRelationship) {
+    case 0:
+      return "无关联关系";
+    case 1:
+      return "与受让方的自然人有亲属关系（包括配偶关系、直系血亲关系、三代以内旁系血亲关系或者姻亲关系）";
+    case 2:
+      return "本人或亲属在受让方任职或兼职";
+    case 3:
+      return "本人或亲属（直接或间接、单独或联合）在受让方持有股份，未控股";
+    case 4:
+      return "本人或亲属（直接或间接、单独或联合）在受让方持有股份，并控股";
+    case 5:
+      return "本人或亲属通过协议等形式对受让方实施控制或施加重大影响";
+    case 6:
+      return "其他可能影响交易公正性的关系";
+    default:
+      return "暂无";
+  }
+};
+
+// 计算收益分配净收益
+const getDistributionResult = () => {
+  let requestUrl: string;
+  let obj = {
+    hasAgency: approvalFormInfo.value.hasAgency,
+    price: approvalFormInfo.value.patentPrice,
+    wid: approvalFormInfo.value.wid
+  };
+  requestUrl = setObjToUrlParams(BASE_URL.getDistributionResult, obj);
+  request.get({
+    url: requestUrl
+  }).then(res => {
+    console.log(res);
+    approvalFormInfo.value.distributionResult =
+      "成果完成人：" + res.cgwcrPrice + " 万元（" + res.cgwcrProportion + "%）| " +
+      "学校：" + res.schoolPrice + " 万元（" + res.schoolProportion + "%）| " +
+      "学院：" + res.departmentPrice + " 万元（" + res.departmentProportion + "%）" +
+      (approvalFormInfo.value.hasAgency ? "| 中介：" + res.agencyPrice + " 万元（" + res.agencyProportion + "%）" : "");
+  }).catch((err) => {
+    console.log(err);
+    MessagePlugin.error("出错了！");
+  }).finally(() => {
+    cashRewardTable.tableLoading = false;
   });
 };
 </script>

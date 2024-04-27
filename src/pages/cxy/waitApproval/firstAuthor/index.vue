@@ -20,15 +20,15 @@
       @page-change="waitFirstAuthorApprovalTablePageChange"
       size="small"
     >
-      <template #zlmc="slotProps">
-        <t-link theme="primary" @click="getApprovalFormDetail(slotProps.row)">
-          {{ slotProps.row.zlmc }}
-        </t-link>
-      </template>
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
           {{ slotProps.row.zlh }}
         </t-tag>
+      </template>
+      <template #zlmc="slotProps">
+        <t-link theme="primary" @click="getApprovalFormDetail(slotProps.row)">
+          {{ slotProps.row.zlmc }}
+        </t-link>
       </template>
       <template #state="slotProps">
         <t-tag v-if="slotProps.row.state.indexOf('未通过')==-1" theme="success" variant="light-outline" shape="round">
@@ -48,7 +48,6 @@
           </template>
           通过
         </t-button>
-
         <t-button theme="danger">
           <template #icon>
             <t-icon name="close-circle"></t-icon>
@@ -110,7 +109,7 @@ onMounted(() => {
   };
   let requestUrl = setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, obj);
   // 获取表格数据
-  getWaitFirstAuthorApprovalData(requestUrl);
+  getTableData(requestUrl);
 });
 
 /**
@@ -126,14 +125,14 @@ const waitFirstAuthorApprovalTablePageChange = (curr: { current: number; pageSiz
     size: waitFirstAuthorApprovalTable.value.pagination.pageSize
   };
   let requestUrl = setObjToUrlParams(BASE_URL.getZLDYZZConfirmPage, obj);
-  getWaitFirstAuthorApprovalData(requestUrl);
+  getTableData(requestUrl);
 };
 
 /**
  * 业务相关
  */
 // 获取表格数据
-const getWaitFirstAuthorApprovalData = (requestUrl: string) => {
+const getTableData = (requestUrl: string) => {
   waitFirstAuthorApprovalTable.value.tableLoading = true;
   waitFirstAuthorApprovalTable.value.tableData = [];
   request.get({

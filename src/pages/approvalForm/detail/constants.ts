@@ -6,7 +6,8 @@
  */
 export const BASE_URL = {
   getPatentInfoByWid: "/application/getPatentInfoByWid",
-  getTransferApplicationFormByWID: "/application/getTransferApplicationFormByWID"
+  getTransferApplicationFormByWID: "/application/getTransferApplicationFormByWID",
+  getDistributionResult: "/distribution/getDistributionResult"
 };
 export const CASH_REWARD_TABLE_COLUMNS = [
   {
